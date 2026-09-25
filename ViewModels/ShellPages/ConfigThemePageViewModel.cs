@@ -10,7 +10,7 @@ using Microsoft.Win32;
 
 namespace Project_Kitsune.ViewModels.ShellPages
 {
-    public partial class ConfigTemaPageViewModel : INotifyPropertyChanged
+    public partial class ConfigThemePageViewModel : INotifyPropertyChanged
     {
         protected ShellViewModel _shell;
         private bool _temImage;
@@ -73,7 +73,7 @@ namespace Project_Kitsune.ViewModels.ShellPages
             }
         }
 
-        public ConfigTemaPageViewModel(ShellViewModel shell)
+        public ConfigThemePageViewModel(ShellViewModel shell)
         {
             _shell = shell;
             configuracaoService = App.ServiceProvider.GetRequiredService<ConfiguracaoService>();

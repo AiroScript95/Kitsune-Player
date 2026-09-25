@@ -21,7 +21,7 @@ namespace Project_Kitsune
 
         public event Action? IdiomaAlterado;
 
-        private static readonly string[] IdiomasSuportados = ["pt", "en", "jp", "es"];
+        private static readonly string[] IdiomasSuportados = ["pt", "en", "ja", "es"];
 
         public static ServiceProvider ServiceProvider { get; private set; } = null!;
 

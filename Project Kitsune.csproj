@@ -22,6 +22,7 @@
     <None Remove="Resources\Fonts\Inter_18pt-Regular.ttf" />
     <None Remove="Resources\Fonts\JetBrainsMono.ttf" />
     <None Remove="Resources\Icons\icon-app.ico" />
+    <None Remove="Resources\Icons\icon-app.png" />
     <None Remove="Resources\Icons\icon-logo.ico" />
     <None Remove="Resources\Icons\Logo.png" />
     <None Remove="Resources\Mascotes\asa.svg" />
@@ -46,7 +47,7 @@
     <PackageReference Include="ManagedBass.Mix" Version="4.0.2" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.30" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.158" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.161" />
     <PackageReference Include="SharpVectors.Wpf" Version="1.8.5" />
     <PackageReference Include="TagLibSharp" Version="2.3.0" />
     <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.23.1" />
@@ -67,6 +68,9 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Icons\icon-app.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\icon-app.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Icons\icon-logo.ico">

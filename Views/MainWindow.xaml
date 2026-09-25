@@ -12,7 +12,7 @@
         xmlns:viewmodels="clr-namespace:Project_Kitsune.ViewModels"
         xmlns:ctzex="urn:controlzex"
         mc:Ignorable="d"
-        Title=""
+        Title="Kitsune Player"
         Height="700"
         WindowState="Normal"
         WindowStyle="SingleBorderWindow"

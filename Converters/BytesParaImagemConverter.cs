@@ -16,7 +16,7 @@ namespace Project_Kitsune.Converters
             using var stream = new MemoryStream(bytes);
             image.BeginInit();
             image.CacheOption = BitmapCacheOption.OnLoad;
-            image.DecodePixelWidth = 480;
+            image.DecodePixelWidth = 600;
             image.StreamSource = stream;
             image.EndInit();
             image.Freeze();

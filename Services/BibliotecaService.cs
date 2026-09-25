@@ -207,11 +207,11 @@ namespace Project_Kitsune.Services
             {
                 try
                 {
-                    string conteudo = await File.ReadAllTextAsync(caminhoLrcKitsune);
+                    string conteudo = await File.ReadAllTextAsync(caminhoLrcGenerico);
                     if (!string.IsNullOrEmpty(conteudo))
                     {
                         musica.TemLetraDisponivel = true;
-                        return ParsearLetra(conteudo, FonteLetra.ArquivoLrc, caminhoLrcKitsune);
+                        return ParsearLetra(conteudo, FonteLetra.ArquivoLrc, caminhoLrcGenerico);
                     }
                 }
                 catch (Exception ex)

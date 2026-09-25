@@ -30,8 +30,8 @@
         <DataTemplate DataType="{x:Type vm:ConfiguracoesPageViewModel}">
             <pages:ConfiguracoesPage />
         </DataTemplate>
-        <DataTemplate DataType="{x:Type vm:ConfigTemaPageViewModel}">
-            <pages:ConfigTemaPage />
+        <DataTemplate DataType="{x:Type vm:ConfigThemePageViewModel}">
+            <pages:ConfigThemePage />
         </DataTemplate>
         <DataTemplate DataType="{x:Type vm:PlaylistsPageViewModel}">
             <pages:PlaylistsPages />
@@ -42,108 +42,110 @@
     </UserControl.Resources>
     <Grid>
         <!--Conteudo UserControl-->
+
         <Grid ClipToBounds="True">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="60" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-
             <!--  SIDEBAR  -->
-            <Grid Margin="0,10">
-                <StackPanel VerticalAlignment="Center"  HorizontalAlignment="Center">
-                    <Button Command="{Binding IrParaMusicasCommand}"
-                            Style="{StaticResource SidebarButton}"
-                            ToolTip="{DynamicResource Str_Musicas}">
-                        <iconPacks:PackIconBoxIcons Width="20" Height="20">
-                            <iconPacks:PackIconBoxIcons.Style>
-                                <Style TargetType="iconPacks:PackIconBoxIcons">
-                                    <Setter Property="Kind" Value="RegularMusic" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Page}" Value="MusicList">
-                                            <Setter Property="Kind" Value="SolidMusic" />
-                                            <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </iconPacks:PackIconBoxIcons.Style>
-                        </iconPacks:PackIconBoxIcons>
-                    </Button>
-                    <Button Command="{Binding IrParaPlaylistCommand}"
-                            Style="{StaticResource SidebarButton}"
-                            ToolTip="{DynamicResource Str_Playlists}">
-                        <iconPacks:PackIconBoxIcons Width="20" Height="20">
-                            <iconPacks:PackIconBoxIcons.Style>
-                                <Style TargetType="iconPacks:PackIconBoxIcons">
-                                    <Setter Property="Kind" Value="RegularMusicLibrary" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Page}" Value="Playlist">
-                                            <Setter Property="Kind" Value="SolidMusicLibrary" />
-                                            <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </iconPacks:PackIconBoxIcons.Style>
-                        </iconPacks:PackIconBoxIcons>
-                    </Button>
-                    <Button Command="{Binding AbrirFavoritosCommand}"
-                            Style="{StaticResource SidebarButton}"
-                            ToolTip="{DynamicResource Str_Add_Play}">
-                        <iconPacks:PackIconBoxIcons Width="20" Height="20">
-                            <iconPacks:PackIconBoxIcons.Style>
-                                <Style TargetType="iconPacks:PackIconBoxIcons">
-                                    <Setter Property="Kind" Value="RegularHeart" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Page}" Value="Favoritos">
-                                            <Setter Property="Kind" Value="SolidHeart" />
-                                            <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </iconPacks:PackIconBoxIcons.Style>
-                        </iconPacks:PackIconBoxIcons>
-                    </Button>
-                    <Button Style="{StaticResource SidebarButton}"
-                            ToolTip="Adicionar play">
-                        <iconPacks:PackIconBoxIcons Kind="SolidBlock" Width="20" Height="20" />
-                    </Button>
-                    <Button Style="{StaticResource SidebarButton}"
-                            ToolTip="Adicionar play">
-                        <iconPacks:PackIconBoxIcons Kind="SolidBlock" Width="20" Height="20" />
-                    </Button>
-                </StackPanel>
-
-                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Bottom">
-                    <Button Command="{Binding IrParaConfiguracoesCommand}"
-                            Style="{StaticResource SidebarButton}"
-                            ToolTip="{DynamicResource Str_Configuracoes}"
-                            VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,0,0,0">
-                        <iconPacks:PackIconBoxIcons Width="20" Height="20">
-                            <iconPacks:PackIconBoxIcons.Style>
-                                <Style TargetType="iconPacks:PackIconBoxIcons">
-                                    <Setter Property="Kind" Value="RegularCog" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Page}" Value="Config">
-                                            <Setter Property="Kind" Value="SolidCog" />
-                                            <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </iconPacks:PackIconBoxIcons.Style>
-                        </iconPacks:PackIconBoxIcons>
-                    </Button>
-                </StackPanel>
-            </Grid>
+            <Border Grid.Column="0" Grid.Row="1" BorderBrush="{DynamicResource BorderBrush2}">
+                <Grid Margin="0,10">
+                    <StackPanel VerticalAlignment="Center"  HorizontalAlignment="Center">
+                        <Button Command="{Binding IrParaMusicasCommand}"
+                                Style="{StaticResource SidebarButton}"
+                                ToolTip="{DynamicResource Str_Musicas}">
+                            <iconPacks:PackIconBoxIcons Width="20" Height="20">
+                                <iconPacks:PackIconBoxIcons.Style>
+                                    <Style TargetType="iconPacks:PackIconBoxIcons">
+                                        <Setter Property="Kind" Value="RegularMusic" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Page}" Value="MusicList">
+                                                <Setter Property="Kind" Value="SolidMusic" />
+                                                <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </iconPacks:PackIconBoxIcons.Style>
+                            </iconPacks:PackIconBoxIcons>
+                        </Button>
+                        <Button Command="{Binding IrParaPlaylistCommand}"
+                                Style="{StaticResource SidebarButton}"
+                                ToolTip="{DynamicResource Str_Playlists}">
+                            <iconPacks:PackIconBoxIcons Width="20" Height="20">
+                                <iconPacks:PackIconBoxIcons.Style>
+                                    <Style TargetType="iconPacks:PackIconBoxIcons">
+                                        <Setter Property="Kind" Value="RegularMusicLibrary" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Page}" Value="Playlist">
+                                                <Setter Property="Kind" Value="SolidMusicLibrary" />
+                                                <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </iconPacks:PackIconBoxIcons.Style>
+                            </iconPacks:PackIconBoxIcons>
+                        </Button>
+                        <Button Command="{Binding AbrirFavoritosCommand}"
+                                Style="{StaticResource SidebarButton}"
+                                ToolTip="{DynamicResource Str_Add_Play}">
+                            <iconPacks:PackIconBoxIcons Width="20" Height="20">
+                                <iconPacks:PackIconBoxIcons.Style>
+                                    <Style TargetType="iconPacks:PackIconBoxIcons">
+                                        <Setter Property="Kind" Value="RegularHeart" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Page}" Value="Favoritos">
+                                                <Setter Property="Kind" Value="SolidHeart" />
+                                                <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </iconPacks:PackIconBoxIcons.Style>
+                            </iconPacks:PackIconBoxIcons>
+                        </Button>
+                        <Button Style="{StaticResource SidebarButton}"
+                                ToolTip="Adicionar play">
+                            <iconPacks:PackIconBoxIcons Kind="SolidBlock" Width="20" Height="20" />
+                        </Button>
+                        <Button Style="{StaticResource SidebarButton}"
+                                ToolTip="Adicionar play">
+                            <iconPacks:PackIconBoxIcons Kind="SolidBlock" Width="20" Height="20" />
+                        </Button>
+                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Bottom">
+                        <Button Command="{Binding IrParaConfiguracoesCommand}"
+                                Style="{StaticResource SidebarButton}"
+                                ToolTip="{DynamicResource Str_Configuracoes}"
+                                VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,0,0,0">
+                            <iconPacks:PackIconBoxIcons Width="20" Height="20">
+                                <iconPacks:PackIconBoxIcons.Style>
+                                    <Style TargetType="iconPacks:PackIconBoxIcons">
+                                        <Setter Property="Kind" Value="RegularCog" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Page}" Value="Config">
+                                                <Setter Property="Kind" Value="SolidCog" />
+                                                <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </iconPacks:PackIconBoxIcons.Style>
+                            </iconPacks:PackIconBoxIcons>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
 
             <!--  CONTEÚDO  -->
-            <Border Grid.Column="1" CornerRadius="4,0,0,0" Margin="0,2,0,0"  ClipToBounds="True"
+            <Border Grid.Column="1" Grid.Row="1" CornerRadius="16,0,0,16" Margin="0,2,0,0"  ClipToBounds="True"
                     BorderThickness="1,1,0,0" BorderBrush="{DynamicResource BorderBrush2}"
                     Style="{StaticResource BorderClip}"
                     Background="{DynamicResource GradientBackground}">
                 <Grid ClipToBounds="True">
-                    <Border Style="{StaticResource BorderClip}" CornerRadius="4,0,0,0">
+                    <Border Style="{StaticResource BorderClip}">
                         <Grid ClipToBounds="True">
                             <!--<svg:SvgViewbox Source="{Binding Tema,Converter={StaticResource StringToUriConverter}}"
                             Width="100" Height="100" HorizontalAlignment="Right" VerticalAlignment="Bottom" />-->
@@ -151,8 +153,8 @@
                                    Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Grid>
                     </Border>
-                    <Border Background="{DynamicResource SurfaceOverlayBrush}" Opacity="0.65" ClipToBounds="True" CornerRadius="4,0,0,0" />
-                    <Border Style="{StaticResource BorderClip}" ClipToBounds="True" CornerRadius="4,0,0,0">
+                    <Border Background="{DynamicResource SurfaceOverlayBrush}" Opacity="0.65" ClipToBounds="True" />
+                    <Border Style="{StaticResource BorderClip}" ClipToBounds="True">
                         <ContentControl  Content="{Binding CurrentPage}" ClipToBounds="True">
                             <ContentControl.Resources>
                                 <Style TargetType="ContentPresenter">

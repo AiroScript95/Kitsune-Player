@@ -66,7 +66,7 @@ namespace Project_Kitsune.ViewModels.ShellPages
         {
             new("pt", "Português"),
             new("en", "English"),
-            new("jp", "日本語"),
+            new("ja", "日本語"),
             new("es", "Español")
         };
 
@@ -138,7 +138,7 @@ namespace Project_Kitsune.ViewModels.ShellPages
         [RelayCommand]
         private void IrParaTema()
         {
-            Shell.CurrentPage = new ConfigTemaPageViewModel(Shell);
+            Shell.CurrentPage = new ConfigThemePageViewModel(Shell);
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

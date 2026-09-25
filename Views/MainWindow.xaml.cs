@@ -79,7 +79,8 @@ namespace Project_Kitsune.Views
         {
             base.OnSourceInitialized(e);
             smtcService?.Inicializar(this, player);
-            DwmHelper.AtivarCantosArredondados(this);
+            // DwmHelper.AtivarCantosArredondados(this);
+            // DwmHelper.OcultarIcon(this);
             AtualizarCorBordaNativa();
             AtualizarCorTitle();
 

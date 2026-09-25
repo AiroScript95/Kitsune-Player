@@ -22,11 +22,11 @@ namespace Project_Kitsune.Views.ShellPages
     /// <summary>
     /// Interaction logic for ConfigTemaPage.xaml
     /// </summary>
-    public partial class ConfigTemaPage : UserControl
+    public partial class ConfigThemePage : UserControl
     {
         protected ConfiguracaoService configuracaoService;
 
-        public ConfigTemaPage()
+        public ConfigThemePage()
         {
             configuracaoService = App.ServiceProvider.GetRequiredService<ConfiguracaoService>();
             InitializeComponent();
@@ -52,7 +52,7 @@ namespace Project_Kitsune.Views.ShellPages
                     _ => "Asa"
                 };
 
-                if (DataContext is ConfigTemaPageViewModel viewModel)
+                if (DataContext is ConfigThemePageViewModel viewModel)
                 {
                     viewModel.TemaSelecionado = criterio;
                 }
@@ -73,7 +73,7 @@ namespace Project_Kitsune.Views.ShellPages
                     _ => "Normal"
                 };
 
-                if (DataContext is ConfigTemaPageViewModel viewModel)
+                if (DataContext is ConfigThemePageViewModel viewModel)
                 {
                     viewModel.MudarBorder(criterio);
                 }
@@ -90,7 +90,7 @@ namespace Project_Kitsune.Views.ShellPages
                     "RadioGrid" => "Grid",
                     _ => "List"
                 };
-                if (DataContext is ConfigTemaPageViewModel viewModel)
+                if (DataContext is ConfigThemePageViewModel viewModel)
                 {
                     viewModel.MudarFormato(formato);
                 }
