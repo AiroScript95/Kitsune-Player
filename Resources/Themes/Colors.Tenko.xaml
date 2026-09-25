@@ -1,0 +1,97 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- ===== SUPERFÍCIES (fundos) ===== -->
+    <Color x:Key="Surface">#10141F</Color>
+    <Color x:Key="SurfaceAlt">#181F2E</Color>
+    <Color x:Key="SurfaceRaised">#222B40</Color>
+    <Color x:Key="SurfaceOverlay">#E610141F</Color>
+    <!-- ===== TEXTO ===== -->
+    <Color x:Key="TextPrimary">#E9EDF5</Color>
+    <Color x:Key="TextSecondary">#9FA9C0</Color>
+    <Color x:Key="TextMuted">#6C768E</Color>
+    <Color x:Key="TextDisabled">#3F485C</Color>
+    <Color x:Key="TextOnAccent">#151A26</Color>
+    <!-- ===== ACCENT PRIMÁRIO (Tenko, estrela dourada) ===== -->
+    <Color x:Key="Accent">#E8C468</Color>
+    <Color x:Key="AccentLight">#F2D98A</Color>
+    <Color x:Key="AccentDark">#C4A03E</Color>
+    <Color x:Key="AccentSoft">#22304A</Color>
+    <Color x:Key="AccentTertiary">#D97A8F</Color>
+
+    <!-- ===== ACCENT SECUNDÁRIO (prateado-gelo) ===== -->
+    <Color x:Key="AccentAlt">#A8C2D9</Color>
+    <Color x:Key="AccentAltLight">#C4D8E8</Color>
+    <!-- ===== BOTÕES ===== -->
+    <Color x:Key="ButtonSurface">#1E1B2E</Color>
+    <Color x:Key="ButtonSurfaceHover">#2A2640</Color>
+    <Color x:Key="ButtonSurfacePressed">#352F4E</Color>
+    <Color x:Key="ButtonIcon">#A79FC0</Color>
+    <Color x:Key="ButtonIconHover">#E8C468</Color>
+    <!-- ===== LISTA ===== -->
+    <Color x:Key="ListHover">#2A2640</Color>
+    <Color x:Key="ListSelected">#3A3252</Color>
+    <Color x:Key="ListSelectedBorder">#E8C468</Color>
+    <!-- ===== BORDAS ===== -->
+    <Color x:Key="Border">#242B42</Color>
+    <Color x:Key="BorderStrong">#333C5C</Color>
+    <Color x:Key="Divider">#2A2640</Color>
+    <!-- ===== ESTADOS FUNCIONAIS ===== -->
+    <Color x:Key="Success">#6FBF8A</Color>
+    <Color x:Key="Warning">#E8C468</Color>
+    <Color x:Key="Error">#FF5252</Color>
+    <!-- ===== PLAYER ===== -->
+    <Color x:Key="ProgressFill">#E8C468</Color>
+    <Color x:Key="ProgressTrack">#2A2640</Color>
+    <!-- ===== SOMBRA ===== -->
+    <Color x:Key="Shadow">#40000000</Color>
+    <!-- ===== BRUSHES ===== -->
+    <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource Surface}" />
+    <SolidColorBrush x:Key="SurfaceAltBrush" Color="{StaticResource SurfaceAlt}" />
+    <SolidColorBrush x:Key="SurfaceRaisedBrush" Color="{StaticResource SurfaceRaised}" />
+    <SolidColorBrush x:Key="SurfaceOverlayBrush" Color="{StaticResource SurfaceOverlay}" />
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource TextPrimary}" />
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="{StaticResource TextSecondary}" />
+    <SolidColorBrush x:Key="TextMutedBrush" Color="{StaticResource TextMuted}" />
+    <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource Accent}" />
+    <SolidColorBrush x:Key="AccentLightBrush" Color="{StaticResource AccentLight}" />
+    <SolidColorBrush x:Key="AccentAltBrush" Color="{StaticResource AccentAlt}" />
+    <SolidColorBrush x:Key="AccentTertiaryBrush" Color="{StaticResource AccentTertiary}" />
+    <SolidColorBrush x:Key="AccentAltLightBrush" Color="{StaticResource AccentAltLight}" />
+    <SolidColorBrush x:Key="BorderBrush2" Color="{StaticResource Border}" />
+    <SolidColorBrush x:Key="BorderStrongBrush" Color="{StaticResource BorderStrong}" />
+    <SolidColorBrush x:Key="DividerBrush" Color="{StaticResource Divider}" />
+    <SolidColorBrush x:Key="AccentSoftBrush" Color="{StaticResource AccentSoft}" />
+    <SolidColorBrush x:Key="SurfaceSuccess" Color="{StaticResource Success}" />
+    <SolidColorBrush x:Key="SurfaceWarning" Color="{StaticResource Warning}" />
+    <SolidColorBrush x:Key="SurfaceError" Color="{StaticResource Error}" />
+    <SolidColorBrush x:Key="TextSuccess" Color="{StaticResource Success}" />
+    <SolidColorBrush x:Key="TextWarning" Color="{StaticResource Warning}" />
+    <SolidColorBrush x:Key="TextError" Color="{StaticResource Error}" />
+    <SolidColorBrush x:Key="ProgressFillBrush" Color="{StaticResource ProgressFill}" />
+    <SolidColorBrush x:Key="ProgressTrackBrush" Color="{StaticResource ProgressTrack}" />
+    <SolidColorBrush x:Key="ListHoverBrush" Color="{StaticResource ListHover}" />
+    <SolidColorBrush x:Key="ListSelectedBrush" Color="{StaticResource ListHover}" />
+    <SolidColorBrush x:Key="TextDisabledBrush" Color="{StaticResource TextDisabled}" />
+    <SolidColorBrush x:Key="TextOnAccentBrush" Color="{StaticResource TextOnAccent}" />
+    <SolidColorBrush x:Key="AccentDarkBrush" Color="{StaticResource AccentDark}" />
+    <SolidColorBrush x:Key="ButtonSurfaceBrush" Color="{StaticResource ButtonSurface}" />
+    <SolidColorBrush x:Key="ButtonSurfaceHoverBrush" Color="{StaticResource ButtonSurfaceHover}" />
+    <SolidColorBrush x:Key="ButtonSurfacePressedBrush" Color="{StaticResource ButtonSurfacePressed}" />
+    <SolidColorBrush x:Key="ButtonIconBrush" Color="{StaticResource ButtonIcon}" />
+    <SolidColorBrush x:Key="ButtonIconHoverBrush" Color="{StaticResource ButtonIconHover}" />
+    <SolidColorBrush x:Key="ListSelectedBorderBrush" Color="{StaticResource ListSelectedBorder}" />
+    <!-- ===== GRADIENTES ===== -->
+    <LinearGradientBrush x:Key="GradientBackground" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="{StaticResource Surface}" Offset="0" />
+        <GradientStop Color="{StaticResource SurfaceRaised}" Offset="1" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="GradientAccent" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="{StaticResource Accent}" Offset="0" />
+        <GradientStop Color="{StaticResource AccentAlt}" Offset="1" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="GradientPlayerOverlay" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#00000000" Offset="0" />
+        <GradientStop Color="{StaticResource Shadow}" Offset="1" />
+    </LinearGradientBrush>
+</ResourceDictionary>

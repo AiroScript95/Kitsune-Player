@@ -1,0 +1,27 @@
+﻿<Application x:Class="Project_Kitsune.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- HandyControl Resources -->
+                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml" />
+                <!-- Tema Local -->
+                <ResourceDictionary Source="/Resources/Themes/Colors.Asa.xaml" />
+                <ResourceDictionary Source="/Resources/Utils/PrettySlider.xaml" />
+                <ResourceDictionary Source="/Resources/Utils/PrettySliderEqualizer.xaml" />
+                <ResourceDictionary Source="/Resources/Utils/HoverListbox.xaml" />
+                <ResourceDictionary Source="/Resources/Utils/Styles.xaml" />
+                <ResourceDictionary Source="/Resources/Utils/PrettyScrollBar.xaml" />
+                <!-- Idioma -->
+                <ResourceDictionary Source="/Resources/Languages/Strings.pt.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Fontes e Recursos Globais DEPOIS dos MergedDictionaries -->
+            <FontFamily x:Key="FonteHiragino">pack://application:,,,/Resources/Fonts/#Hiragino Kaku Gothic Pro W6</FontFamily>
+            <FontFamily x:Key="FonteInter">pack://application:,,,/Resources/Fonts/#Inter 18pt</FontFamily>
+            <FontFamily x:Key="FonteJetBrains">pack://application:,,,/Resources/Fonts/#JetBrains Mono</FontFamily>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

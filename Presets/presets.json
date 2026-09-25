@@ -1,0 +1,184 @@
+{
+  "schemaVersion": 1,
+  "units": "dB",
+  "bandCount": 10,
+  "frequenciesHz": [31, 62, 125, 250, 500, 1000, 2000, 4000, 8000, 16000],
+  "source": {
+    "repositoryCommit": "80dc66ac3269f4addd8682ae4114023cbd45c2ee",
+    "presetCurvesSha256": "8ab648dfe48aea377785559877e3cfbcd2a52c3eec1abffd568f999fbc46d69b",
+    "bandMapperSha256": "e54fa85a7db0006cebd6fa106962efef2fdfbc4159ac46e232bd8b345a88660b",
+    "inspectedAt": "2026-08-26",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "verification": "Committed source snapshot; not independently verified against the currently installed Google Play build."
+  },
+  "presets": [
+     {
+       "id": "flat",
+       "name": "Flat",
+       "category": "balanced",
+       "description": "All bands set to zero for neutral and unaltered sound.",
+       "valuesDb": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+     },
+    {
+      "id": "normal",
+      "name": "Normal",
+      "category": "balanced",
+      "description": "Gentle lift at both ends with restrained mids.",
+      "valuesDb": [1.38, 1.03, -0.12, -0.68, -0.92, -0.92, -0.92, -0.71, 0.43, 1.42]
+    },
+    {
+      "id": "classical",
+      "name": "Classical",
+      "category": "genre",
+      "description": "Hall warmth, honest mids, softer presence, and extended air.",
+      "valuesDb": [1.33, 1.61, 0.79, -0.35, -0.91, -1.27, -1.65, -2.27, 0.85, 1.85]
+    },
+    {
+      "id": "dance",
+      "name": "Dance",
+      "category": "genre",
+      "description": "Strong 60 Hz drive with a mid scoop and light top-end energy.",
+      "valuesDb": [1.41, 3.15, 1.48, -0.79, -2.29, -2.79, -1.79, 0.21, 1.21, 0.21]
+    },
+    {
+      "id": "heavy_metal",
+      "name": "Heavy Metal",
+      "category": "genre",
+      "description": "Kick and guitar body, less mud, and more pick attack.",
+      "valuesDb": [0.93, 2.69, 1.57, -1.27, -3.82, -2.85, -0.02, 2.3, 0.73, -0.27]
+    },
+    {
+      "id": "hip_hop",
+      "name": "Hip Hop",
+      "category": "genre",
+      "description": "Deep bass emphasis with cleaner low mids and light treble definition.",
+      "valuesDb": [2.31, 2.98, 1.12, -1.01, -2.15, -2.65, -1.65, -0.15, 0.85, 0.35]
+    },
+    {
+      "id": "jazz",
+      "name": "Jazz",
+      "category": "genre",
+      "description": "Warm and intimate with restrained presence and air.",
+      "valuesDb": [0.24, 1.77, 2.15, 1.47, 0.33, -0.95, -2.25, -1.75, -0.25, -0.75]
+    },
+    {
+      "id": "pop",
+      "name": "Pop",
+      "category": "genre",
+      "description": "Tight lows, reduced congestion, and forward vocal presence.",
+      "valuesDb": [-0.4, 1.51, 0.98, -0.91, -2.41, -1.58, 0.59, 1.84, 0.81, -0.41]
+    },
+    {
+      "id": "rock",
+      "name": "Rock",
+      "category": "genre",
+      "description": "Punch at 60–125 Hz, a mud cut, and guitar attack around 4–8 kHz.",
+      "valuesDb": [0.73, 2.49, 1.4, -0.87, -2.94, -2.96, -0.96, 1.54, 1.54, 0.04]
+    },
+    {
+      "id": "acoustic",
+      "name": "Acoustic",
+      "category": "genre",
+      "description": "Natural body with less boxiness and more string detail.",
+      "valuesDb": [-1.55, 0.9, 1.75, -0.14, -3.07, -2.31, -0.14, 1.86, 1.86, 0.86]
+    },
+    {
+      "id": "vocal_boost",
+      "name": "Vocal Boost",
+      "category": "purpose",
+      "description": "Cuts rumble and raises the 1–4 kHz intelligibility region.",
+      "valuesDb": [-3.55, -2.92, -2.15, -1.21, 0.15, 2.55, 3.55, 2.49, 1.05, 0.05]
+    },
+    {
+      "id": "bass_boost",
+      "name": "Bass Boost",
+      "category": "purpose",
+      "description": "Centers the lift near audible 60–125 Hz bass while preserving headroom elsewhere.",
+      "valuesDb": [2.54, 4.45, 3.12, -0.01, -1.46, -1.73, -1.73, -1.73, -1.73, -1.73]
+    },
+    {
+      "id": "treble_boost",
+      "name": "Treble Boost",
+      "category": "purpose",
+      "description": "Peaks around 8 kHz instead of wasting the largest boost at 16 kHz.",
+      "valuesDb": [-1.45, -1.45, -1.45, -1.45, -1.45, -0.95, 0.05, 2.05, 4.05, 2.05]
+    },
+    {
+      "id": "deep_house",
+      "name": "Deep House",
+      "category": "genre",
+      "description": "Sub-bass and bass weight with a broad low-mid reduction.",
+      "valuesDb": [2.92, 3.6, 1.73, -0.52, -2.04, -2.54, -1.54, -0.04, -0.04, -1.54]
+    },
+    {
+      "id": "edm",
+      "name": "EDM",
+      "category": "genre",
+      "description": "Bass impact, reduced low-mid masking, and a gentle presence lift.",
+      "valuesDb": [2.08, 3.2, 1.24, -1.72, -2.72, -2.22, -0.72, 0.28, 0.78, -0.22]
+    },
+    {
+      "id": "rnb",
+      "name": "R&B",
+      "category": "genre",
+      "description": "Low-end warmth with clean mids and a smooth high-frequency lift.",
+      "valuesDb": [1.46, 2.64, 1.26, -0.63, -2.33, -2.79, -1.23, 0.37, 0.87, 0.37]
+    },
+    {
+      "id": "dream",
+      "name": "Dream",
+      "category": "genre",
+      "description": "Intentionally dark and lush, with elevated bass and veiled treble.",
+      "valuesDb": [4.74, 5.27, 3.74, 2.04, 0.48, -0.66, -2.16, -3.66, -4.66, -5.16]
+    },
+    {
+      "id": "podcast",
+      "name": "Podcast",
+      "category": "purpose",
+      "description": "Drops rumble and boxiness while raising speech intelligibility.",
+      "valuesDb": [-4.51, -2.69, -0.8, -0.63, -0.32, 1.75, 3.45, 3.68, 0.54, -0.46]
+    },
+    {
+      "id": "reggae",
+      "name": "Reggae",
+      "category": "genre",
+      "description": "Strong bass foundation with relaxed mids and modest presence.",
+      "valuesDb": [2.02, 3.45, 1.87, -0.78, -2.38, -2.65, -1.09, 0.52, 0.02, -0.98]
+    },
+    {
+      "id": "country",
+      "name": "Country",
+      "category": "genre",
+      "description": "Reduced sub-bass, natural body, and clear vocal/string presence.",
+      "valuesDb": [-2.11, 0.05, 1.2, 0.29, -1.53, -1.51, 0.74, 2, 0.87, 0]
+    },
+    {
+      "id": "kpop",
+      "name": "K-Pop",
+      "category": "genre",
+      "description": "Tight bass, clean lower mids, and polished vocal presence.",
+      "valuesDb": [0.78, 2.21, 0.67, -1.22, -2.62, -2.89, -0.28, 1.78, 1.28, 0.28]
+    },
+    {
+      "id": "small_speakers",
+      "name": "Small Speakers",
+      "category": "device",
+      "description": "Optimized for small speakers with enhanced presence and controlled bass.",
+      "valuesDb": [2.50, 3.00, 2.00, 0.50, -1.00, -1.50, 0.00, 1.50, 2.50, 3.00]
+    },
+    {
+      "id": "full_bass",
+      "name": "Full Bass",
+      "category": "general",
+      "description": "Powerful low-end boost with controlled mids and treble.",
+      "valuesDb": [6.00, 5.50, 5.00, 4.00, 2.50, 1.00, 0.00, -0.50, -1.00, -1.00]
+    },
+    {
+      "id": "full_treble",
+      "name": "Full Treble",
+      "category": "general",
+      "description": "Strong high-frequency boost for a brighter and more detailed sound.",
+      "valuesDb": [-1.00, -1.00, -0.50, 0.00, 1.00, 2.00, 3.50, 4.50, 5.50, 6.00]
+    }
+  ]
+}

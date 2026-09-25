@@ -1,0 +1,146 @@
+﻿<Window x:Class="Project_Kitsune.Views.MiniPlayerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:hc="https://handyorg.github.io/handycontrol"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:local="clr-namespace:Project_Kitsune.Views"
+        xmlns:converters="clr-namespace:Project_Kitsune.Converters"
+        xmlns:viewmodels="clr-namespace:Project_Kitsune.ViewModels"
+        d:DataContext="{d:DesignInstance Type=viewmodels:PlayerViewModel}"
+        mc:Ignorable="d"
+        WindowState="Normal"
+        WindowStyle="SingleBorderWindow"
+        WindowStartupLocation="Manual"
+        ResizeMode="NoResize"
+        Background="Transparent"
+        Title="{Binding MusicaAtual.Titulo, StringFormat='Kitsune - {0}', FallbackValue='Kitsune - Mini Player'}"
+        Height="460" Width="300">
+    <Window.Resources>
+        <converters:StringVazioParaVisibilidadeConverter x:Key="StringVazioParaVisibilidade" />
+        <converters:LinhaAtualConverter x:Key="LinhaAtualConverter" />
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+        <converters:BytesParaImagemConverter x:Key="BytesParaImagemConverter" />
+        <converters:BytesParaThumbConverter x:Key="BytesParaThumbConverter" />
+        <converters:BytesParaThumbGridConverter x:Key="BytesParaThumbGridConverter" />
+        <converters:MusicaAtualConverter x:Key="MusicaAtualConverter" />
+        <converters:ProgressoParaLarguraConverter x:Key="ProgressoParaLarguraConverter" />
+    </Window.Resources>
+    <Grid Background="{DynamicResource SurfaceBrush}">
+
+        <Grid Margin="12">
+            <Grid.RowDefinitions>
+                <!-- Capa expandida no topo -->
+                <RowDefinition Height="*" />
+                <!-- Detalhes e Controles na parte inferior -->
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- 1. CAPA (Preenche a largura proporcionalmente) -->
+            <Border Grid.Row="0"
+                    Background="{DynamicResource SurfaceAltBrush}"
+                    ClipToBounds="True"
+                    CornerRadius="12"
+                    Style="{StaticResource BorderClip}">
+                <Grid ClipToBounds="True">
+                    <Image HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Source="{Binding MusicaAtual.Image, Converter={StaticResource BytesParaImagemConverter}}"
+                           Stretch="UniformToFill" />
+                    <iconPacks:PackIconBoxIcons Width="48"
+                                                Height="48"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Foreground="{DynamicResource TextMutedBrush}"
+                                                Kind="SolidMusic"
+                                                Visibility="{Binding MusicaAtual.Image, Converter={StaticResource NullToVisibilityConverter}}" />
+                </Grid>
+            </Border>
+
+            <!-- 2. INFORMAÇÕES E CONTROLES -->
+            <StackPanel Grid.Row="1" Margin="0,10,0,0">
+                <!-- Título e Artista -->
+                <StackPanel Margin="4,0,4,8">
+                    <TextBlock FontFamily="{StaticResource FonteInter}"
+                               FontSize="15"
+                               FontWeight="Bold"
+                               Foreground="{DynamicResource TextPrimaryBrush}"
+                               Text="{Binding MusicaAtual.Titulo, FallbackValue='Nenhuma música'}"
+                               TextTrimming="CharacterEllipsis" />
+                    <TextBlock Margin="0,2,0,0"
+                               FontFamily="{StaticResource FonteInter}"
+                               FontSize="12"
+                               Foreground="{DynamicResource TextSecondaryBrush}"
+                               Text="{Binding MusicaAtual.Artista}"
+                               TextTrimming="CharacterEllipsis" />
+                </StackPanel>
+
+                <!-- Slider de Progresso -->
+                <Slider Cursor="Hand"
+                        HorizontalAlignment="Stretch"
+                        Maximum="{Binding DuracaoTotalMs}"
+                        Minimum="0"
+                        PreviewMouseLeftButtonDown="Slider_PreviewMouseLeftButtonDown"
+                        PreviewMouseLeftButtonUp="Slider_PreviewMouseUp"
+                        PreviewMouseMove="Slider_PreviewMouseMove"
+                        PreviewMouseUp="Slider_PreviewMouseUp"
+                        Style="{StaticResource PrettySlider}"
+                        Value="{Binding PosicaoAtualMs}" />
+
+                <!-- Tempos decorrido e total -->
+                <Grid Margin="2,2,2,4">
+                    <TextBlock HorizontalAlignment="Left"
+                               FontFamily="{StaticResource FonteJetBrains}"
+                               FontSize="10"
+                               Foreground="{DynamicResource TextMutedBrush}"
+                               Text="{Binding TempoAtualFormatado, FallbackValue='00:00'}" />
+                    <TextBlock HorizontalAlignment="Right"
+                               FontFamily="{StaticResource FonteJetBrains}"
+                               FontSize="10"
+                               Foreground="{DynamicResource TextMutedBrush}"
+                               Text="{Binding TempoTotalFormatado, FallbackValue='00:00'}" />
+                </Grid>
+
+                <!-- Botões de Reprodução -->
+                <StackPanel HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal">
+                    <Button Margin="8,0"
+                            Command="{Binding AnteriorCommand}"
+                            Style="{StaticResource PlayerControlButton}">
+                        <iconPacks:PackIconBoxIcons Width="24"
+                                                    Height="24"
+                                                    Kind="SolidSkipPrevious" />
+                    </Button>
+
+                    <Button Margin="8,0"
+                            Command="{Binding AlternarPlayPauseCommand}"
+                            Style="{StaticResource PlayerPlayButton}">
+                        <iconPacks:PackIconBoxIcons Width="26" Height="26">
+                            <iconPacks:PackIconBoxIcons.Style>
+                                <Style TargetType="iconPacks:PackIconBoxIcons">
+                                    <Setter Property="Kind" Value="SolidPlay" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding EstaTocando}" Value="True">
+                                            <Setter Property="Kind" Value="SolidPause" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </iconPacks:PackIconBoxIcons.Style>
+                        </iconPacks:PackIconBoxIcons>
+                    </Button>
+
+                    <Button Margin="8,0"
+                            Command="{Binding ProximaCommand}"
+                            Style="{StaticResource PlayerControlButton}">
+                        <iconPacks:PackIconBoxIcons Width="24"
+                                                    Height="24"
+                                                    Kind="SolidSkipNext" />
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
