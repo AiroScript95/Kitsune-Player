@@ -134,6 +134,20 @@ namespace Project_Kitsune.ViewModels
         }
 
         [RelayCommand]
+        private void IrParaArtistas()
+        {
+            Page = "Artistas";
+            CurrentPage = new ArtistasPageViewModel(this);
+        }
+
+        [RelayCommand]
+        private void IrParaAlbuns()
+        {
+            Page = "Albuns";
+            CurrentPage = new AlbunsPageViewModel(this);
+        }
+
+        [RelayCommand]
         private void AbrirFavoritos()
         {
             Playlist? favoritos = _databaService.ListarPlaylists().FirstOrDefault(p => p.Name == "Favoritos");

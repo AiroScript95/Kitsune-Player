@@ -13,14 +13,6 @@
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="900">
 
-    <UserControl.Resources>
-        <converters:StringVazioParaVisibilidadeConverter x:Key="StringVazioParaVisibilidade" />
-        <converters:NomeNaoFavoritosConverter x:Key="NomeNaoFavoritosConverter" />
-        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
-        <converters:BytesParaImagemConverter x:Key="BytesParaImagemConverter" />
-        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-    </UserControl.Resources>
-
     <Grid>
         <Grid Style="{StaticResource TransicaoEntrada}">
             <Grid.RowDefinitions>
@@ -67,18 +59,28 @@
             </Grid>
 
             <!-- ===== GRADE DE PLAYLISTS ===== -->
-            <ScrollViewer Grid.Row="1" Margin="24" VerticalScrollBarVisibility="Auto">
-                <ItemsControl ItemsSource="{Binding Playlists}">
+            <ScrollViewer Grid.Row="1" Margin="10" VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding Playlists}"
+                              ScrollViewer.CanContentScroll="True"
+                              ScrollViewer.VerticalScrollBarVisibility="Auto">
+                    <ItemsControl.Template>
+                        <ControlTemplate TargetType="ItemsControl">
+                            <ScrollViewer Focusable="False">
+                                <ItemsPresenter />
+                            </ScrollViewer>
+                        </ControlTemplate>
+                    </ItemsControl.Template>
+
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <WrapPanel Orientation="Horizontal" />
+                            <vwp:VirtualizingWrapPanel />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
 
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Width="340" Height="140" Margin="6"
-                                    CornerRadius="10"
+                            <Border Width="340" Height="120" Margin="6"
+                                    CornerRadius="16"
                                     ClipToBounds="True"
                                     Style="{StaticResource BorderClip}"
                                     BorderThickness="0"
@@ -134,14 +136,16 @@
                                         </Grid.ColumnDefinitions>
                                         <!-- Capa quadrada, topo -->
                                         <Grid Grid.Column="0">
-                                            <Border CornerRadius="8" Width="120"
-                                                    Height="120"
+                                            <Border CornerRadius="8" Width="100"
+                                                    Height="100"
                                                     Background="{DynamicResource SurfaceRaisedBrush}"
                                                     Style="{StaticResource BorderClip}"
                                                     ClipToBounds="True">
                                                 <Grid>
-                                                    <Image Source="{Binding Capa, Converter={StaticResource BytesParaImagemConverter}}"
-                                                           Stretch="UniformToFill" />
+                                                    <Image Source="{Binding Capa, Converter={StaticResource BytesParaImagemConverter},ConverterParameter=240}"
+                                                           Stretch="UniformToFill"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"/>
                                                     <iconPacks:PackIconBoxIcons Kind="RegularListMusic"
                                                                                 Width="32" Height="32"
                                                                                 Foreground="{DynamicResource TextMutedBrush}"
@@ -156,7 +160,7 @@
                                                         HorizontalAlignment="Right" VerticalAlignment="Top"
                                                         Margin="6">
                                                 <Border Background="#00000090" CornerRadius="10" Padding="8,2" Margin="0,0,0,0">
-                                                    <TextBlock Text="{Binding Playlist.NumMusicas}" FontFamily="{StaticResource FonteJetBrains}"
+                                                    <TextBlock Text="{Binding Playlist.NumMusicas, StringFormat={}{0:D2}}" FontFamily="{StaticResource FonteInter}"
                                                                FontSize="12" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}" />
                                                 </Border>
                                             </StackPanel>
@@ -187,7 +191,7 @@
                                                         <ItemsControl.ItemTemplate>
                                                             <DataTemplate>
                                                                 <StackPanel Orientation="Horizontal" Margin="0,4">
-                                                                    <iconPacks:PackIconBoxIcons Kind="RegularMusicAlt" Foreground="{DynamicResource TextMutedBrush}" />
+                                                                    <iconPacks:PackIconBoxIcons Kind="RegularMusicAlt" Foreground="{DynamicResource TextMutedBrush}" Width="12" Height="12"/>
                                                                     <TextBlock Margin="8,0" Text="{Binding}"
                                                                                FontSize="12" TextTrimming="CharacterEllipsis"
                                                                                Foreground="{DynamicResource TextMutedBrush}" />
@@ -208,7 +212,7 @@
         </Grid>
 
         <!-- ===== MODAL: NOVA PLAYLIST ===== -->
-        <Grid Visibility="{Binding MostrarModalCriarPlaylist, Converter={StaticResource BoolToVisibilityConverter}}">
+        <Grid Visibility="{Binding MostrarModalCriarPlaylist, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Border Background="{DynamicResource GradientBackground}" Opacity="0.2">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseLeftButtonUp">
@@ -288,7 +292,7 @@
             </Border>
         </Grid>
         <!-- ===== MODAL: CONFIRMAR EXCLUSÃO ===== -->
-        <Grid Visibility="{Binding MostrarConfirmacaoExclusao, Converter={StaticResource BoolToVisibilityConverter}}">
+        <Grid Visibility="{Binding MostrarConfirmacaoExclusao, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Border Background="{DynamicResource SurfaceBrush}" Opacity="0.6">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseLeftButtonUp">

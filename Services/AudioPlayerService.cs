@@ -41,6 +41,7 @@ namespace Project_Kitsune.Services
         private long _playToken = 0;
 
         private int _volumeAlvo = 100;
+        private static readonly double[] _frequenciasPadrao = { 31, 62, 125, 250, 500, 1000, 2000, 4000, 8000, 16000 };
 
         private List<PresetEqualizador> _presets = new();
 
@@ -80,6 +81,9 @@ namespace Project_Kitsune.Services
             }
 
             _presets = CarregarPresets();
+
+            if (_frequenciasBanda.Count < 10)
+                _frequenciasBanda = _frequenciasPadrao.ToList();
 
             CriarEqualizador();
 
@@ -269,9 +273,7 @@ namespace Project_Kitsune.Services
 
             int novoStream = 0;
 
-            await _trocaSemaphore
-                .WaitAsync()
-                .ConfigureAwait(false);
+            await _trocaSemaphore.WaitAsync().ConfigureAwait(false);
 
             try
             {
@@ -281,8 +283,7 @@ namespace Project_Kitsune.Services
 
                 if (!File.Exists(path))
                 {
-                    System.Diagnostics.Debug.WriteLine(
-                        $"[BASS] Arquivo não encontrado: {path}");
+                    System.Diagnostics.Debug.WriteLine($"[BASS] Arquivo não encontrado: {path}");
 
                     ErroReproducao?.Invoke();
                     return;
@@ -290,23 +291,17 @@ namespace Project_Kitsune.Services
 
                 int streamAntigo = _streamAtual;
 
-                float volumeAlvoFloat =
-                    Math.Clamp(_volumeAlvo, 0, 100) / 100f;
+                float volumeAlvoFloat = Math.Clamp(_volumeAlvo, 0, 100) / 100f;
 
                 // ----------------------------------------------------
                 // CRIA NOVO STREAM
                 // ----------------------------------------------------
 
-                novoStream = Bass.CreateStream(
-                    path,
-                    0,
-                    0,
-                    BassFlags.Decode | BassFlags.Float);
+                novoStream = Bass.CreateStream(path, 0, 0, BassFlags.Decode | BassFlags.Float);
 
                 if (novoStream == 0)
                 {
-                    System.Diagnostics.Debug.WriteLine(
-                        $"[BASS] CreateStream falhou: {Bass.LastError}");
+                    System.Diagnostics.Debug.WriteLine($"[BASS] CreateStream falhou: {Bass.LastError}");
 
                     ErroReproducao?.Invoke();
                     return;
@@ -316,13 +311,9 @@ namespace Project_Kitsune.Services
                 // ADICIONA AO MIXER
                 // ----------------------------------------------------
 
-                if (!BassMix.MixerAddChannel(
-                        _mixerHandle,
-                        novoStream,
-                        BassFlags.MixerChanBuffer))
+                if (!BassMix.MixerAddChannel(_mixerHandle, novoStream, BassFlags.MixerChanBuffer))
                 {
-                    System.Diagnostics.Debug.WriteLine(
-                        $"[BASS] MixerAddChannel falhou: {Bass.LastError}");
+                    System.Diagnostics.Debug.WriteLine($"[BASS] MixerAddChannel falhou: {Bass.LastError}");
 
                     Bass.StreamFree(novoStream);
                     novoStream = 0;
@@ -332,20 +323,13 @@ namespace Project_Kitsune.Services
                 }
 
                 // Começa com volume 0 para fazer o fade-in
-                Bass.ChannelSetAttribute(
-                    novoStream,
-                    ChannelAttribute.Volume,
-                    0f);
+                Bass.ChannelSetAttribute(novoStream, ChannelAttribute.Volume, 0f);
 
                 // ----------------------------------------------------
                 // FADE-IN
                 // ----------------------------------------------------
 
-                Bass.ChannelSlideAttribute(
-                    novoStream,
-                    ChannelAttribute.Volume,
-                    volumeAlvoFloat,
-                    FadeDurationMs);
+                Bass.ChannelSlideAttribute(novoStream, ChannelAttribute.Volume, volumeAlvoFloat, FadeDurationMs);
 
                 // ----------------------------------------------------
                 // FADE-OUT DA MÚSICA ANTERIOR
@@ -367,12 +351,10 @@ namespace Project_Kitsune.Services
                 SyncProcedure syncDelegate =
                     (int h, int channel, int data, IntPtr user) =>
                     {
-                        Terminou = true;
+                        if (meuToken != _playToken) return;
 
-                        if (meuToken == _playToken)
-                        {
-                            MusicaTerminou?.Invoke();
-                        }
+                        Terminou = true;
+                        MusicaTerminou?.Invoke();
                     };
 
                 _syncDelegates[novoStream] =
@@ -408,14 +390,11 @@ namespace Project_Kitsune.Services
                         $"[BASS] ChannelPlay do mixer falhou: {Bass.LastError}");
 
                     // Remove o novo stream
-                    BassMix.MixerRemoveChannel(
-                        novoStream);
+                    BassMix.MixerRemoveChannel(novoStream);
 
-                    _syncDelegates.Remove(
-                        novoStream);
+                    _syncDelegates.Remove(novoStream);
 
-                    Bass.StreamFree(
-                        novoStream);
+                    Bass.StreamFree(novoStream);
 
                     if (_streamAtual == novoStream)
                         _streamAtual = streamAntigo;
@@ -424,40 +403,18 @@ namespace Project_Kitsune.Services
                     return;
                 }
 
-                // ----------------------------------------------------
-                // AGORA SIM A REPRODUÇÃO FOI INICIADA
-                // ----------------------------------------------------
-
                 PlaybackStarted?.Invoke();
 
-                // ----------------------------------------------------
-                // ESPERA O FADE TERMINAR
-                // ----------------------------------------------------
+                await Task.Delay(FadeDurationMs).ConfigureAwait(false);
 
-                await Task.Delay(
-                    FadeDurationMs)
-                    .ConfigureAwait(false);
-
-                // Se outra música foi solicitada durante o fade,
-                // não mexemos no estado da nova reprodução.
-                if (meuToken != _playToken)
+                if (_mixerHandle == 0)
                     return;
 
-                // ----------------------------------------------------
-                // REMOVE STREAM ANTIGO
-                // ----------------------------------------------------
-
-                if (streamAntigo != 0 &&
-                    streamAntigo != novoStream)
+                if (streamAntigo != 0 && streamAntigo != novoStream)
                 {
-                    BassMix.MixerRemoveChannel(
-                        streamAntigo);
-
-                    _syncDelegates.Remove(
-                        streamAntigo);
-
-                    Bass.StreamFree(
-                        streamAntigo);
+                    BassMix.MixerRemoveChannel(streamAntigo);
+                    _syncDelegates.Remove(streamAntigo);
+                    Bass.StreamFree(streamAntigo);
                 }
             }
             catch (Exception ex)
@@ -470,8 +427,7 @@ namespace Project_Kitsune.Services
                 {
                     try
                     {
-                        BassMix.MixerRemoveChannel(
-                            novoStream);
+                        BassMix.MixerRemoveChannel(novoStream);
                     }
                     catch
                     {
@@ -479,8 +435,7 @@ namespace Project_Kitsune.Services
 
                     try
                     {
-                        _syncDelegates.Remove(
-                            novoStream);
+                        _syncDelegates.Remove(novoStream);
                     }
                     catch
                     {
@@ -488,8 +443,7 @@ namespace Project_Kitsune.Services
 
                     try
                     {
-                        Bass.StreamFree(
-                            novoStream);
+                        Bass.StreamFree(novoStream);
                     }
                     catch
                     {
@@ -646,20 +600,15 @@ namespace Project_Kitsune.Services
             try
             {
                 long bytes =
-                    Bass.ChannelGetLength(
-                        _streamAtual);
+                    Bass.ChannelGetLength(_streamAtual);
 
                 if (bytes <= 0)
                     return 0;
 
                 double segundos =
-                    Bass.ChannelBytes2Seconds(
-                        _streamAtual,
-                        bytes);
+                    Bass.ChannelBytes2Seconds(_streamAtual, bytes);
 
-                if (double.IsNaN(segundos) ||
-                    double.IsInfinity(segundos) ||
-                    segundos < 0)
+                if (double.IsNaN(segundos) || double.IsInfinity(segundos) || segundos < 0)
                 {
                     return 0;
                 }
@@ -729,8 +678,7 @@ namespace Project_Kitsune.Services
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(
-                    $"[AudioPlayerService] Erro no Dispose: {ex}");
+                System.Diagnostics.Debug.WriteLine($"[AudioPlayerService] Erro no Dispose: {ex}");
             }
         }
     }

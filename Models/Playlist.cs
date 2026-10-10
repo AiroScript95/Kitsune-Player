@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Project_Kitsune.Models
+﻿namespace Project_Kitsune.Models
 {
     public class Playlist
     {
         public int Id { get; set; }
+        public const int IdComLetra = -2;
         public string Name { get; set; } = string.Empty;
         public DateTime DataCriacao { get; set; }
         public List<Music> Musics { get; set; } = new List<Music>();

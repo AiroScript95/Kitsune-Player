@@ -6,6 +6,7 @@
              xmlns:hc="https://handyorg.github.io/handycontrol"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:local="clr-namespace:Project_Kitsune.Views.ShellPages"
+             xmlns:controls="clr-namespace:Project_Kitsune.Views.Controls"
              xmlns:converters="clr-namespace:Project_Kitsune.Converters"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              xmlns:svg="http://sharpvectors.codeplex.com/svgc/"
@@ -19,18 +20,6 @@
              d:DesignWidth="1000">
 
     <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-        <converters:StringVazioParaVisibilidadeConverter x:Key="StringVazioParaVisibilidade" />
-        <converters:LinhaAtualConverter x:Key="LinhaAtualConverter" />
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
-        <converters:BytesParaImagemConverter x:Key="BytesParaImagemConverter" />
-        <converters:BytesParaThumbConverter x:Key="BytesParaThumbConverter" />
-        <converters:BytesParaThumbGridConverter x:Key="BytesParaThumbGridConverter" />
-        <converters:MusicaAtualConverter x:Key="MusicaAtualConverter" />
-        <converters:ProgressoParaLarguraConverter x:Key="ProgressoParaLarguraConverter" />
-        <converters:MusicaEPlaylistConverter x:Key="MusicaEPlaylistConverter" />
-
         <DataTemplate x:Key="ListaMusicaTemplate">
             <Border CornerRadius="8" Style="{DynamicResource BorderClip}"
                     MouseLeftButtonUp="StackPanel_MouseLeftButtonUp" BorderThickness="1"
@@ -148,7 +137,7 @@
                                 Style="{StaticResource BorderClip}"
                                 ClipToBounds="True">
                             <Grid ClipToBounds="True">
-                                <Image Source="{Binding Image, Converter={StaticResource BytesParaThumbConverter}}"
+                                <Image Source="{Binding Image, Converter={StaticResource BytesParaImagemConverter},ConverterParameter=120}"
                                        Stretch="UniformToFill"
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center" />
@@ -219,7 +208,7 @@
                                         CornerRadius="5"
                                         Margin="0,0,6,0"
                                         BorderBrush="{DynamicResource SecondaryBorderBrush}">
-                                    <TextBlock Text="Letra"
+                                    <TextBlock Text="{DynamicResource Str_Letras}"
                                                FontFamily="{StaticResource FonteInter}"
                                                FontSize="11"
                                                VerticalAlignment="Center"
@@ -405,7 +394,7 @@
                                 Style="{StaticResource BorderClip}"
                                 ClipToBounds="True">
                             <Grid ClipToBounds="True">
-                                <Image Source="{Binding Image, Converter={StaticResource BytesParaThumbGridConverter}}"
+                                <Image Source="{Binding Image, Converter={StaticResource BytesParaImagemConverter},ConverterParameter=240}"
                                        Stretch="UniformToFill"
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center" />
@@ -505,304 +494,7 @@
                     </Style>
                 </Grid.Style>
                 <Grid Background="{DynamicResource SurfaceAltBrush}" Opacity="0.985"></Grid>
-                <Grid>
-                    <!--===== Music Controls =====-->
-                    <Grid MaxHeight="680" Margin="16,16,16,8">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="50*" />
-                            <RowDefinition Height="12*" />
-                            <RowDefinition Height="5*" />
-                            <RowDefinition Height="5*" />
-                            <RowDefinition Height="15*" />
-                            <RowDefinition Height="10*" />
-                        </Grid.RowDefinitions>
-
-                        <!-- Capa grande: música que está a tocar agora -->
-                        <Border Margin="0,0,0,0"
-                                MinWidth="350"
-                                MaxHeight="360"
-                                Grid.Row="0"
-                                Background="{DynamicResource SurfaceBrush}"
-                                ClipToBounds="True"
-                                CornerRadius="16"
-                                Style="{StaticResource BorderClip}"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Top">
-                            <Grid ClipToBounds="True" x:Name="RootGrid">
-                                <Image Source="{Binding PlayerViewModel.MusicaAtual.Image, Converter={StaticResource BytesParaImagemConverter}}"
-                                       Stretch="UniformToFill"
-                                       HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                <iconPacks:PackIconBoxIcons Kind="SolidMusic"
-                                                            Width="48"
-                                                            Height="48"
-                                                            Foreground="{DynamicResource TextMutedBrush}"
-                                                            HorizontalAlignment="Center"
-                                                            VerticalAlignment="Center"
-                                                            Visibility="{Binding PlayerViewModel.MusicaAtual.Image, Converter={StaticResource NullToVisibilityConverter}}" />
-                                <Button x:Name="OverlayMiniPlayer"
-                                        HorizontalAlignment="Right" Click="AbrirMiniPlayer_Click"
-                                        VerticalAlignment="Top" Foreground="{DynamicResource TextOnAccentBrush}" Margin="10">
-                                    <Button.Style>
-                                        <Style TargetType="Button" BasedOn="{StaticResource IconButtonSmall}">
-                                            <Setter Property="Opacity" Value="0" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsMouseOver, ElementName=RootGrid}" Value="True">
-                                                    <DataTrigger.EnterActions>
-                                                        <BeginStoryboard>
-                                                            <Storyboard>
-                                                                <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.15" />
-                                                            </Storyboard>
-                                                        </BeginStoryboard>
-                                                    </DataTrigger.EnterActions>
-                                                    <DataTrigger.ExitActions>
-                                                        <BeginStoryboard>
-                                                            <Storyboard>
-                                                                <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.15" />
-                                                            </Storyboard>
-                                                        </BeginStoryboard>
-                                                    </DataTrigger.ExitActions>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                    <iconPacks:PackIconBoxIcons2 Kind="RegularExpandAlt" Width="20" />
-                                </Button>
-                            </Grid>
-                        </Border>
-                        <!-- Título / Artista da música atual -->
-                        <Grid Grid.Row="1">
-                            <StackPanel>
-                                <TextBlock Text="{Binding PlayerViewModel.MusicaAtual.Titulo, FallbackValue='Nenhuma música'}"
-                                           FontSize="18"
-                                           MaxWidth="260"
-                                           HorizontalAlignment="Left"
-                                           FontWeight="Bold"
-                                           FontFamily="{StaticResource FonteInter}"
-                                           Foreground="{DynamicResource TextPrimaryBrush}"
-                                           TextTrimming="CharacterEllipsis"
-                                           TextAlignment="Left"
-                                           Margin="0,20,0,4" />
-                                <TextBlock Text="{Binding PlayerViewModel.MusicaAtual.Artista}"
-                                           FontSize="13"
-                                           MaxWidth="260"
-                                           HorizontalAlignment="Left"
-                                           FontFamily="{StaticResource FonteInter}"
-                                           Foreground="{DynamicResource TextSecondaryBrush}"
-                                           TextTrimming="CharacterEllipsis"
-                                           TextAlignment="Left"
-                                           Margin="0,0,0,20" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal"
-                                        HorizontalAlignment="Right">
-                                <Button Command="{Binding PlayerViewModel.AlternarGostoCommand}"
-                                        Style="{StaticResource IconButtonSmall}"
-                                        Width="36"
-                                        Height="36"
-                                        Margin="4,0">
-                                    <iconPacks:PackIconBoxIcons Width="24"
-                                                                Height="18">
-                                        <iconPacks:PackIconBoxIcons.Style>
-                                            <Style TargetType="iconPacks:PackIconBoxIcons">
-                                                <Setter Property="Kind"
-                                                        Value="RegularHeart" />
-                                                <Setter Property="Foreground"
-                                                        Value="{DynamicResource TextMutedBrush}" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding PlayerViewModel.GostoAtual}"
-                                                                 Value="True">
-                                                        <Setter Property="Kind"
-                                                                Value="SolidHeart" />
-                                                        <Setter Property="Foreground"
-                                                                Value="{DynamicResource TextError}" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </iconPacks:PackIconBoxIcons.Style>
-                                    </iconPacks:PackIconBoxIcons>
-                                </Button>
-                                <Button Style="{StaticResource IconButtonSmall}">
-                                    <iconPacks:PackIconBoxIcons Kind="RegularDotsVertical" />
-                                </Button>
-                            </StackPanel>
-                        </Grid>
-                        <!-- Barra de progresso + tempos -->
-                        <Slider Style="{StaticResource PrettySlider}"
-                                Grid.Row="2"
-                                HorizontalAlignment="Stretch"
-                                Minimum="0"
-                                Maximum="{Binding PlayerViewModel.DuracaoTotalMs}"
-                                Value="{Binding PlayerViewModel.PosicaoAtualMs}"
-                                PreviewMouseLeftButtonDown="Slider_PreviewMouseLeftButtonDown"
-                                PreviewMouseMove="Slider_PreviewMouseMove"
-                                PreviewMouseLeftButtonUp="Slider_PreviewMouseUp"
-                                PreviewMouseUp="Slider_PreviewMouseUp"
-                                Cursor="Hand" />
-
-                        <Grid Margin="0,4,0,10"
-                              Grid.Row="3">
-                            <TextBlock Text="{Binding PlayerViewModel.TempoAtualFormatado, FallbackValue='00:00'}"
-                                       FontSize="12"
-                                       FontFamily="{StaticResource FonteJetBrains}"
-                                       Foreground="{DynamicResource TextMutedBrush}"
-                                       HorizontalAlignment="Left" />
-                            <TextBlock Text="{Binding PlayerViewModel.TempoTotalFormatado, FallbackValue='00:00'}"
-                                       FontSize="12"
-                                       FontFamily="{StaticResource FonteJetBrains}"
-                                       Foreground="{DynamicResource TextMutedBrush}"
-                                       HorizontalAlignment="Right" />
-                        </Grid>
-
-                        <!-- Controlos -->
-                        <StackPanel Orientation="Horizontal"
-                                    VerticalAlignment="Center"
-                                    HorizontalAlignment="Center"
-                                    Grid.Row="4" Margin="0,10">
-                            <Button Command="{Binding PlayerViewModel.AnteriorCommand}"
-                                    Style="{StaticResource PlayerControlButton}"
-                                    Margin="8,0">
-                                <Viewbox Width="auto" Height="auto" MaxHeight="40" MaxWidth="35">
-                                    <iconPacks:PackIconBoxIcons Kind="SolidSkipPrevious" />
-                                </Viewbox>
-                            </Button>
-
-                            <Button Command="{Binding PlayerViewModel.AlternarPlayPauseCommand}"
-                                    Style="{StaticResource PlayerPlayButton}"
-                                    Margin="0,0">
-                                <Viewbox Width="auto" Height="auto" MaxHeight="40" MaxWidth="35">
-                                    <iconPacks:PackIconBoxIcons>
-                                        <iconPacks:PackIconBoxIcons.Style>
-                                            <Style TargetType="iconPacks:PackIconBoxIcons">
-                                                <Setter Property="Kind"
-                                                        Value="SolidPlay" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding PlayerViewModel.EstaTocando}"
-                                                                 Value="True">
-                                                        <Setter Property="Kind"
-                                                                Value="SolidPause" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </iconPacks:PackIconBoxIcons.Style>
-                                    </iconPacks:PackIconBoxIcons>
-                                </Viewbox>
-                            </Button>
-
-                            <Button Command="{Binding PlayerViewModel.ProximaCommand}"
-                                    Style="{StaticResource PlayerControlButton}"
-                                    Margin="8,0">
-                                <Viewbox Width="auto" Height="auto" MaxHeight="40" MaxWidth="35">
-                                    <iconPacks:PackIconBoxIcons Kind="SolidSkipNext" />
-                                </Viewbox>
-                            </Button>
-                        </StackPanel>
-
-                        <!-- Equalizador / Repetição -->
-                        <StackPanel Orientation="Horizontal"
-                                    HorizontalAlignment="Center"
-                                    Grid.Row="5"
-                                    Margin="0,20,0,10">
-
-                            <!-- Botão Equalizador -->
-                            <Button Command="{Binding PlayerViewModel.AlternarEqualizadorCommand}"
-                                    Style="{StaticResource IconButtonSmall}"
-                                    Margin="4,0">
-                                <iconPacks:PackIconBoxIcons Kind="RegularSliderAlt"
-                                                            Width="18" Foreground="{DynamicResource TextSecondaryBrush}"
-                                                            Height="18" />
-                            </Button>
-
-                            <!--Botao Mostrar letra -->
-                            <Button Command="{Binding PlayerViewModel.AlternarLetrasCommand}"
-                                    MinWidth="180"
-                                    Height="30"
-                                    Margin="10,0"
-                                    VerticalAlignment="Center"
-                                    Background="{DynamicResource SurfaceBrush}"
-                                    BorderThickness="0"
-                                    Foreground="{DynamicResource TextPrimaryBrush}"
-                                    Style="{StaticResource ButtonPrimary}"
-                                    hc:BorderElement.CornerRadius="14">
-                                <StackPanel Orientation="Horizontal">
-                                    <iconPacks:PackIconBoxIcons Kind="RegularMessageBubbleDots"
-                                                                Width="16"
-                                                                Foreground="{DynamicResource TextSecondaryBrush}"
-                                                                VerticalAlignment="Center"
-                                                                Margin="0,0,8,0"
-                                                                Visibility="{Binding PlayerViewModel.TemLetra,Converter={StaticResource Boolean2VisibilityReConverter}}" />
-                                    <TextBlock Text="{Binding PlayerViewModel.LinhaAtual.Texto, FallbackValue={StaticResource Str_Sem_Letra}}"
-                                               FontFamily="{StaticResource FonteInter}"
-                                               Foreground="{DynamicResource TextSecondaryBrush}"
-                                               FontSize="12"
-                                               TextTrimming="CharacterEllipsis"
-                                               MaxWidth="150"
-                                               VerticalAlignment="Center" />
-                                </StackPanel>
-                            </Button>
-
-                            <!-- Botão Loop (Todos / Uma) -->
-                            <Button Command="{Binding PlayerViewModel.AlternarRepeticaoCommand}"
-                                    Style="{StaticResource IconButtonSmall}"
-                                    Margin="4,0">
-                                <Grid>
-                                    <iconPacks:PackIconBoxIcons Width="18"
-                                                                Height="18"
-                                                                HorizontalAlignment="Center"
-                                                                VerticalAlignment="Center">
-                                        <iconPacks:PackIconBoxIcons.Style>
-                                            <Style TargetType="iconPacks:PackIconBoxIcons">
-                                                <Setter Property="Kind"
-                                                        Value="RegularRepeat" />
-                                                <Setter Property="Foreground"
-                                                        Value="{DynamicResource TextSecondaryBrush}" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding PlayerViewModel.Repeticao}"
-                                                                 Value="RepetirLista">
-                                                        <Setter Property="Foreground"
-                                                                Value="{DynamicResource AccentBrush}" />
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding PlayerViewModel.Repeticao}"
-                                                                 Value="RepetirUma">
-                                                        <Setter Property="Kind"
-                                                                Value="SolidRepeat" />
-                                                        <Setter Property="Foreground"
-                                                                Value="{DynamicResource AccentBrush}" />
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding PlayerViewModel.Repeticao}"
-                                                                 Value="Aleatorio">
-                                                        <Setter Property="Kind"
-                                                                Value="SolidShuffle" />
-                                                        <Setter Property="Foreground"
-                                                                Value="{DynamicResource AccentBrush}" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </iconPacks:PackIconBoxIcons.Style>
-                                    </iconPacks:PackIconBoxIcons>
-                                    <TextBlock Text="1"
-                                               FontSize="8"
-                                               FontWeight="Bold"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               Foreground="{DynamicResource AccentBrush}">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Visibility"
-                                                        Value="Collapsed" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding PlayerViewModel.Repeticao}"
-                                                                 Value="RepetirUma">
-                                                        <Setter Property="Visibility"
-                                                                Value="Visible" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                </Grid>
-                            </Button>
-                        </StackPanel>
-                    </Grid>
-                </Grid>
+                <controls:PlayerControl />
             </Grid>
 
             <!-- ===== LISTA À DIREITA ===== -->
@@ -824,7 +516,7 @@
                                HorizontalAlignment="Left" />
                     <Button Command="{Binding MostrarPainelOrdenacaoCommand}" Style="{DynamicResource IconButtonSmall}"
                             VerticalAlignment="Center" HorizontalAlignment="Right">
-                        <iconPacks:PackIconBoxIcons Kind="RegularMenu" Width="16" Height="16" />
+                        <iconPacks:PackIconBoxIcons2 Kind="RegularSortDown" Width="20" Height="Auto" />
                     </Button>
                 </Grid>
                 <Grid Grid.Row="1"
@@ -849,12 +541,9 @@
                         </i:Interaction.Behaviors>
                         <ListBox.Style>
                             <Style TargetType="ListBox">
-                                <Setter Property="VirtualizingPanel.ScrollUnit"
-                                        Value="Pixel" />
-                                <Setter Property="ScrollViewer.CanContentScroll"
-                                        Value="True" />
-                                <Setter Property="ItemTemplate"
-                                        Value="{StaticResource ListaMusicaTemplate}" />
+                                <Setter Property="VirtualizingPanel.ScrollUnit" Value="Pixel" />
+                                <Setter Property="ScrollViewer.CanContentScroll" Value="True" />
+                                <Setter Property="ItemTemplate" Value="{StaticResource ListaMusicaTemplate}" />
                                 <Setter Property="ItemsPanel">
                                     <Setter.Value>
                                         <ItemsPanelTemplate>
@@ -863,14 +552,10 @@
                                     </Setter.Value>
                                 </Setter>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding FormatoLista}"
-                                                 Value="Grid">
-                                        <Setter Property="VirtualizingPanel.ScrollUnit"
-                                                Value="Item" />
-                                        <Setter Property="ScrollViewer.CanContentScroll"
-                                                Value="True" />
-                                        <Setter Property="ItemTemplate"
-                                                Value="{StaticResource GridMusicaTemplate}" />
+                                    <DataTrigger Binding="{Binding FormatoLista}" Value="Grid">
+                                        <Setter Property="VirtualizingPanel.ScrollUnit" Value="Item" />
+                                        <Setter Property="ScrollViewer.CanContentScroll" Value="True" />
+                                        <Setter Property="ItemTemplate" Value="{StaticResource GridMusicaTemplate}" />
                                         <Setter Property="ItemsPanel">
                                             <Setter.Value>
                                                 <ItemsPanelTemplate>
@@ -891,17 +576,13 @@
                                           VerticalAlignment="Center">
                                 <ItemsControl.Style>
                                     <Style TargetType="ItemsControl">
-                                        <Setter Property="Width"
-                                                Value="0" />
+                                        <Setter Property="Width" Value="0" />
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding OrdemAtual}"
-                                                         Value="Alfabetica">
+                                            <DataTrigger Binding="{Binding OrdemAtual}" Value="Alfabetica">
                                                 <DataTrigger.EnterActions>
                                                     <BeginStoryboard>
                                                         <Storyboard>
-                                                            <DoubleAnimation Storyboard.TargetProperty="Width"
-                                                                             To="30"
-                                                                             Duration="0:0:0.25">
+                                                            <DoubleAnimation Storyboard.TargetProperty="Width" To="30" Duration="0:0:0.25">
                                                                 <DoubleAnimation.EasingFunction>
                                                                     <QuadraticEase EasingMode="EaseOut" />
                                                                 </DoubleAnimation.EasingFunction>
@@ -912,9 +593,7 @@
                                                 <DataTrigger.ExitActions>
                                                     <BeginStoryboard>
                                                         <Storyboard>
-                                                            <DoubleAnimation Storyboard.TargetProperty="Width"
-                                                                             To="0"
-                                                                             Duration="0:0:0.25">
+                                                            <DoubleAnimation Storyboard.TargetProperty="Width" To="0" Duration="0:0:0.25">
                                                                 <DoubleAnimation.EasingFunction>
                                                                     <QuadraticEase EasingMode="EaseOut" />
                                                                 </DoubleAnimation.EasingFunction>
@@ -928,13 +607,9 @@
                                 </ItemsControl.Style>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding}"
-                                                   FontSize="12"
-                                                   FontWeight="SemiBold"
+                                        <TextBlock Text="{Binding}" FontSize="12" FontWeight="SemiBold"
                                                    FontFamily="{StaticResource FonteInter}"
-                                                   HorizontalAlignment="Center"
-                                                   Cursor="Hand"
-                                                   Margin="2,3">
+                                                   HorizontalAlignment="Center" Cursor="Hand" Margin="2,3">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
                                                     <Setter Property="Foreground"
@@ -974,9 +649,7 @@
                                     <DataTrigger.EnterActions>
                                         <BeginStoryboard>
                                             <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetProperty="Height"
-                                                                 To="60"
-                                                                 Duration="0:0:0.25">
+                                                <DoubleAnimation Storyboard.TargetProperty="Height" To="60" Duration="0:0:0.25">
                                                     <DoubleAnimation.EasingFunction>
                                                         <QuadraticEase EasingMode="EaseOut" />
                                                     </DoubleAnimation.EasingFunction>
@@ -987,9 +660,7 @@
                                     <DataTrigger.ExitActions>
                                         <BeginStoryboard>
                                             <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetProperty="Height"
-                                                                 To="0"
-                                                                 Duration="0:0:0.25">
+                                                <DoubleAnimation Storyboard.TargetProperty="Height" To="0" Duration="0:0:0.25">
                                                     <DoubleAnimation.EasingFunction>
                                                         <QuadraticEase EasingMode="EaseOut" />
                                                     </DoubleAnimation.EasingFunction>
@@ -1021,14 +692,15 @@
         </Grid>
         <!--Painel Ordenação-->
         <Grid Background="Transparent" Visibility="{Binding MostrarOrdenacao,Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Grid Background="{DynamicResource GradientBackground}" Opacity="0.2">
+            <Grid Background="Transparent">
                 <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="MouseLeftButtonUp">
+                    <i:EventTrigger EventName="MouseLeftButtonDown">
                         <i:InvokeCommandAction Command="{Binding FecharPainelOrdenacaoCommand}" />
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </Grid>
-            <Grid HorizontalAlignment="Center" VerticalAlignment="Bottom">
+            <Grid HorizontalAlignment="Right" VerticalAlignment="Top"
+                  Margin="0,60,24,0" RenderTransformOrigin="1,0">
                 <Grid.Style>
                     <Style TargetType="Grid">
                         <Setter Property="Visibility" Value="Collapsed" />
@@ -1040,23 +712,19 @@
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility">
                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}" />
                                             </ObjectAnimationUsingKeyFrames>
-                                            <DoubleAnimation
-                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                                                From="100" To="0" Duration="0:0:0.10" />
-                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.10" />
+                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" From="0.95" To="1" Duration="0:0:0.10" />
+                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" From="0.95" To="1" Duration="0:0:0.10" />
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </DataTrigger.EnterActions>
                                 <DataTrigger.ExitActions>
                                     <BeginStoryboard>
                                         <Storyboard>
-                                            <DoubleAnimation
-                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                                                From="0" To="100" Duration="0:0:0.10" />
-                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.10" />
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility">
                                                 <DiscreteObjectKeyFrame KeyTime="0:0:0.20" Value="{x:Static Visibility.Collapsed}" />
                                             </ObjectAnimationUsingKeyFrames>
+                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" From="1" To="0.95" Duration="0:0:0.10" />
+                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" From="1" To="0.95" Duration="0:0:0.10" />
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </DataTrigger.ExitActions>
@@ -1065,178 +733,103 @@
                     </Style>
                 </Grid.Style>
                 <Grid.RenderTransform>
-                    <TranslateTransform Y="100" />
+                    <ScaleTransform ScaleX="0.95" ScaleY="0.95" />
                 </Grid.RenderTransform>
-                <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="10,10,0,0"
-                        Width="400" Height="420" BorderThickness="2,2,2,0" BorderBrush="{DynamicResource BorderBrush2}">
+                <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="10"
+                        MinWidth="240" Padding="4,8" Style="{StaticResource BorderClip}"
+                        BorderThickness="1" BorderBrush="{DynamicResource BorderBrush2}">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="16" ShadowDepth="2" Opacity="0.4" />
+                    </Border.Effect>
                     <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-                        <Grid Grid.Row="0">
-                            <Button Background="Transparent" BorderThickness="0" Command="{Binding FecharPainelOrdenacaoCommand}"
-                                    Width="100" Height="40" Foreground="{DynamicResource TextSecondaryBrush}" Cursor="Hand">
-                                <iconPacks:PackIconBoxIcons Kind="RegularCaretDown" VerticalAlignment="Center" />
-                            </Button>
-                        </Grid>
-                        <Grid Grid.Row="1">
-                            <Grid.Resources>
-                                <Style TargetType="RadioButton" BasedOn="{StaticResource IconRadioButton}">
-                                    <Setter Property="Height" Value="40" />
-                                    <Setter Property="Margin" Value="4" />
-                                </Style>
-                                <Style TargetType="iconPacks:PackIconBoxIcons">
-                                    <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" />
-                                    <Setter Property="HorizontalAlignment" Value="Left" />
-                                </Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="FontFamily" Value="{StaticResource FonteInter}" />
-                                    <Setter Property="FontSize" Value="14" />
-                                    <Setter Property="Margin" Value="30,0" />
-                                    <Setter Property="MinWidth" Value="100" />
-                                    <Setter Property="TextAlignment" Value="Left" />
-                                </Style>
-                            </Grid.Resources>
-                            <StackPanel>
-                                <TextBlock Text="{DynamicResource Str_MusicasOrdenadasPor}" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="16" Margin="10,6" />
-                                <StackPanel  ClipToBounds="True">
-                                    <RadioButton Checked="Ordenacao_Changed"
-                                                 GroupName="Ordenacao"
-                                                 x:Name="RadioAlfabetica">
-                                        <Grid>
-                                            <iconPacks:PackIconBoxIcons2 Kind="RegularSortAZ" />
-                                            <TextBlock Text="{DynamicResource Str_Alfabetica}" />
-                                        </Grid>
-                                    </RadioButton>
-                                    <RadioButton Checked="Ordenacao_Changed"
-                                                 GroupName="Ordenacao"
-                                                 x:Name="RadioMaisRecente">
-                                        <Grid>
-                                            <iconPacks:PackIconBoxIcons Kind="RegularClock12" />
-                                            <TextBlock Text="{DynamicResource Str_Mais_recente}" />
-                                        </Grid>
-                                    </RadioButton>
-                                    <RadioButton Checked="Ordenacao_Changed"
-                                                 GroupName="Ordenacao"
-                                                 x:Name="RadioMaisTocada">
-                                        <Grid>
-                                            <iconPacks:PackIconBoxIcons Kind="RegularFireAlt" />
-                                            <TextBlock Text="{DynamicResource Str_Mais_Tocada}" />
-                                        </Grid>
-                                    </RadioButton>
-                                    <RadioButton Checked="Ordenacao_Changed"
-                                                 GroupName="Ordenacao"
-                                                 x:Name="RadioDuracao">
-                                        <Grid>
-                                            <iconPacks:PackIconBoxIcons Kind="RegularHourglass" />
-                                            <TextBlock Text="{DynamicResource Str_Duracao}" />
-                                        </Grid>
-                                    </RadioButton>
-                                    <RadioButton Checked="Ordenacao_Changed"
-                                                 GroupName="Ordenacao"
-                                                 x:Name="RadioAleatorio">
-                                        <Grid>
-                                            <iconPacks:PackIconBoxIcons Kind="RegularShuffle" />
-                                            <TextBlock Text="{DynamicResource Str_Aleatorio}" />
-                                        </Grid>
-                                    </RadioButton>
-                                </StackPanel>
-                                <Border Background="{DynamicResource BorderBrush2}" Width="Auto" Margin="5,4" Height="2" CornerRadius="2" />
-                                <StackPanel>
-                                    <RadioButton Checked="Ordenacao_Changed"
-                                                 GroupName="Direcao"
-                                                 x:Name="RadioAscendente">
-                                        <Grid>
-                                            <iconPacks:PackIconRemixIcon Kind="ArrowUpLongLine" />
-                                            <TextBlock Text="{DynamicResource Str_Ascendente}" />
-                                        </Grid>
-                                    </RadioButton>
-                                    <RadioButton Checked="Ordenacao_Changed"
-                                                 GroupName="Direcao"
-                                                 x:Name="RadioDescendete">
-                                        <Grid>
-                                            <iconPacks:PackIconRemixIcon Kind="ArrowDownLongLine" />
-                                            <TextBlock Text="{DynamicResource Str_Descendente}" />
-                                        </Grid>
-                                    </RadioButton>
-                                </StackPanel>
+                        <Grid.Resources>
+                            <Style TargetType="RadioButton" BasedOn="{StaticResource IconRadioButton}">
+                                <Setter Property="Height" Value="36" />
+                                <Setter Property="Margin" Value="0" />
+                            </Style>
+                            <Style TargetType="iconPacks:PackIconBoxIcons">
+                                <Setter Property="Width" Value="14" />
+                                <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" />
+                                <Setter Property="HorizontalAlignment" Value="Left" />
+                            </Style>
+                            <Style TargetType="iconPacks:PackIconBoxIcons2">
+                                <Setter Property="Width" Value="14" />
+                                <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" />
+                                <Setter Property="HorizontalAlignment" Value="Left" />
+                            </Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="FontFamily" Value="{StaticResource FonteInter}" />
+                                <Setter Property="FontSize" Value="14" />
+                                <Setter Property="Margin" Value="20,0" />
+                            </Style>
+                        </Grid.Resources>
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource Str_MusicasOrdenadasPor}" FontFamily="{StaticResource FonteInter}" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="14" Margin="0,8" HorizontalAlignment="Center" />
+                            <StackPanel  ClipToBounds="True">
+                                <RadioButton Checked="Ordenacao_Changed"
+                                             GroupName="Ordenacao"
+                                             x:Name="RadioAlfabetica">
+                                    <StackPanel Orientation="Horizontal">
+                                        <iconPacks:PackIconBoxIcons2 Kind="RegularSortAZ" />
+                                        <TextBlock Text="{DynamicResource Str_Alfabetica}" />
+                                    </StackPanel>
+                                </RadioButton>
+                                <RadioButton Checked="Ordenacao_Changed"
+                                             GroupName="Ordenacao"
+                                             x:Name="RadioMaisRecente">
+                                    <StackPanel Orientation="Horizontal">
+                                        <iconPacks:PackIconBoxIcons Kind="RegularClock12" />
+                                        <TextBlock Text="{DynamicResource Str_Mais_recente}" />
+                                    </StackPanel>
+                                </RadioButton>
+                                <RadioButton Checked="Ordenacao_Changed"
+                                             GroupName="Ordenacao"
+                                             x:Name="RadioMaisTocada">
+                                    <StackPanel Orientation="Horizontal">
+                                        <iconPacks:PackIconBoxIcons Kind="RegularFireAlt" />
+                                        <TextBlock Text="{DynamicResource Str_Mais_Tocada}" />
+                                    </StackPanel>
+                                </RadioButton>
+                                <RadioButton Checked="Ordenacao_Changed"
+                                             GroupName="Ordenacao"
+                                             x:Name="RadioDuracao">
+                                    <StackPanel Orientation="Horizontal">
+                                        <iconPacks:PackIconBoxIcons Kind="RegularHourglass" />
+                                        <TextBlock Text="{DynamicResource Str_Duracao}" />
+                                    </StackPanel>
+                                </RadioButton>
+                                <RadioButton Checked="Ordenacao_Changed"
+                                             GroupName="Ordenacao"
+                                             x:Name="RadioAleatorio">
+                                    <StackPanel Orientation="Horizontal">
+                                        <iconPacks:PackIconBoxIcons Kind="RegularShuffle" />
+                                        <TextBlock Text="{DynamicResource Str_Aleatorio}" />
+                                    </StackPanel>
+                                </RadioButton>
                             </StackPanel>
-                        </Grid>
+                            <Border Background="{DynamicResource SurfaceAltBrush}" Width="Auto" Height="2" CornerRadius="2" />
+                            <StackPanel>
+                                <RadioButton Checked="Ordenacao_Changed"
+                                             GroupName="Direcao"
+                                             x:Name="RadioAscendente">
+                                    <StackPanel Orientation="Horizontal">
+                                        <iconPacks:PackIconRemixIcon Kind="ArrowUpLongLine" />
+                                        <TextBlock Text="{DynamicResource Str_Ascendente}" />
+                                    </StackPanel>
+                                </RadioButton>
+                                <RadioButton Checked="Ordenacao_Changed"
+                                             GroupName="Direcao"
+                                             x:Name="RadioDescendete">
+                                    <StackPanel Orientation="Horizontal">
+                                        <iconPacks:PackIconRemixIcon Kind="ArrowDownLongLine" />
+                                        <TextBlock Text="{DynamicResource Str_Descendente}" />
+                                    </StackPanel>
+                                </RadioButton>
+                            </StackPanel>
+                        </StackPanel>
                     </Grid>
                 </Border>
             </Grid>
-        </Grid>
-        <!--Modal Excluir-->
-        <Grid Visibility="{Binding PlayerViewModel.MostrarConfirmacaoExclusao, Converter={StaticResource BoolToVisibilityConverter}}">
-            <Border Background="{DynamicResource SurfaceBrush}" Opacity="0.6">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="MouseLeftButtonUp">
-                        <i:InvokeCommandAction Command="{Binding PlayerViewModel.CancelarExclusaoCommand}" />
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </Border>
-            <Border Background="{DynamicResource SurfaceAltBrush}"
-                    BorderThickness="1"
-                    BorderBrush="{DynamicResource AccentAltBrush}"
-                    CornerRadius="12" Padding="16"
-                    MinWidth="350"
-                    HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20">
-                <Border.RenderTransform>
-                    <ScaleTransform ScaleX="0.85" ScaleY="0.85" />
-                </Border.RenderTransform>
-                <Border.Style>
-                    <Style TargetType="Border">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding PlayerViewModel.MostrarConfirmacaoExclusao}" Value="True">
-                                <DataTrigger.EnterActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX"
-                                                             From="0.85" To="1" Duration="0:0:0.18">
-                                                <DoubleAnimation.EasingFunction>
-                                                    <BackEase EasingMode="EaseOut" Amplitude="0.3" />
-                                                </DoubleAnimation.EasingFunction>
-                                            </DoubleAnimation>
-                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY"
-                                                             From="0.85" To="1" Duration="0:0:0.18">
-                                                <DoubleAnimation.EasingFunction>
-                                                    <BackEase EasingMode="EaseOut" Amplitude="0.3" />
-                                                </DoubleAnimation.EasingFunction>
-                                            </DoubleAnimation>
-                                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                                             From="0" To="1" Duration="0:0:0.15" />
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </DataTrigger.EnterActions>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Border.Style>
-                <StackPanel>
-                    <Grid Margin="0,0,0,20">
-                        <Button Command="{Binding PlayerViewModel.CancelarExclusaoCommand}" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource IconButtonSmall}">
-                            <iconPacks:PackIconBoxIcons Kind="SolidX" Width="12" Height="12" />
-                        </Button>
-                    </Grid>
-                    <TextBlock Text="{DynamicResource Str_ConfirmarExclusao}"
-                               FontSize="14" TextAlignment="Center"
-                               Foreground="{DynamicResource TextSecondaryBrush}" />
-                    <Grid  Margin="0,40,0,0">
-                        <Button Content="{DynamicResource Str_Cancelar}" Command="{Binding PlayerViewModel.CancelarExclusaoCommand}"
-                                Margin="0,0,8,0" Padding="16,8"
-                                Foreground="{DynamicResource TextSecondaryBrush}" FontFamily="{StaticResource FonteInter}"
-                                Background="{DynamicResource BackgroundBrush}" BorderThickness="0" Width="auto" Height="auto"
-                                hc:BorderElement.CornerRadius="8"  HorizontalAlignment="Left" VerticalAlignment="Center" />
-                        <Button Command="{Binding PlayerViewModel.ConfirmarExclusaoCommand}"
-                                Content="{DynamicResource Str_Eliminar}"
-                                Padding="16,8" Height="auto" Width="auto" FontFamily="{StaticResource FonteInter}"
-                                Background="{DynamicResource SurfaceError}" BorderThickness="0"
-                                Foreground="{DynamicResource TextOnAccentBrush}" hc:BorderElement.CornerRadius="8"
-                                HorizontalAlignment="Right" VerticalAlignment="Center" />
-                    </Grid>
-                </StackPanel>
-            </Border>
         </Grid>
     </Grid>
 </UserControl>

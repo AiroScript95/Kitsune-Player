@@ -12,10 +12,6 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
              d:DesignHeight="700" d:DesignWidth="1000">
-    <UserControl.Resources>
-        <converter:StringParaImagemConverter x:Key="StringParaImagemConverter" />
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-    </UserControl.Resources>
     <Grid Style="{StaticResource TransicaoEntrada}" ClipToBounds="True">
         <Grid Background="{DynamicResource SurfaceBrush}">
             <Grid.RowDefinitions>

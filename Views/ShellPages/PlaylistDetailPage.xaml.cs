@@ -1,20 +1,10 @@
-﻿using Project_Kitsune.Models;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Project_Kitsune.Models;
+using Project_Kitsune.ViewModels;
 using Project_Kitsune.ViewModels.ShellPages;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Project_Kitsune.Views.ShellPages
 {
@@ -67,49 +57,51 @@ namespace Project_Kitsune.Views.ShellPages
             }
         }
 
-        /* SLIDER EVENTS*/
-
-        private void Slider_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ClickCount > 1) return;
-
-            if (sender is Slider slider && DataContext is PlaylistDetailPageViewModel viewModel)
-            {
-                viewModel.Player.EstaArrastando = true;
-
-                bool clicouNoThumb = FindParent<Thumb>((DependencyObject)e.OriginalSource) != null;
-                if (clicouNoThumb) return; //
-
-                Point posicaoClique = e.GetPosition(slider);
-                double proporcao = posicaoClique.X / slider.ActualWidth;
-                double novoValor = proporcao * slider.Maximum;
-                slider.Value = Math.Max(slider.Minimum, Math.Min(slider.Maximum, novoValor));
-                e.Handled = true;
-            }
-        }
-
-        private static T? FindParent<T>(DependencyObject child) where T : DependencyObject
-        {
-            DependencyObject? parentObject = VisualTreeHelper.GetParent(child);
-            if (parentObject == null) return null;
-            if (parentObject is T parent) return parent;
-            return FindParent<T>(parentObject);
-        }
-
-        private void Slider_PreviewMouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (DataContext is PlaylistDetailPageViewModel viewModel)
-            {
-                viewModel.Player.DefinirPosicaoManual((long)viewModel.Player.PosicaoAtualMs);
-                viewModel.Player.EstaArrastando = false;
-            }
-        }
-
         private void ListaTodasMusicas_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (DataContext is PlaylistDetailPageViewModel vm)
             {
                 vm.NumeroSelecionadas = ListaTodasMusicas.SelectedItems.Count;
+            }
+        }
+
+        private void ContextMenu_Opening(object sender, ContextMenuEventArgs e)
+        {
+            try
+            {
+                var playerViewModel = App.ServiceProvider.GetRequiredService<PlayerViewModel>();
+
+                if (sender is FrameworkElement { DataContext: Music musica }
+                    && musica.Caminho == playerViewModel.MusicaAtual?.Caminho)
+                {
+                    e.Handled = true; // música a tocar: não abre menu
+                    return;
+                }
+
+                if (sender is FrameworkElement { ContextMenu: { } menu }
+                    && DataContext is PlaylistDetailPageViewModel vm)
+                {
+                    foreach (MenuItem item in menu.Items.OfType<MenuItem>().Where(i => i.Name == "ItemRemover"))
+                        item.Visibility = vm.EhComLetra ? Visibility.Collapsed : Visibility.Visible;
+                }
+
+                playerViewModel.CarregarPlaylistsDisponiveis();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void RemoverMusica_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuItem item
+                && item.Parent is ContextMenu menu
+                && menu.PlacementTarget is FrameworkElement alvo
+                && alvo.DataContext is Music musica
+                && DataContext is PlaylistDetailPageViewModel vm)
+            {
+                vm.RemoverMusicaCommand.Execute(musica);
             }
         }
     }

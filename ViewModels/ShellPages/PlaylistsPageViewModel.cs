@@ -1,11 +1,12 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using Project_Kitsune.Models;
 using Project_Kitsune.Services;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.CompilerServices;
+using System.Windows;
 
 namespace Project_Kitsune.ViewModels.ShellPages
 {
@@ -13,7 +14,8 @@ namespace Project_Kitsune.ViewModels.ShellPages
     {
         public ObservableCollection<PlaylistComCapa> Playlists { get; set; } = new ObservableCollection<PlaylistComCapa>();
         protected BibliotecaService _biblioteca;
-
+        private OrdenacaoService _ordenacaoService;
+        public ObservableCollection<Music> Musicas { get; set; } = new();
         protected DatabaseService _database;
         protected ShellViewModel _shell;
 
@@ -57,9 +59,12 @@ namespace Project_Kitsune.ViewModels.ShellPages
         {
             _database = App.ServiceProvider.GetRequiredService<DatabaseService>();
             _biblioteca = App.ServiceProvider.GetRequiredService<BibliotecaService>();
+            _ordenacaoService = App.ServiceProvider.GetRequiredService<OrdenacaoService>();
             _shell = shell;
 
             List<Playlist> existentes = _database.ListarPlaylists();
+
+            Playlists.Add(PlaylistLetras());
             foreach (Playlist p in existentes)
             {
                 Playlists.Add(CarregarComCapa(p));
@@ -86,8 +91,8 @@ namespace Project_Kitsune.ViewModels.ShellPages
             }
             List<string> listaMusicas = todosCaminhos
                 .Take(3)
-                .Select(caminho => _biblioteca.LerMusicaPorCaminho(caminho)?.Titulo ?? System.IO.Path.GetFileNameWithoutExtension(caminho))
-                .ToList();
+.Select(caminho => _biblioteca.LerMusicaPorCaminho(caminho)?.Titulo ?? System.IO.Path.GetFileNameWithoutExtension(caminho))
+                    .ToList();
 
             if (playlist.Name == "Favoritos")
             {
@@ -95,6 +100,31 @@ namespace Project_Kitsune.ViewModels.ShellPages
             }
 
             return new PlaylistComCapa(playlist, capa, listaMusicas);
+        }
+
+        private PlaylistComCapa PlaylistLetras()
+        {
+            var musicasComLetra = _ordenacaoService.Ordenar(
+            _biblioteca.Musicas
+.Where(m => File.Exists(Path.ChangeExtension(m.Caminho, ".lrc"))
+                || File.Exists(Path.ChangeExtension(m.Caminho, ".kc.lrc")))
+                .ToList(),
+                "Alfabetica", false);
+
+            var comLetra = new Playlist
+            {
+                Id = Playlist.IdComLetra,
+                Name = (string)Application.Current.FindResource("Str_ComLetra"),
+                DataCriacao = DateTime.MinValue,
+                Ordem = "Manual",
+                Musics = musicasComLetra,
+                NumMusicas = musicasComLetra.Count
+            };
+
+            byte[]? capa = musicasComLetra.FirstOrDefault()?.Image;
+            List<string> titulos = musicasComLetra.Take(3).Select(m => m.Titulo).ToList();
+
+            return new PlaylistComCapa(comLetra, capa, titulos);
         }
 
         [RelayCommand]
@@ -112,6 +142,8 @@ namespace Project_Kitsune.ViewModels.ShellPages
 
             List<Playlist> atualizadas = _database.ListarPlaylists();
             Playlists.Clear();
+
+            Playlists.Add(PlaylistLetras());
             foreach (Playlist p in atualizadas)
             {
                 Playlists.Add(CarregarComCapa(p));

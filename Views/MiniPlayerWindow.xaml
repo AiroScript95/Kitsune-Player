@@ -17,17 +17,6 @@
         Background="Transparent"
         Title="{Binding MusicaAtual.Titulo, StringFormat='Kitsune - {0}', FallbackValue='Kitsune - Mini Player'}"
         Height="460" Width="300">
-    <Window.Resources>
-        <converters:StringVazioParaVisibilidadeConverter x:Key="StringVazioParaVisibilidade" />
-        <converters:LinhaAtualConverter x:Key="LinhaAtualConverter" />
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
-        <converters:BytesParaImagemConverter x:Key="BytesParaImagemConverter" />
-        <converters:BytesParaThumbConverter x:Key="BytesParaThumbConverter" />
-        <converters:BytesParaThumbGridConverter x:Key="BytesParaThumbGridConverter" />
-        <converters:MusicaAtualConverter x:Key="MusicaAtualConverter" />
-        <converters:ProgressoParaLarguraConverter x:Key="ProgressoParaLarguraConverter" />
-    </Window.Resources>
     <Grid Background="{DynamicResource SurfaceBrush}">
 
         <Grid Margin="12">

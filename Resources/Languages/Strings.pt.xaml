@@ -43,7 +43,13 @@
     <system:String x:Key="Str_MusicasOrdenadasPor">Músicas ordenadas por</system:String>
     <system:String x:Key="Str_Renomear">Renomear</system:String>
     <system:String x:Key="Str_Titulo">Título</system:String>
-    <system:String x:Key="Str_Artista">Artista</system:String>
+    <system:String x:Key="Str_Artistas">Artistas</system:String>
     <system:String x:Key="Str_Album">Álbum</system:String>
+    <system:String x:Key="Str_Albuns">Álbuns</system:String>
+    <system:String x:Key="Str_Genero">Género</system:String>
+    <system:String x:Key="Str_Pesquisa">Música, artista ou álbum...</system:String>
+    <system:String x:Key="Str_RemoverDaPlaylist">Remover da playlist</system:String>
+    <system:String x:Key="Str_ComLetra">Com letra</system:String>
+
     <system:String x:Key="Str_">ee</system:String>
 </ResourceDictionary>

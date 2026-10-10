@@ -3,19 +3,8 @@ using Project_Kitsune.Helpers;
 using Project_Kitsune.Models;
 using Project_Kitsune.Services;
 using Project_Kitsune.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Project_Kitsune.Views
 {

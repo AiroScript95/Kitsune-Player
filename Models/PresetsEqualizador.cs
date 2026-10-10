@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Project_Kitsune.Models
+﻿namespace Project_Kitsune.Models
 {
     // Molde cru para desserializar o JSON externo
     public class EqPresetsFile

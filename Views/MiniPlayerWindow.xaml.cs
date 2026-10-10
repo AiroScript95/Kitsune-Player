@@ -1,15 +1,12 @@
-﻿using HandyControl.Tools;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Project_Kitsune.Helpers;
 using Project_Kitsune.Models;
 using Project_Kitsune.Services;
 using Project_Kitsune.ViewModels;
-using Project_Kitsune.ViewModels.ShellPages;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Interop;
 using System.Windows.Media;
 
 namespace Project_Kitsune.Views

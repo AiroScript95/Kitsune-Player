@@ -1,7 +1,4 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:hc="https://handyorg.github.io/handycontrol"
-                    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-                    xmlns:svg="http://sharpvectors.codeplex.com/svgc/"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <!--Gerais-->
     <Style TargetType="Grid" x:Key="TransicaoEntrada">

@@ -1,8 +1,7 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Windows;
-using System.Windows.Media;
 using System.Windows.Interop;
+using System.Windows.Media;
 
 namespace Project_Kitsune.Helpers
 {

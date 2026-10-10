@@ -602,21 +602,19 @@ namespace Project_Kitsune.Services
             }
         }
 
-        public void AtualizarMetadados(string caminho, string titulo, string artista, string album)
+        public void AtualizarMetadados(string caminho, string titulo, string artista, string album, string genero)
         {
             using (SqliteConnection connection = new(_database))
             {
                 connection.Open();
 
                 SqliteCommand cmd = connection.CreateCommand();
-                cmd.CommandText = @"
-            UPDATE Musicas
-            SET Titulo = @titulo, Artista = @artista, Album = @album
-            WHERE Caminho = @caminho";
+                cmd.CommandText = @"UPDATE Musicas SET Titulo = @titulo, Artista = @artista, Album = @album, Genero = @genero WHERE Caminho = @caminho";
 
                 cmd.Parameters.AddWithValue("@titulo", titulo);
                 cmd.Parameters.AddWithValue("@artista", artista);
                 cmd.Parameters.AddWithValue("@album", album);
+                cmd.Parameters.AddWithValue("@genero", genero);
                 cmd.Parameters.AddWithValue("@caminho", caminho);
 
                 cmd.ExecuteNonQuery();

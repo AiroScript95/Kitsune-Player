@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using LibVLCSharp.Shared;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using Project_Kitsune.Models;
 using Project_Kitsune.Services;
@@ -8,12 +8,16 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 
 namespace Project_Kitsune.ViewModels
 {
+    public record GostoAlteradoMessage(Music Musica);
+
+    public class BibliotecaAlteradaMessage
+    { }
+
     public partial class PlayerViewModel : INotifyPropertyChanged, IDisposable
     {
         /* ESTADOS - (Campos/Propriedades) */
@@ -643,7 +647,7 @@ namespace Project_Kitsune.ViewModels
                 int indiceAtual = ObterIndiceAtual();
                 if (indiceAtual == -1)
                 {
-                    EstaTocando = false;
+                    TocarMusica(ListaAtual[0], manterIndiceEmbaralhado: true);
                     return;
                 }
                 int proximoIndice = indiceAtual + 1;
@@ -700,16 +704,23 @@ namespace Project_Kitsune.ViewModels
                 }
 
                 int indiceAtual = ObterIndiceAtual();
-                int indiceAnterior = indiceAtual - 1;
 
-                if (indiceAnterior >= 0)
+                if (indiceAtual < 0)
                 {
-                    TocarMusica(ListaAtual[indiceAnterior]);
+                    TocarMusica(ListaAtual[0]);
+                    return;
                 }
-                else if (Repeticao == ModoRepeticao.RepetirLista)
+
+                if (indiceAtual == 0)
                 {
-                    TocarMusica(ListaAtual[ListaAtual.Count - 1]);
+                    if (Repeticao == ModoRepeticao.RepetirLista)
+                        TocarMusica(ListaAtual[ListaAtual.Count - 1]);
+                    else
+                        TocarMusica(ListaAtual[0]);
+                    return;
                 }
+
+                TocarMusica(ListaAtual[indiceAtual - 1]);
                 return;
             }
             catch (Exception ex)
@@ -1041,13 +1052,18 @@ namespace Project_Kitsune.ViewModels
         }
 
         [RelayCommand]
-        private void AlternarGosto()
+        private void AlternarGosto(Music? musica)
         {
-            if (MusicaAtual == null) return;
-            bool novoValor = !MusicaAtual.Gosto;
-            MusicaAtual.Gosto = novoValor;
-            GostoAtual = novoValor;
-            DatabaseService.AlternarGosto(MusicaAtual.Caminho, novoValor);
+            musica ??= MusicaAtual;
+            if (musica == null) return;
+
+            musica.Gosto = !musica.Gosto;
+            DatabaseService.AlternarGosto(musica.Caminho, musica.Gosto);
+
+            if (musica.Caminho == MusicaAtual?.Caminho)
+                GostoAtual = musica.Gosto;
+
+            WeakReferenceMessenger.Default.Send(new GostoAlteradoMessage(musica));
         }
 
         [RelayCommand]

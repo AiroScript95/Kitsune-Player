@@ -1,7 +1,6 @@
-﻿using System;
+﻿using Project_Kitsune.Models;
 using System.Globalization;
 using System.Windows.Data;
-using Project_Kitsune.Models;
 
 namespace Project_Kitsune.Converters
 {

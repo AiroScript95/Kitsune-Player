@@ -1,11 +1,9 @@
-﻿using System;
-using System.IO;
+﻿using Project_Kitsune.Models;
+using Project_Kitsune.ViewModels;
 using System.Windows;
 using System.Windows.Interop;
 using Windows.Media;
 using Windows.Storage.Streams;
-using Project_Kitsune.Models;
-using Project_Kitsune.ViewModels;
 
 namespace Project_Kitsune.Services
 {

@@ -2,13 +2,10 @@
 using Project_Kitsune.Services;
 using Project_Kitsune.ViewModels;
 using System.Globalization;
-using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
-using Windows.Media;
 
 namespace Project_Kitsune
 {
@@ -40,6 +37,7 @@ namespace Project_Kitsune
             services.AddSingleton<OrdenacaoService>();
             services.AddSingleton<SmtcService>();
             services.AddSingleton<MainViewModel>();
+            services.AddSingleton<GruposService>();
             ServiceProvider = services.BuildServiceProvider();
 
             var mainWindow = new Views.MainWindow

@@ -15,12 +15,12 @@
         Title="Kitsune Player"
         Height="700"
         WindowState="Normal"
-        WindowStyle="SingleBorderWindow"
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanResize"
         Icon="/Resources/Icons/icon-logo.ico"
         AllowsTransparency="False"
         Background="Transparent"
+        Focusable="True"
         Width="1200" MinWidth="980" MinHeight="680">
     <Window.Resources>
         <DataTemplate DataType="{x:Type vm:LoadingViewModel}">
@@ -29,23 +29,282 @@
         <DataTemplate DataType="{x:Type vm:ShellViewModel}">
             <views:ShellView />
         </DataTemplate>
+
+        <ContextMenu  x:Key="MusicaContextMenu">
+            <MenuItem ItemsSource="{Binding PlacementTarget.Tag.PlaylistsDisponiveis,
+                      RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                <MenuItem.Header>
+                    <Grid>
+                        <TextBlock Text="{DynamicResource Str_AdicionarAPlaylist}" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                        <iconPacks:PackIconBoxIcons Kind="RegularListPlus" HorizontalAlignment="Right"
+                                                    VerticalAlignment="Center"
+                                                    Foreground="{DynamicResource TextPrimaryBrush}" Width="14" />
+                    </Grid>
+                </MenuItem.Header>
+                <MenuItem.ItemContainerStyle>
+                    <Style TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
+                        <Setter Property="Command"
+                                Value="{Binding PlacementTarget.Tag.AdicionarAPlaylistCommand,
+                                RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                        <Setter Property="CommandParameter">
+                            <Setter.Value>
+                                <MultiBinding Converter="{StaticResource MusicaEPlaylistConverter}">
+                                    <Binding Path="PlacementTarget.DataContext"
+                                             RelativeSource="{RelativeSource AncestorType=ContextMenu}" />
+                                    <Binding />
+                                </MultiBinding>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </MenuItem.ItemContainerStyle>
+                <MenuItem.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock>
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Text" Value="{Binding Name}" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Name}" Value="Favoritos">
+                                            <Setter Property="Text" Value="{DynamicResource Str_Favoritos}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </DataTemplate>
+                </MenuItem.ItemTemplate>
+            </MenuItem>
+
+            <MenuItem Command="{Binding PlacementTarget.Tag.EditarMusicaCommand,
+                      RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                      CommandParameter="{Binding PlacementTarget.DataContext,
+                      RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                <MenuItem.Header>
+                    <Grid>
+                        <TextBlock Text="{DynamicResource Str_Editar}" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                        <iconPacks:PackIconBoxIcons Kind="SolidPencil" HorizontalAlignment="Right"
+                                                    VerticalAlignment="Center"
+                                                    Foreground="{DynamicResource TextPrimaryBrush}" Width="14" />
+                    </Grid>
+                </MenuItem.Header>
+            </MenuItem>
+
+            <MenuItem Command="{Binding PlacementTarget.Tag.PedirEliminarMusicaCommand,
+                      RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                      CommandParameter="{Binding PlacementTarget.DataContext,
+                      RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                <MenuItem.Header>
+                    <Grid>
+                        <TextBlock Text="{DynamicResource Str_Eliminar}" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                        <iconPacks:PackIconBoxIcons Kind="SolidTrashAlt" HorizontalAlignment="Right"
+                                                    VerticalAlignment="Center"
+                                                    Foreground="{DynamicResource TextError}" Width="14" />
+                    </Grid>
+                </MenuItem.Header>
+            </MenuItem>
+        </ContextMenu>
+
+        <DataTemplate x:Key="ResultadoPesquisaTemplate">
+            <Border Background="Transparent" Padding="8,6" Cursor="Hand">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Background" Value="{DynamicResource SurfaceRaisedBrush}" />
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource SurfaceOverlayBrush}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+
+                <Border.InputBindings>
+                    <MouseBinding Gesture="LeftClick"
+                                  Command="{Binding DataContext.TocarResultadoCommand, ElementName=PesquisaRoot}"
+                                  CommandParameter="{Binding}" />
+                </Border.InputBindings>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Border Width="45" Height="45" CornerRadius="4"
+                            Style="{StaticResource BorderClip}"
+                            Background="{DynamicResource SurfaceAltBrush}">
+                        <Image Source="{Binding Image, Converter={StaticResource BytesParaImagemConverter},ConverterParameter=120}"
+                               Stretch="UniformToFill" />
+                    </Border>
+
+                    <StackPanel Grid.Column="1" Margin="10,0" VerticalAlignment="Top">
+                        <TextBlock Text="{Binding Titulo}" FontSize="13" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextPrimaryBrush}"
+                                   TextTrimming="CharacterEllipsis" />
+                        <TextBlock Text="{Binding Artista}" FontSize="11"
+                                   Foreground="{DynamicResource TextSecondaryBrush}"
+                                   TextTrimming="CharacterEllipsis" />
+                    </StackPanel>
+
+                    <Button Grid.Column="2" Background="Transparent" BorderThickness="0"
+                            Padding="6" Cursor="Hand"
+                            Tag="{Binding DataContext.Player, ElementName=PesquisaRoot}"
+                            ContextMenu="{StaticResource MusicaContextMenu}"
+                            ContextMenuOpening="TresPontos_ContextMenuOpening"
+                            Click="TresPontos_Click">
+                        <iconPacks:PackIconBoxIcons Kind="SolidDotsVertical"
+                                                    Width="14" Height="14"
+                                                    Foreground="{DynamicResource TextMutedBrush}" />
+                    </Button>
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <Style x:Key="WinCaptionStyle" TargetType="Button" BasedOn="{StaticResource ButtonCustom}">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Width" Value="47" />
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="Height" Value="32" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
+        </Style>
     </Window.Resources>
+
+    <Window.Style>
+        <Style TargetType="Window">
+            <Setter Property="WindowStyle" Value="SingleBorderWindow" />
+            <Setter Property="WindowChrome.WindowChrome">
+                <Setter.Value>
+                    <WindowChrome CaptionHeight="32" ResizeBorderThickness="6" UseAeroCaptionButtons="False" GlassFrameThickness="-1" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Style>
 
     <Grid>
         <Grid.CacheMode>
             <BitmapCache RenderAtScale="1" />
         </Grid.CacheMode>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <DockPanel x:Name="RootPanel" Grid.Row="0" Background="{DynamicResource SurfaceBrush}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
+                <!-- タイトル文字列（WindowChromeがnullのときも出たまま） -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="8,0">
+                    <!--<Image Source="/Resources/Icons/icon-app.png" Width="32" Margin="0,2,0,0" />-->
+                    <TextBlock Text="Kitsune Player"
+                               Foreground="{DynamicResource TextSecondaryBrush}" FontFamily="{StaticResource FonteHiragino}"
+                               VerticalAlignment="Center" Margin="8,0"
+                               FontSize="12" TextTrimming="CharacterEllipsis" />
+                </StackPanel>
 
-            <!-- ===== CONTEÚDO (Loading / Shell) ===== -->
-            <Grid ClipToBounds="True" Background="{DynamicResource SurfaceBrush}">
-                <!--===== PAGINAS =====-->
-                <ContentControl Content="{Binding CurrentView}" ClipToBounds="True" />
+                <!-- トグルボタン（必要に応じて表示/非表示を切り替え可能） -->
+
+                <Grid x:Name="PesquisaRoot" Grid.Column="1" Width="Auto" Margin="0,8,0,0"
+                      WindowChrome.IsHitTestVisibleInChrome="True">
+
+                    <hc:SearchBar  x:Name="SearBar" Width="340"
+                                  Text="{Binding TextoPesquisa, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" CaretBrush="{DynamicResource TextMutedBrush}"
+                                  Foreground="{DynamicResource TextSecondaryBrush}" Focusable="True"
+                                  FontFamily="{DynamicResource FonteInter}"
+                                  hc:InfoElement.Placeholder="{DynamicResource Str_Pesquisa}"
+                                  WindowChrome.IsHitTestVisibleInChrome="True"
+                                  GotKeyboardFocus="SearBar_GotKeyboardFocus"
+                                  PreviewKeyDown="SearBar_PreviewKeyDown"
+                                  Padding="16,0">
+                        <hc:SearchBar.Style>
+                            <Style TargetType="hc:SearchBar" BasedOn="{StaticResource SearchBarExtend}">
+                                <Setter Property="Background" Value="{DynamicResource SurfaceAltBrush}" />
+                                <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="BorderBrush" Value="{DynamicResource TextMutedBrush}" />
+                                <Setter Property="hc:BorderElement.CornerRadius" Value="4" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsFocused" Value="True">
+                                        <Setter Property="Background" Value="{DynamicResource SurfaceRaisedBrush}" />
+                                        <Setter Property="BorderThickness" Value="1" />
+                                        <Setter Property="BorderBrush" Value="{DynamicResource BorderStrongBrush}" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </hc:SearchBar.Style>
+                    </hc:SearchBar>
+
+                    <Popup PlacementTarget="{Binding ElementName=SearBar}"
+                           Placement="Bottom" StaysOpen="True"  Focusable="True" Margin="4"
+                           AllowsTransparency="True" PopupAnimation="Fade">
+                        <Popup.Style>
+                            <Style TargetType="Popup">
+                                <Setter Property="IsOpen" Value="{Binding PesquisaAberta, Mode=OneWay}" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Resultados.Count}" Value="0">
+                                        <Setter Property="IsOpen" Value="False" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Popup.Style>
+                        <Grid>
+                            <Grid.Style>
+                                <Style TargetType="Grid">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Resultados.Count}" Value="0">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                            <Border x:Name="Container" Width="{Binding ActualWidth, ElementName=SearBar}"
+                                    Margin="0,4,0,0" CornerRadius="8" BorderBrush="{DynamicResource BorderStrongBrush}" BorderThickness="1"
+                                    Background="{DynamicResource SurfaceRaisedBrush}">
+                                <ItemsControl ItemsSource="{Binding Resultados}"
+                                              ItemTemplate="{StaticResource ResultadoPesquisaTemplate}" />
+                            </Border>
+                        </Grid>
+                    </Popup>
+                </Grid>
+
+                <!-- コントロールボックス（★ UseCustomTitleBar が False のときは非表示にする） -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Height="Auto" Background="Transparent">
+
+                    <!-- 最小化 -->
+                    <Button x:Name="MinimizeButton"
+                            Style="{StaticResource WinCaptionStyle}"
+                            FontFamily="Segoe MDL2 Assets" Content="&#xE921;"
+                            WindowChrome.IsHitTestVisibleInChrome="True"
+                            Click="Minimize_Click"
+                            ToolTip="最小化" />
+
+                    <!-- 最大化 -->
+                    <Button x:Name="MaximizeButton"
+                            Style="{StaticResource WinCaptionStyle}"
+                            FontFamily="Segoe MDL2 Assets" Content="&#xE922;"
+                            WindowChrome.IsHitTestVisibleInChrome="True"
+                            Click="Maximize_Click"
+                            ToolTip="最大化" />
+
+                    <!-- 閉じる -->
+                    <Button x:Name="CloseButton"
+                            Style="{StaticResource WinCaptionStyle}"
+                            FontFamily="Segoe MDL2 Assets" Content="&#xE8BB;"
+                            WindowChrome.IsHitTestVisibleInChrome="True"
+                            Click="Close_Click"
+                            ToolTip="閉じる" />
+                </StackPanel>
             </Grid>
+        </DockPanel>
+        <!-- ===== CONTEÚDO (Loading / Shell) ===== -->
+        <Grid Grid.Row="1" ClipToBounds="True" Background="{DynamicResource SurfaceBrush}" Margin="0,4,0,0"
+              PreviewMouseDown="Window_PreviewMouseDown">
+            <!--===== PAGINAS =====-->
+            <ContentControl Content="{Binding CurrentView}" ClipToBounds="True" />
         </Grid>
     </Grid>
 </Window>

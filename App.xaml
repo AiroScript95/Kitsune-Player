@@ -1,19 +1,24 @@
 ﻿<Application x:Class="Project_Kitsune.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:Project_Kitsune.Converters">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <!-- HandyControl Resources -->
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml" />
+
                 <!-- Tema Local -->
                 <ResourceDictionary Source="/Resources/Themes/Colors.Asa.xaml" />
+
+                <!--Styles-->
+                <ResourceDictionary Source="/Resources/Utils/HoverListbox.xaml" />
+                <ResourceDictionary Source="/Resources/Utils/PrettyScrollBar.xaml" />
                 <ResourceDictionary Source="/Resources/Utils/PrettySlider.xaml" />
                 <ResourceDictionary Source="/Resources/Utils/PrettySliderEqualizer.xaml" />
-                <ResourceDictionary Source="/Resources/Utils/HoverListbox.xaml" />
                 <ResourceDictionary Source="/Resources/Utils/Styles.xaml" />
-                <ResourceDictionary Source="/Resources/Utils/PrettyScrollBar.xaml" />
+
                 <!-- Idioma -->
                 <ResourceDictionary Source="/Resources/Languages/Strings.pt.xaml" />
             </ResourceDictionary.MergedDictionaries>
@@ -22,6 +27,21 @@
             <FontFamily x:Key="FonteHiragino">pack://application:,,,/Resources/Fonts/#Hiragino Kaku Gothic Pro W6</FontFamily>
             <FontFamily x:Key="FonteInter">pack://application:,,,/Resources/Fonts/#Inter 18pt</FontFamily>
             <FontFamily x:Key="FonteJetBrains">pack://application:,,,/Resources/Fonts/#JetBrains Mono</FontFamily>
+
+            <converters:MusicaAtualConverter x:Key="MusicaAtualConverter" />
+            <converters:BytesParaImagemConverter x:Key="BytesParaImagemConverter" />
+            <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+            <converters:IndiceParaNumeroConverter x:Key="IndiceParaNumeroConverter" />
+            <converters:ZeroToCollapsedConverter x:Key="ZeroToCollapsedConverter" />
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <converters:StringVazioParaVisibilidadeConverter x:Key="StringVazioParaVisibilidade" />
+            <converters:LinhaAtualConverter x:Key="LinhaAtualConverter" />
+            <converters:ProgressoParaLarguraConverter x:Key="ProgressoParaLarguraConverter" />
+            <converters:MusicaEPlaylistConverter x:Key="MusicaEPlaylistConverter" />
+            <converters:NomeNaoFavoritosConverter x:Key="NomeNaoFavoritosConverter" />
+            <converters:StringParaImagemConverter x:Key="StringParaImagemConverter" />
+            <converters:StringToUriConverter x:Key="StringToUriConverter" />
+            <converters:GanhoParaAlturaConverter x:Key="GanhoParaAlturaConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

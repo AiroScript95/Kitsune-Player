@@ -1,14 +1,16 @@
 ﻿using HandyControl.Tools;
 using Microsoft.Extensions.DependencyInjection;
+using Project_Kitsune.Helpers;
 using Project_Kitsune.Models;
 using Project_Kitsune.Services;
 using Project_Kitsune.ViewModels;
 using System.Diagnostics;
 using System.Windows;
-using System.Windows.Media;
-using System.Windows.Threading;
-using Project_Kitsune.Helpers;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
 
 namespace Project_Kitsune.Views
 {
@@ -26,7 +28,6 @@ namespace Project_Kitsune.Views
         private HwndSource? _hwndSource;
         private const int WM_DEVICECHANGE = 0x0219;
         private const int DBT_DEVICEARRIVAL = 0x8000;
-        private const int DBT_DEVICEREMOVECOMPLETE = 0x8004;
 
         /* ===== CONSTRUTOR ===== */
 
@@ -53,9 +54,9 @@ namespace Project_Kitsune.Views
             double y = configuracao.JanelaY;
 
             bool estaNaTela = x >= SystemParameters.VirtualScreenLeft &&
-                              x < (SystemParameters.VirtualScreenLeft + SystemParameters.VirtualScreenWidth) &&
-                              y >= SystemParameters.VirtualScreenTop &&
-                              y < (SystemParameters.VirtualScreenTop + SystemParameters.VirtualScreenHeight);
+                                    x < (SystemParameters.VirtualScreenLeft + SystemParameters.VirtualScreenWidth) &&
+                                      y >= SystemParameters.VirtualScreenTop &&
+                                        y < (SystemParameters.VirtualScreenTop + SystemParameters.VirtualScreenHeight);
 
             if (estaNaTela && (x != 0 || y != 0))
             {
@@ -69,6 +70,7 @@ namespace Project_Kitsune.Views
             }
 
             this.Closing += MainWindow_Closing;
+            StateChanged += (s, e) => AtualizarIconeMaximizar();
 
             ConfigHelper.Instance.SetLang("en");
         }
@@ -78,6 +80,7 @@ namespace Project_Kitsune.Views
         protected override void OnSourceInitialized(EventArgs e)
         {
             base.OnSourceInitialized(e);
+            CustomTitleBar.Apply(this, MinimizeButton, MaximizeButton, CloseButton);
             smtcService?.Inicializar(this, player);
             // DwmHelper.AtivarCantosArredondados(this);
             // DwmHelper.OcultarIcon(this);
@@ -89,6 +92,12 @@ namespace Project_Kitsune.Views
                 _hwndSource = source;
                 _hwndSource.AddHook(WndProc);
             }
+        }
+
+        protected override void OnDeactivated(EventArgs e)
+        {
+            base.OnDeactivated(e);
+            if (DataContext is MainViewModel vm) vm.PesquisaAberta = false;
         }
 
         private async Task WndProc_TratarDeviceArrivalAsync()
@@ -151,6 +160,30 @@ namespace Project_Kitsune.Views
                 AtualizarCorBordaNativa();
         }
 
+        private void AtualizarIconeMaximizar()
+        {
+            if (WindowState == WindowState.Maximized)
+            {
+                MaximizeButton.Content = "\uE923"; // Duas janelas sobrepostas (Restaurar)
+                MaximizeButton.ToolTip = "元に戻す";
+            }
+            else
+            {
+                MaximizeButton.Content = "\uE922"; // Quadrado único (Maximizar)
+                MaximizeButton.ToolTip = "最大化";
+            }
+        }
+
+        private void Minimize_Click(object sender, RoutedEventArgs e) => SystemCommands.MinimizeWindow(this);
+
+        private void Maximize_Click(object sender, RoutedEventArgs e)
+        {
+            if (WindowState == WindowState.Maximized) SystemCommands.RestoreWindow(this);
+            else SystemCommands.MaximizeWindow(this);
+        }
+
+        private void Close_Click(object sender, RoutedEventArgs e) => SystemCommands.CloseWindow(this);
+
         /* ===== UTILS ===== */
 
         private void SalvarDados()
@@ -186,5 +219,32 @@ namespace Project_Kitsune.Views
             }
             SalvarDados();
         }
+
+        private void SearBar_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            if (DataContext is MainViewModel vm) vm.PesquisaAberta = true;
+        }
+
+        private void SearBar_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape && DataContext is MainViewModel vm) vm.PesquisaAberta = false;
+        }
+
+        private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            FocusManager.SetFocusedElement(this, this);
+            if (DataContext is MainViewModel vm) vm.PesquisaAberta = false;
+        }
+
+        private void TresPontos_Click(object sender, RoutedEventArgs e)
+        {
+            var botao = (Button)sender;
+            botao.ContextMenu.PlacementTarget = botao;
+            botao.ContextMenu.Placement = PlacementMode.Bottom;
+            botao.ContextMenu.IsOpen = true;
+        }
+
+        private void TresPontos_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+            => player.CarregarPlaylistsDisponiveis();
     }
 }

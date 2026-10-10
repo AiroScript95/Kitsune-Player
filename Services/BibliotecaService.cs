@@ -1,16 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Project_Kitsune.Models;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
-using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
 using FileIO = Microsoft.VisualBasic.FileIO;
 
 namespace Project_Kitsune.Services
@@ -20,9 +14,9 @@ namespace Project_Kitsune.Services
         public DatabaseService databaseService { get; set; } = App.ServiceProvider.GetRequiredService<DatabaseService>();
 
         protected HashSet<string> ExtensoesValidas = new(StringComparer.OrdinalIgnoreCase)
-            {
-                ".mp3", ".flac", ".wav", ".ogg", ".m4a", ".aac", ".wma", ".amr", ".opus", ".midi", ".ape", ".aiff"
-            };
+        {
+        ".mp3", ".flac", ".wav", ".ogg", ".m4a", ".aac", ".wma", ".amr", ".opus", ".midi", ".ape", ".aiff"
+        };
 
         private readonly List<FileSystemWatcher> _watchers = new();
         public ObservableCollection<Music> Musicas { get; } = new();
@@ -40,8 +34,8 @@ namespace Project_Kitsune.Services
             try
             {
                 arquivos = Directory.EnumerateFiles(caminhoPasta, "*.*", SearchOption.TopDirectoryOnly)
-                                     .Where(f => ExtensoesValidas.Contains(Path.GetExtension(f)))
-                                     .ToList();
+.Where(f => ExtensoesValidas.Contains(Path.GetExtension(f)))
+                    .ToList();
             }
             catch (IOException ex)
             {
@@ -65,70 +59,70 @@ namespace Project_Kitsune.Services
             };
 
             Parallel.ForEach(arquivos, opcoes, item =>
-            {
-                try
-                {
-                    FileInfo fileInfo = new(item);
-                    long dataModificacaoAtual = fileInfo.LastWriteTimeUtc.Ticks;
+                                                                {
+                                                                    try
+                                                                    {
+                                                                        FileInfo fileInfo = new(item);
+                                                                        long dataModificacaoAtual = fileInfo.LastWriteTimeUtc.Ticks;
 
-                    bool temCache = cacheCompleto.TryGetValue(item, out var entradaCache);
-                    Music? musicaCache = temCache ? entradaCache.Musica : null;
-                    long dataModificacaoCache = temCache ? entradaCache.DataModificacao : 0;
-                    Music music;
+                                                                        bool temCache = cacheCompleto.TryGetValue(item, out var entradaCache);
+                                                                        Music? musicaCache = temCache ? entradaCache.Musica : null;
+                                                                        long dataModificacaoCache = temCache ? entradaCache.DataModificacao : 0;
+                                                                        Music music;
 
-                    if (musicaCache != null && dataModificacaoCache == dataModificacaoAtual)
-                    {
-                        musicaCache.DataAdicionado = fileInfo.CreationTimeUtc;
+                                                                        if (musicaCache != null && dataModificacaoCache == dataModificacaoAtual)
+                                                                        {
+                                                                            musicaCache.DataAdicionado = fileInfo.CreationTimeUtc;
 
-                        string caminhoLrc = Path.Combine(caminhoPasta, Path.GetFileNameWithoutExtension(item) + ".kc.lrc");
-                        musicaCache.TemLetraDisponivel = File.Exists(caminhoLrc) || musicaCache.TemLetraDisponivel;
+                                                                            string caminhoLrc = Path.Combine(caminhoPasta, Path.GetFileNameWithoutExtension(item) + ".kc.lrc");
+                                                                            musicaCache.TemLetraDisponivel = File.Exists(caminhoLrc) || musicaCache.TemLetraDisponivel;
 
-                        music = musicaCache;
-                    }
-                    else
-                    {
-                        using (TagLib.File tagFile = TagLib.File.Create(item))
-                        {
-                            byte[] imagem = Array.Empty<byte>();
-                            if (tagFile.Tag.Pictures.Length > 0)
-                                imagem = tagFile.Tag.Pictures[0].Data.Data;
-                            string caminhoLrc = Path.Combine(caminhoPasta, Path.GetFileNameWithoutExtension(item) + ".kc.lrc");
+                                                                            music = musicaCache;
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            using (TagLib.File tagFile = TagLib.File.Create(item))
+                                                                            {
+                                                                                byte[] imagem = Array.Empty<byte>();
+                                                                                if (tagFile.Tag.Pictures.Length > 0)
+                                                                                    imagem = tagFile.Tag.Pictures[0].Data.Data;
+                                                                                string caminhoLrc = Path.Combine(caminhoPasta, Path.GetFileNameWithoutExtension(item) + ".kc.lrc");
 
-                            music = new Music
-                            {
-                                Titulo = tagFile.Tag.Title ?? Path.GetFileNameWithoutExtension(item),
-                                Artista = tagFile.Tag.FirstPerformer ?? "Unknown",
-                                Album = tagFile.Tag.Album ?? "Unknown",
-                                Genero = tagFile.Tag.FirstGenre ?? "Unknown",
-                                Caminho = item,
-                                Duracao = tagFile.Properties.Duration,
-                                DuracaoArredondada = TimeSpan.FromSeconds((int)tagFile.Properties.Duration.TotalSeconds),
-                                DataAdicionado = fileInfo.CreationTimeUtc,
-                                VezesTocada = databaseService.ObterVezesTocada(item),
-                                Gosto = musicaCache?.Gosto ?? false,
-                                Image = imagem,
-                                TemLetraDisponivel = File.Exists(caminhoLrc) || !string.IsNullOrWhiteSpace(tagFile.Tag.Lyrics)
-                            };
-                        }
+                                                                                music = new Music
+                                                                                {
+                                                                                    Titulo = tagFile.Tag.Title ?? Path.GetFileNameWithoutExtension(item),
+                                                                                    Artista = tagFile.Tag.FirstPerformer ?? "Unknown",
+                                                                                    Album = tagFile.Tag.Album ?? "Unknown",
+                                                                                    Genero = tagFile.Tag.FirstGenre ?? "Unknown",
+                                                                                    Caminho = item,
+                                                                                    Duracao = tagFile.Properties.Duration,
+                                                                                    DuracaoArredondada = TimeSpan.FromSeconds((int)tagFile.Properties.Duration.TotalSeconds),
+                                                                                    DataAdicionado = fileInfo.CreationTimeUtc,
+                                                                                    VezesTocada = databaseService.ObterVezesTocada(item),
+                                                                                    Gosto = musicaCache?.Gosto ?? false,
+                                                                                    Image = imagem,
+                                                                                    TemLetraDisponivel = File.Exists(caminhoLrc) || !string.IsNullOrWhiteSpace(tagFile.Tag.Lyrics)
+                                                                                };
+                                                                            }
 
-                        paraSalvar.Add((music, dataModificacaoAtual));
-                    }
+                                                                            paraSalvar.Add((music, dataModificacaoAtual));
+                                                                        }
 
-                    loteUi.Enqueue(music);
-                    int total = Interlocked.Increment(ref processados);
+                                                                        loteUi.Enqueue(music);
+                                                                        int total = Interlocked.Increment(ref processados);
 
-                    if (total % 8 == 0)
-                    {
-                        List<Music> lote = new List<Music>();
-                        while (lote.Count < 8 && loteUi.TryDequeue(out var m)) lote.Add(m);
-                        if (lote.Count > 0) aoCompletarLote(lote);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine($"ERRO: {ex.Message}");
-                }
-            });
+                                                                        if (total % 8 == 0)
+                                                                        {
+                                                                            List<Music> lote = new List<Music>();
+                                                                            while (lote.Count < 8 && loteUi.TryDequeue(out var m)) lote.Add(m);
+                                                                            if (lote.Count > 0) aoCompletarLote(lote);
+                                                                        }
+                                                                    }
+                                                                    catch (Exception ex)
+                                                                    {
+                                                                        System.Diagnostics.Debug.WriteLine($"ERRO: {ex.Message}");
+                                                                    }
+                                                                });
 
             List<Music> restante = new List<Music>();
             while (loteUi.TryDequeue(out var m)) restante.Add(m);
@@ -236,27 +230,42 @@ namespace Project_Kitsune.Services
                 System.Diagnostics.Debug.WriteLine($"ERRO ao buscar letra na LRCLIB: {ex.Message}");
             }
 
+            try
+            {
+                string? letraNetease = await BuscarLetraNetease(musica.Titulo, musica.Artista);
+                if (!string.IsNullOrWhiteSpace(letraNetease))
+                {
+                    await File.WriteAllTextAsync(caminhoLrcKitsune, letraNetease);
+                    musica.TemLetraDisponivel = true;
+                    return ParsearLetra(letraNetease, FonteLetra.Lrclib, caminhoLrcKitsune);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ERRO ao buscar letra na Netease: {ex.Message}");
+            }
+
             // 3. letra embutida na tag do ficheiro de áudio
             Letra? letraEmbutida = await Task.Run(() =>
-            {
-                try
-                {
-                    using (TagLib.File tagFile = TagLib.File.Create(musica.Caminho))
-                    {
-                        string? letra = tagFile.Tag.Lyrics;
-                        if (!string.IsNullOrWhiteSpace(letra))
-                        {
-                            musica.TemLetraDisponivel = true;
-                            return ParsearLetra(letra, FonteLetra.Embutida, musica.Caminho);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine($"ERRO ao ler letra embutida: {ex.Message}");
-                }
-                return null;
-            });
+                                      {
+                                          try
+                                          {
+                                              using (TagLib.File tagFile = TagLib.File.Create(musica.Caminho))
+                                              {
+                                                  string? letra = tagFile.Tag.Lyrics;
+                                                  if (!string.IsNullOrWhiteSpace(letra))
+                                                  {
+                                                      musica.TemLetraDisponivel = true;
+                                                      return ParsearLetra(letra, FonteLetra.Embutida, musica.Caminho);
+                                                  }
+                                              }
+                                          }
+                                          catch (Exception ex)
+                                          {
+                                              System.Diagnostics.Debug.WriteLine($"ERRO ao ler letra embutida: {ex.Message}");
+                                          }
+                                          return null;
+                                      });
 
             if (letraEmbutida != null) return letraEmbutida;
 
@@ -337,15 +346,16 @@ namespace Project_Kitsune.Services
 
         private static readonly HttpClient _httpClient = new HttpClient()
         {
+            DefaultRequestHeaders = { { "User-Agent", "Mozilla/5.0" } },
             Timeout = TimeSpan.FromSeconds(5)
         };
 
         private async Task<string?> BuscarLetraLrclib(string titulo, string artista, string album, TimeSpan duracao)
         {
             string url = $"https://lrclib.net/api/get?track_name={Uri.EscapeDataString(titulo)}" +
-                         $"&artist_name={Uri.EscapeDataString(artista)}" +
-                         $"&album_name={Uri.EscapeDataString(album)}" +
-                         $"&duration={(int)duracao.TotalSeconds}";
+            $"&artist_name={Uri.EscapeDataString(artista)}" +
+            $"&album_name={Uri.EscapeDataString(album)}" +
+            $"&duration={(int)duracao.TotalSeconds}";
 
             try
             {
@@ -356,13 +366,13 @@ namespace Project_Kitsune.Services
                 using JsonDocument doc = JsonDocument.Parse(json);
 
                 if (doc.RootElement.TryGetProperty("syncedLyrics", out JsonElement syncedEl) &&
-                    syncedEl.ValueKind == JsonValueKind.String)
+                syncedEl.ValueKind == JsonValueKind.String)
                 {
                     return syncedEl.GetString();
                 }
 
                 if (doc.RootElement.TryGetProperty("plainLyrics", out JsonElement plainEl) &&
-                    plainEl.ValueKind == JsonValueKind.String)
+                plainEl.ValueKind == JsonValueKind.String)
                 {
                     return plainEl.GetString();
                 }
@@ -379,30 +389,79 @@ namespace Project_Kitsune.Services
             return null;
         }
 
+        private async Task<string?> BuscarLetraNetease(string titulo, string artista)
+        {
+            string termoBusca = Uri.EscapeDataString($"{titulo} {artista}");
+            string urlBusca = $"https://music.163.com/api/search/get/web?csrf_token=&type=1&s={termoBusca}&limit=1";
+
+            try
+            {
+                HttpResponseMessage respostaBusca = await _httpClient.GetAsync(urlBusca);
+                if (!respostaBusca.IsSuccessStatusCode) return null;
+
+                string jsonBusca = await respostaBusca.Content.ReadAsStringAsync();
+                using JsonDocument docBusca = JsonDocument.Parse(jsonBusca);
+
+                if (!docBusca.RootElement.TryGetProperty("result", out JsonElement resultEl) ||
+                !resultEl.TryGetProperty("songs", out JsonElement songsEl) ||
+                songsEl.ValueKind != JsonValueKind.Array ||
+                songsEl.GetArrayLength() == 0)
+                {
+                    return null;
+                }
+
+                long idMusica = songsEl[0].GetProperty("id").GetInt64();
+                string urlLetra = $"[https://music.163.com/api/song/lyric?id=](https://music.163.com/api/song/lyric?id=){idMusica}&lv=-1&kv=-1&tv=-1";
+
+                HttpResponseMessage respostaLetra = await _httpClient.GetAsync(urlLetra);
+                if (!respostaLetra.IsSuccessStatusCode) return null;
+
+                string jsonLetra = await respostaLetra.Content.ReadAsStringAsync();
+                using JsonDocument docLetra = JsonDocument.Parse(jsonLetra);
+
+                if (docLetra.RootElement.TryGetProperty("lrc", out JsonElement lrcEl) &&
+                lrcEl.TryGetProperty("lyric", out JsonElement lyricEl) &&
+                lyricEl.ValueKind == JsonValueKind.String)
+                {
+                    return lyricEl.GetString();
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                System.Diagnostics.Debug.WriteLine("NetEase: tempo limite excedido");
+            }
+            catch (HttpRequestException ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"NetEase: erro de rede - {ex.Message}");
+            }
+
+            return null;
+        }
+
         public async Task CarregarBibliotecaAsync(IEnumerable<string> pastas, string criterio, bool descendente)
         {
             var todasMusicas = new List<Music>();
             object lockMusicas = new();
 
             var tarefas = pastas
-                .Where(p => !string.IsNullOrWhiteSpace(p))
-                .Select(pasta => Task.Run(() =>
-                {
-                    LerMusicasDaPasta(pasta, lote =>
-                    {
-                        lock (lockMusicas) { todasMusicas.AddRange(lote); }
-                    });
-                }))
-                .ToList();
+.Where(p => !string.IsNullOrWhiteSpace(p))
+.Select(pasta => Task.Run(() =>
+                        {
+                            LerMusicasDaPasta(pasta, lote =>
+                                                                                                                                                                                                                          {
+                                                                                                                                                                                                                              lock (lockMusicas) { todasMusicas.AddRange(lote); }
+                                                                                                                                                                                                                          });
+                        }))
+                            .ToList();
 
             await Task.WhenAll(tarefas);
 
             List<Music> ordenadas = _ordenacaoService.Ordenar(todasMusicas, criterio, descendente);
 
             System.Windows.Application.Current.Dispatcher.Invoke(() =>
-            {
-                AtualizarMusicas(ordenadas);
-            });
+                                                                                              {
+                                                                                                  AtualizarMusicas(ordenadas);
+                                                                                              });
             BibliotecaCarregada?.Invoke();
         }
 
@@ -482,25 +541,25 @@ namespace Project_Kitsune.Services
             if (musica == null) return;
 
             System.Windows.Application.Current.Dispatcher.Invoke(() =>
-            {
-                bool jaExiste = Musicas.Any(m => string.Equals(m.Caminho, musica.Caminho, StringComparison.OrdinalIgnoreCase));
-                if (!jaExiste)
-                {
-                    Musicas.Add(musica);
-                    ReordenarMusicas();
-                }
-            });
+                          {
+                              bool jaExiste = Musicas.Any(m => string.Equals(m.Caminho, musica.Caminho, StringComparison.OrdinalIgnoreCase));
+                              if (!jaExiste)
+                              {
+                                  Musicas.Add(musica);
+                                  ReordenarMusicas();
+                              }
+                          });
         }
 
         private async void Watcher_Renamed(object sender, RenamedEventArgs e)
         {
             System.Windows.Application.Current.Dispatcher.Invoke(() =>
-            {
-                Music? musicaAntiga = Musicas.FirstOrDefault(m =>
-                    string.Equals(m.Caminho, e.OldFullPath, StringComparison.OrdinalIgnoreCase));
-                if (musicaAntiga != null)
-                    Musicas.Remove(musicaAntiga);
-            });
+                                  {
+                                      Music? musicaAntiga = Musicas.FirstOrDefault(m =>
+                                                                                                                                                                                                                              string.Equals(m.Caminho, e.OldFullPath, StringComparison.OrdinalIgnoreCase));
+                                      if (musicaAntiga != null)
+                                          Musicas.Remove(musicaAntiga);
+                                  });
 
             string extensao = Path.GetExtension(e.FullPath).ToLowerInvariant();
             if (!ExtensoesValidas.Select(ext => ext.ToLowerInvariant()).Contains(extensao)) return;
@@ -512,26 +571,26 @@ namespace Project_Kitsune.Services
             if (musicaNova == null) return;
 
             System.Windows.Application.Current.Dispatcher.Invoke(() =>
-            {
-                bool jaExiste = Musicas.Any(m => string.Equals(m.Caminho, musicaNova.Caminho, StringComparison.OrdinalIgnoreCase));
-                if (!jaExiste)
-                {
-                    Musicas.Add(musicaNova);
-                    ReordenarMusicas();
-                }
-            });
+                                              {
+                                                  bool jaExiste = Musicas.Any(m => string.Equals(m.Caminho, musicaNova.Caminho, StringComparison.OrdinalIgnoreCase));
+                                                  if (!jaExiste)
+                                                  {
+                                                      Musicas.Add(musicaNova);
+                                                      ReordenarMusicas();
+                                                  }
+                                              });
         }
 
         private void Watcher_Deleted(object sender, FileSystemEventArgs e)
         {
             System.Windows.Application.Current.Dispatcher.Invoke(() =>
-            {
-                Music? musica = Musicas.FirstOrDefault(m =>
-                    string.Equals(m.Caminho, e.FullPath, StringComparison.OrdinalIgnoreCase));
+                                                      {
+                                                          Music? musica = Musicas.FirstOrDefault(m =>
+                                                                                                                                                                                                                                                                      string.Equals(m.Caminho, e.FullPath, StringComparison.OrdinalIgnoreCase));
 
-                if (musica != null) Musicas.Remove(musica);
-                ReordenarMusicas();
-            });
+                                                          if (musica != null) Musicas.Remove(musica);
+                                                          ReordenarMusicas();
+                                                      });
         }
 
         private void Watcher_Error(object sender, ErrorEventArgs e)
@@ -584,22 +643,24 @@ namespace Project_Kitsune.Services
             }
         }
 
-        public void SalvarEdicaoMusica(Music musica, string novoTitulo, string novoArtista, string novoAlbum)
+        public void SalvarEdicaoMusica(Music musica, string novoTitulo, string novoArtista, string novoAlbum, string novoGenero)
         {
             // 1. Ficheiro físico
             var tagFile = TagLib.File.Create(musica.Caminho);
             tagFile.Tag.Title = novoTitulo;
             tagFile.Tag.Performers = new[] { novoArtista };
             tagFile.Tag.Album = novoAlbum;
+            tagFile.Tag.Genres = new[] { novoGenero };
             tagFile.Save();
 
             // 2. Base de dados
-            databaseService.AtualizarMetadados(musica.Caminho, novoTitulo, novoArtista, novoAlbum);
+            databaseService.AtualizarMetadados(musica.Caminho, novoTitulo, novoArtista, novoAlbum, novoGenero);
 
             // 3. Objeto em memória (pra UI atualizar sem precisar recarregar tudo)
             musica.Titulo = novoTitulo;
             musica.Artista = novoArtista;
             musica.Album = novoAlbum;
+            musica.Genero = novoGenero;
         }
     }
 }

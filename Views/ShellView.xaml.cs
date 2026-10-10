@@ -1,4 +1,7 @@
-﻿using System.Diagnostics;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Project_Kitsune.Models;
+using Project_Kitsune.ViewModels;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -6,9 +9,6 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using Microsoft.Extensions.DependencyInjection;
-using Project_Kitsune.Models;
-using Project_Kitsune.ViewModels;
 using IOPath = System.IO.Path;
 
 namespace Project_Kitsune.Views

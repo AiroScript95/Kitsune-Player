@@ -1,12 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using Project_Kitsune.Models;
 using Project_Kitsune.Services;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
 
 namespace Project_Kitsune.ViewModels
@@ -19,6 +14,7 @@ namespace Project_Kitsune.ViewModels
         public string Titulo { get; set; }
         public string Artista { get; set; }
         public string Album { get; set; }
+        public string Genero { get; set; }
 
         public event Action? FechadoComSucesso;
 
@@ -29,12 +25,13 @@ namespace Project_Kitsune.ViewModels
             Titulo = musica.Titulo;
             Artista = musica.Artista;
             Album = musica.Album;
+            Genero = musica.Genero;
         }
 
         [RelayCommand]
         private void Salvar()
         {
-            _biblioteca.SalvarEdicaoMusica(_musicaOriginal, Titulo, Artista, Album);
+            _biblioteca.SalvarEdicaoMusica(_musicaOriginal, Titulo, Artista, Album, Genero);
             FechadoComSucesso?.Invoke();
         }
 

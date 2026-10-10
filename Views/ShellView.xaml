@@ -14,16 +14,6 @@
              d:DesignHeight="450" d:DesignWidth="800">
 
     <UserControl.Resources>
-        <converters:LinhaAtualConverter x:Key="LinhaAtualConverter" />
-        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
-        <converters:BytesParaImagemConverter x:Key="BytesParaImagemConverter" />
-        <converters:BytesParaThumbConverter x:Key="BytesParaThumbConverter" />
-        <converters:MusicaAtualConverter x:Key="MusicaAtualConverter" />
-        <converters:ProgressoParaLarguraConverter x:Key="ProgressoParaLarguraConverter" />
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        <converters:StringParaImagemConverter x:Key="StringParaImagemConverter" />
-        <converters:StringToUriConverter x:Key="StringToUriConverter" />
-
         <DataTemplate DataType="{x:Type vm:MusicListPageViewModel}">
             <pages:MusicListPage />
         </DataTemplate>
@@ -38,6 +28,15 @@
         </DataTemplate>
         <DataTemplate DataType="{x:Type vm:PlaylistDetailPageViewModel}">
             <pages:PlaylistDetailPage />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ArtistasPageViewModel}">
+            <pages:ArtistasPage />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:AlbunsPageViewModel}">
+            <pages:AlbunsPage />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:GrupoDetailPageViewModel}">
+            <pages:GrupoDetailPage />
         </DataTemplate>
     </UserControl.Resources>
     <Grid>
@@ -107,13 +106,41 @@
                                 </iconPacks:PackIconBoxIcons.Style>
                             </iconPacks:PackIconBoxIcons>
                         </Button>
-                        <Button Style="{StaticResource SidebarButton}"
-                                ToolTip="Adicionar play">
-                            <iconPacks:PackIconBoxIcons Kind="SolidBlock" Width="20" Height="20" />
+                        <Button Command="{Binding IrParaArtistasCommand}"
+                                Style="{StaticResource SidebarButton}"
+                                ToolTip="{DynamicResource Str_Artistas}"
+                                VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,0,0,0">
+                            <iconPacks:PackIconBoxIcons Width="20" Height="20">
+                                <iconPacks:PackIconBoxIcons.Style>
+                                    <Style TargetType="iconPacks:PackIconBoxIcons">
+                                        <Setter Property="Kind" Value="RegularMicrophone" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Page}" Value="Artistas">
+                                                <Setter Property="Kind" Value="SolidMicrophone" />
+                                                <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </iconPacks:PackIconBoxIcons.Style>
+                            </iconPacks:PackIconBoxIcons>
                         </Button>
-                        <Button Style="{StaticResource SidebarButton}"
-                                ToolTip="Adicionar play">
-                            <iconPacks:PackIconBoxIcons Kind="SolidBlock" Width="20" Height="20" />
+                        <Button Command="{Binding IrParaAlbunsCommand}"
+                                Style="{StaticResource SidebarButton}"
+                                ToolTip="{DynamicResource Str_Albuns}"
+                                VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,0,0,0">
+                            <iconPacks:PackIconBoxIcons2 Width="20" Height="20">
+                                <iconPacks:PackIconBoxIcons2.Style>
+                                    <Style TargetType="iconPacks:PackIconBoxIcons2">
+                                        <Setter Property="Kind" Value="RegularAlbum" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Page}" Value="Albuns">
+                                                <Setter Property="Kind" Value="SolidAlbum" />
+                                                <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </iconPacks:PackIconBoxIcons2.Style>
+                            </iconPacks:PackIconBoxIcons2>
                         </Button>
                     </StackPanel>
                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Bottom">
@@ -140,7 +167,7 @@
             </Border>
 
             <!--  CONTEÚDO  -->
-            <Border Grid.Column="1" Grid.Row="1" CornerRadius="16,0,0,16" Margin="0,2,0,0"  ClipToBounds="True"
+            <Border Grid.Column="1" Grid.Row="1" CornerRadius="8,0,0,8" Margin="0,2,0,0"  ClipToBounds="True"
                     BorderThickness="1,1,0,0" BorderBrush="{DynamicResource BorderBrush2}"
                     Style="{StaticResource BorderClip}"
                     Background="{DynamicResource GradientBackground}">
@@ -155,6 +182,7 @@
                     </Border>
                     <Border Background="{DynamicResource SurfaceOverlayBrush}" Opacity="0.65" ClipToBounds="True" />
                     <Border Style="{StaticResource BorderClip}" ClipToBounds="True">
+
                         <ContentControl  Content="{Binding CurrentPage}" ClipToBounds="True">
                             <ContentControl.Resources>
                                 <Style TargetType="ContentPresenter">
@@ -189,6 +217,77 @@
                             </ContentControl.Resources>
                         </ContentControl>
                     </Border>
+                    <!--Modal Excluir-->
+                    <Grid Visibility="{Binding Player.MostrarConfirmacaoExclusao, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Border Background="{DynamicResource SurfaceBrush}" Opacity="0.6">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseLeftButtonUp">
+                                    <i:InvokeCommandAction Command="{Binding Player.CancelarExclusaoCommand}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Border>
+                        <Border Background="{DynamicResource SurfaceAltBrush}"
+                                BorderThickness="1"
+                                BorderBrush="{DynamicResource AccentAltBrush}"
+                                CornerRadius="12" Padding="16"
+                                MinWidth="350"
+                                HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20">
+                            <Border.RenderTransform>
+                                <ScaleTransform ScaleX="0.85" ScaleY="0.85" />
+                            </Border.RenderTransform>
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Player.MostrarConfirmacaoExclusao}" Value="True">
+                                            <DataTrigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX"
+                                                                         From="0.85" To="1" Duration="0:0:0.18">
+                                                            <DoubleAnimation.EasingFunction>
+                                                                <BackEase EasingMode="EaseOut" Amplitude="0.3" />
+                                                            </DoubleAnimation.EasingFunction>
+                                                        </DoubleAnimation>
+                                                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY"
+                                                                         From="0.85" To="1" Duration="0:0:0.18">
+                                                            <DoubleAnimation.EasingFunction>
+                                                                <BackEase EasingMode="EaseOut" Amplitude="0.3" />
+                                                            </DoubleAnimation.EasingFunction>
+                                                        </DoubleAnimation>
+                                                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                         From="0" To="1" Duration="0:0:0.15" />
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </DataTrigger.EnterActions>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <StackPanel>
+                                <Grid Margin="0,0,0,20">
+                                    <Button Command="{Binding Player.CancelarExclusaoCommand}" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource IconButtonSmall}">
+                                        <iconPacks:PackIconBoxIcons Kind="SolidX" Width="12" Height="12" />
+                                    </Button>
+                                </Grid>
+                                <TextBlock Text="{DynamicResource Str_ConfirmarExclusao}"
+                                           FontSize="14" TextAlignment="Center"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" />
+                                <Grid  Margin="0,40,0,0">
+                                    <Button Content="{DynamicResource Str_Cancelar}" Command="{Binding Player.CancelarExclusaoCommand}"
+                                            Margin="0,0,8,0" Padding="16,8"
+                                            Foreground="{DynamicResource TextSecondaryBrush}" FontFamily="{StaticResource FonteInter}"
+                                            Background="{DynamicResource BackgroundBrush}" BorderThickness="0" Width="auto" Height="auto"
+                                            hc:BorderElement.CornerRadius="8"  HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                    <Button Command="{Binding Player.ConfirmarExclusaoCommand}"
+                                            Content="{DynamicResource Str_Eliminar}"
+                                            Padding="16,8" Height="auto" Width="auto" FontFamily="{StaticResource FonteInter}"
+                                            Background="{DynamicResource SurfaceError}" BorderThickness="0"
+                                            Foreground="{DynamicResource TextOnAccentBrush}" hc:BorderElement.CornerRadius="8"
+                                            HorizontalAlignment="Right" VerticalAlignment="Center" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
                 </Grid>
             </Border>
         </Grid>
@@ -666,11 +765,11 @@
                         <Grid Grid.Row="1" Margin="0,10,0,0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
-                                <RowDefinition Height="250" />
+                                <RowDefinition Height="280" />
                             </Grid.RowDefinitions>
 
                             <!-- Bandas do Equalizador -->
-                            <ItemsControl Grid.Row="0"  ItemsSource="{Binding Player.Bandas}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <ItemsControl Grid.Row="0"  ItemsSource="{Binding Player.Bandas}" HorizontalAlignment="Center" VerticalAlignment="Stretch">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <StackPanel Orientation="Horizontal" />
@@ -678,14 +777,20 @@
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <StackPanel Margin="8,0">
-                                            <Slider Minimum="-20" Maximum="20"
+                                        <StackPanel Margin="8,0" Width="46">
+                                            <!-- NOVO: valor do ganho -->
+                                            <TextBlock Text="{Binding Ganho, StringFormat={}{0:+0.#;-0.#;0}dB}"
+                                                       HorizontalAlignment="Center" FontSize="11"
+                                                       FontFamily="{DynamicResource FonteJetBrains}"
+                                                       Foreground="{DynamicResource TextSecondaryBrush}"
+                                                       Margin="0,0,0,6" />
+                                            <Slider Minimum="-12" Maximum="12"
                                                     Value="{Binding Ganho, Mode=TwoWay}" Width="Auto"
-                                                    Orientation="Vertical" MinHeight="300"
+                                                    Orientation="Vertical" MinHeight="280"
                                                     Style="{StaticResource PrettySliderEqualizer}"
                                                     HorizontalAlignment="Center" />
-                                            <TextBlock Text="{Binding Frequencia, StringFormat={}{0} Hz}"
-                                                       HorizontalAlignment="Center" FontSize="10"
+                                            <TextBlock Text="{Binding Frequencia, StringFormat={}{0}Hz}"
+                                                       HorizontalAlignment="Center" FontSize="11"
                                                        FontFamily="{DynamicResource FonteJetBrains}"
                                                        Foreground="{DynamicResource TextSecondaryBrush}"
                                                        Margin="0,6,0,0" />
@@ -700,7 +805,7 @@
                                      SelectedValuePath="Indice"
                                      SelectedValue="{Binding Player.PresetSelecionadoIndice}"
                                      Background="Transparent" BorderThickness="0"
-                                     Margin="5"
+                                     Margin="16"
                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                      ScrollViewer.CanContentScroll="True"
                                      HorizontalContentAlignment="Center">
@@ -711,7 +816,7 @@
                                 </ListBox.ItemsPanel>
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Nome}" FontSize="14" FontFamily="{DynamicResource FonteJetBrains}" HorizontalAlignment="Center" />
+                                        <TextBlock Text="{Binding Nome}" FontSize="12" FontFamily="{DynamicResource FonteInter}" HorizontalAlignment="Center" />
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                                 <ListBox.ItemContainerStyle>
@@ -728,6 +833,7 @@
                                                     <Border Background="{TemplateBinding Background}"
                                                             BorderBrush="{TemplateBinding BorderBrush}"
                                                             BorderThickness="{TemplateBinding BorderThickness}"
+
                                                             CornerRadius="6" MinWidth="155" HorizontalAlignment="Center"
                                                             Padding="{TemplateBinding Padding}">
                                                         <ContentPresenter HorizontalAlignment="Center" />

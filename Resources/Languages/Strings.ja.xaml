@@ -43,7 +43,12 @@
     <system:String x:Key="Str_MusicasOrdenadasPor">並び替え基準</system:String>
     <system:String x:Key="Str_Renomear">名前を変更</system:String>
     <system:String x:Key="Str_Titulo">タイトル</system:String>
-    <system:String x:Key="Str_Artista">アーティスト</system:String>
+    <system:String x:Key="Str_Artistas">アーティスト</system:String>
     <system:String x:Key="Str_Album">アルバム</system:String>
+    <system:String x:Key="Str_Albuns">アルバム</system:String>
+    <system:String x:Key="Str_Genero">ジャンル</system:String>
+    <system:String x:Key="Str_Pesquisa">曲名、アーティスト、アルバム...</system:String>
+    <system:String x:Key="Str_RemoverDaPlaylist">プレイリストから削除</system:String>
+    <system:String x:Key="Str_ComLetra">歌詞あり</system:String>
     <system:String x:Key="Str_">ee</system:String>
 </ResourceDictionary>

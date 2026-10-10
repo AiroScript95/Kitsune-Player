@@ -12,13 +12,6 @@
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="900">
 
-    <UserControl.Resources>
-        <converter:StringParaImagemConverter x:Key="StringParaImagemConverter" />
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-
-        <!-- Estilo de "card" reutilizável para cada secção de configuração -->
-    </UserControl.Resources>
-
     <Grid Style="{StaticResource TransicaoEntrada}">
         <Grid.RowDefinitions>
             <RowDefinition Height="70" />

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace Project_Kitsune.Models
@@ -73,13 +70,20 @@ namespace Project_Kitsune.Models
             }
         }
 
+        private bool _gosto;
+
+        public bool Gosto
+        {
+            get => _gosto;
+            set { if (_gosto != value) { _gosto = value; OnPropertyChanged(); } }
+        }
+
         public string Genero { get; set; } = string.Empty;
         public TimeSpan Duracao { get; set; }
         public TimeSpan DuracaoArredondada { get; set; }
         public DateTime DataAdicionado { get; set; }
         public int VezesTocada { get; set; }
         public byte[] Image { get; set; } = Array.Empty<byte>();
-        public bool Gosto { get; set; }
         public Letra? LetraAtual { get; set; }
 
         public event PropertyChangedEventHandler? PropertyChanged;

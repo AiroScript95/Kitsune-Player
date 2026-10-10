@@ -1,12 +1,11 @@
-﻿using System.Windows;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Win32;
 using Project_Kitsune.Models;
 using Project_Kitsune.Services;
-using CommunityToolkit.Mvvm.Input;
-using Microsoft.Win32;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows;
 
 namespace Project_Kitsune.ViewModels.ShellPages
 {
