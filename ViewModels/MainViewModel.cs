@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Project_Kitsune.Models;
 using Project_Kitsune.Services;
+using Project_Kitsune.ViewModels.ShellPages;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -16,9 +17,10 @@ namespace Project_Kitsune.ViewModels
         protected ConfiguracaoService configuracaoService;
         private readonly OrdenacaoService _ordenacaoService;
         private readonly BibliotecaService _biblioteca;
+        private readonly DatabaseService _databaseService;
         public ObservableCollection<Music> Musicas { get; set; } = new();
         private object? _currentView;
-        private const int MaxResultados = 8;
+        private const int MaxResultados = 2;
         private readonly DispatcherTimer _debounce;
 
         public object? CurrentView
@@ -75,12 +77,37 @@ namespace Project_Kitsune.ViewModels
             set { _pesquisaAberta = value; OnPropertyChanged(); }
         }
 
-        private ObservableCollection<Music> _resultados = new();
+        private ObservableCollection<Music> _resultadosMusica = new();
 
-        public ObservableCollection<Music> Resultados
+        public ObservableCollection<Music> ResultadosMusica
         {
-            get => _resultados;
-            private set { _resultados = value; OnPropertyChanged(); }
+            get => _resultadosMusica;
+            private set { _resultadosMusica = value; OnPropertyChanged(); }
+        }
+
+        private ObservableCollection<GrupoMusicas> _resultadosAlbuns = new();
+
+        public ObservableCollection<GrupoMusicas> ResultadosAlbuns
+        {
+            get => _resultadosAlbuns;
+            private set { _resultadosAlbuns = value; OnPropertyChanged(); }
+        }
+
+        private ObservableCollection<GrupoMusicas> _resultadosArtistas = new();
+
+        public ObservableCollection<GrupoMusicas> ResultadosArtistas
+        {
+            get => _resultadosArtistas;
+            private set { _resultadosArtistas = value; OnPropertyChanged(); }
+        }
+
+        // Propriedade nova
+        private ObservableCollection<Playlist> _resultadosPlaylists = new();
+
+        public ObservableCollection<Playlist> ResultadosPlaylists
+        {
+            get => _resultadosPlaylists;
+            private set { _resultadosPlaylists = value; OnPropertyChanged(); }
         }
 
         protected ShellViewModel _shell;
@@ -92,6 +119,7 @@ namespace Project_Kitsune.ViewModels
             _shell = App.ServiceProvider.GetRequiredService<ShellViewModel>();
             _ordenacaoService = App.ServiceProvider.GetRequiredService<OrdenacaoService>();
             _biblioteca = App.ServiceProvider.GetRequiredService<BibliotecaService>();
+            _databaseService = App.ServiceProvider.GetRequiredService<DatabaseService>();
 
             _shell.PropertyChanged += (s, e) =>
                                 {
@@ -107,7 +135,7 @@ namespace Project_Kitsune.ViewModels
             _debounce.Tick += (s, e) =>
             {
                 _debounce.Stop();
-                Pesquisar();
+                _ = Pesquisar();
             };
         }
 
@@ -137,25 +165,80 @@ namespace Project_Kitsune.ViewModels
             TodasAsMusicas = new ObservableCollection<Music>(filtradas);
         }
 
-        private void Pesquisar()
+        private async Task Pesquisar()
         {
             string termo = TextoPesquisa.Trim();
-            if (termo.Length == 0) { Resultados = new(); return; }
+            if (termo.Length == 0)
+            {
+                ResultadosMusica = new();
+                ResultadosAlbuns = new();
+                ResultadosArtistas = new();
+                ResultadosPlaylists = new();
+                return;
+            }
 
-            var encontradas = _biblioteca.Musicas.ToList() // cópia, por causa do watcher
+            var grupos = App.ServiceProvider.GetRequiredService<GruposService>();
+            var albuns = await grupos.ObterAlbunsAsync();
+            var artistas = await grupos.ObterArtistasAsync();
+
+            if (termo != TextoPesquisa.Trim()) return;
+
+            var musicasEncontradas = _biblioteca.Musicas.ToList()
                 .Where(m =>
                     (m.Titulo?.Contains(termo, StringComparison.OrdinalIgnoreCase) ?? false) ||
                     (m.Artista?.Contains(termo, StringComparison.OrdinalIgnoreCase) ?? false) ||
                     (m.Album?.Contains(termo, StringComparison.OrdinalIgnoreCase) ?? false))
                 .Take(MaxResultados);
 
-            Resultados = new ObservableCollection<Music>(encontradas);
+            var albunsEncontrados = albuns
+                .Where(g => g.Nome?.Contains(termo, StringComparison.OrdinalIgnoreCase) ?? false)
+                .Take(MaxResultados);
+
+            var artistasEncontrados = artistas
+                .Where(g => g.Nome?.Contains(termo, StringComparison.OrdinalIgnoreCase) ?? false)
+                .Take(MaxResultados);
+
+            var playlistsEncontradas = _databaseService.ListarPlaylists()
+                .Where(p => p.Name?.Contains(termo, StringComparison.OrdinalIgnoreCase) ?? false)
+                .Take(MaxResultados);
+
+            ResultadosMusica = new ObservableCollection<Music>(musicasEncontradas);
+            ResultadosAlbuns = new ObservableCollection<GrupoMusicas>(albunsEncontrados);
+            ResultadosArtistas = new ObservableCollection<GrupoMusicas>(artistasEncontrados);
+            ResultadosPlaylists = new ObservableCollection<Playlist>(playlistsEncontradas);
         }
 
         [RelayCommand]
         private void TocarResultado(Music musica)
         {
             Player.TocarMusica(musica, _biblioteca.Musicas.ToList());
+            TextoPesquisa = string.Empty;
+        }
+
+        [RelayCommand]
+        private void AbrirAlbum(GrupoMusicas grupo)
+        {
+            GrupoDetailPageViewModel detalhe = new(_shell, () => new AlbunsPageViewModel(_shell));
+            detalhe.Carregar(grupo);
+            _shell.CurrentPage = detalhe;
+            TextoPesquisa = string.Empty;
+        }
+
+        [RelayCommand]
+        private void AbrirArtista(GrupoMusicas grupo)
+        {
+            GrupoDetailPageViewModel detalhe = new(_shell, () => new ArtistasPageViewModel(_shell));
+            detalhe.Carregar(grupo);
+            _shell.CurrentPage = detalhe;
+            TextoPesquisa = string.Empty;
+        }
+
+        [RelayCommand]
+        private void AbrirPlaylist(Playlist playlist)
+        {
+            PlaylistDetailPageViewModel detalhe = new(_shell);
+            detalhe.Carregar(playlist);
+            _shell.CurrentPage = detalhe;
             TextoPesquisa = string.Empty;
         }
 

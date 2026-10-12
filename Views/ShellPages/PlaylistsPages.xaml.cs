@@ -1,8 +1,8 @@
-﻿using Project_Kitsune.ViewModels.ShellPages;
+﻿using Project_Kitsune.Models;
+using Project_Kitsune.ViewModels.ShellPages;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using static Project_Kitsune.ViewModels.ShellPages.PlaylistsPageViewModel;
 
 namespace Project_Kitsune.Views.ShellPages
 {

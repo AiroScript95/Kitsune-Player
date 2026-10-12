@@ -73,13 +73,13 @@ namespace Project_Kitsune.ViewModels.ShellPages
 
         private PlaylistComCapa CarregarComCapa(Playlist playlist)
         {
-            // Favoritos não usa PlaylistMusicas — usa a coluna Gosto na tabela Musicas
             List<string> todosCaminhos = playlist.Name == "Favoritos"
                 ? _database.ListarMusicasFavoritas()
                 : _database.ListarMusicasDaPlaylist(playlist.Id);
 
             string? caminho = todosCaminhos.FirstOrDefault();
             byte[]? capa = null;
+            bool menuOpen = true;
 
             if (caminho != null)
             {
@@ -89,27 +89,22 @@ namespace Project_Kitsune.ViewModels.ShellPages
                     capa = musica.Image;
                 }
             }
-            List<string> listaMusicas = todosCaminhos
-                .Take(3)
-.Select(caminho => _biblioteca.LerMusicaPorCaminho(caminho)?.Titulo ?? System.IO.Path.GetFileNameWithoutExtension(caminho))
-                    .ToList();
+            List<string> listaMusicas = todosCaminhos.Take(3).Select(caminho => _biblioteca.LerMusicaPorCaminho(caminho)?.Titulo ??
+            Path.GetFileNameWithoutExtension(caminho)).ToList();
 
             if (playlist.Name == "Favoritos")
             {
                 playlist.NumMusicas = todosCaminhos.Count;
+                menuOpen = false;
             }
 
-            return new PlaylistComCapa(playlist, capa, listaMusicas);
+            return new PlaylistComCapa(playlist, capa, listaMusicas, menuOpen);
         }
 
         private PlaylistComCapa PlaylistLetras()
         {
-            var musicasComLetra = _ordenacaoService.Ordenar(
-            _biblioteca.Musicas
-.Where(m => File.Exists(Path.ChangeExtension(m.Caminho, ".lrc"))
-                || File.Exists(Path.ChangeExtension(m.Caminho, ".kc.lrc")))
-                .ToList(),
-                "Alfabetica", false);
+            var musicasComLetra = _ordenacaoService.Ordenar(_biblioteca.Musicas.Where(m => File.Exists(Path.ChangeExtension(m.Caminho, ".lrc"))
+                || File.Exists(Path.ChangeExtension(m.Caminho, ".kc.lrc"))).ToList(), "Alfabetica", false);
 
             var comLetra = new Playlist
             {
@@ -124,7 +119,7 @@ namespace Project_Kitsune.ViewModels.ShellPages
             byte[]? capa = musicasComLetra.FirstOrDefault()?.Image;
             List<string> titulos = musicasComLetra.Take(3).Select(m => m.Titulo).ToList();
 
-            return new PlaylistComCapa(comLetra, capa, titulos);
+            return new PlaylistComCapa(comLetra, capa, titulos, false);
         }
 
         [RelayCommand]
@@ -202,20 +197,6 @@ namespace Project_Kitsune.ViewModels.ShellPages
         {
             MostrarConfirmacaoExclusao = false;
             _playlistParaExcluir = null;
-        }
-
-        public class PlaylistComCapa
-        {
-            public Playlist Playlist { get; set; }
-            public byte[]? Capa { get; set; }
-            public List<string> ListaMusicas { get; set; }
-
-            public PlaylistComCapa(Playlist playlist, byte[]? capa, List<string> listaMusicas)
-            {
-                Playlist = playlist;
-                Capa = capa;
-                ListaMusicas = listaMusicas;
-            }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

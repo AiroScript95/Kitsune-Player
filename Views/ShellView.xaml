@@ -167,56 +167,60 @@
             </Border>
 
             <!--  CONTEÚDO  -->
-            <Border Grid.Column="1" Grid.Row="1" CornerRadius="8,0,0,8" Margin="0,2,0,0"  ClipToBounds="True"
-                    BorderThickness="1,1,0,0" BorderBrush="{DynamicResource BorderBrush2}"
-                    Style="{StaticResource BorderClip}"
-                    Background="{DynamicResource GradientBackground}">
-                <Grid ClipToBounds="True">
-                    <Border Style="{StaticResource BorderClip}">
-                        <Grid ClipToBounds="True">
-                            <!--<svg:SvgViewbox Source="{Binding Tema,Converter={StaticResource StringToUriConverter}}"
-                            Width="100" Height="100" HorizontalAlignment="Right" VerticalAlignment="Bottom" />-->
-                            <Image Source="{Binding CaminhoBackground, Converter={StaticResource StringParaImagemConverter}}"
-                                   Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Grid>
-                    </Border>
-                    <Border Background="{DynamicResource SurfaceOverlayBrush}" Opacity="0.65" ClipToBounds="True" />
-                    <Border Style="{StaticResource BorderClip}" ClipToBounds="True">
 
-                        <ContentControl  Content="{Binding CurrentPage}" ClipToBounds="True">
-                            <ContentControl.Resources>
-                                <Style TargetType="ContentPresenter">
-                                    <Style.Triggers>
-                                        <EventTrigger RoutedEvent="FrameworkElement.Loaded">
-                                            <BeginStoryboard>
-                                                <Storyboard>
-                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                                                     From="0" To="1"
-                                                                     Duration="0:0:0.25">
-                                                        <DoubleAnimation.EasingFunction>
-                                                            <QuadraticEase EasingMode="EaseOut" />
-                                                        </DoubleAnimation.EasingFunction>
-                                                    </DoubleAnimation>
-                                                    <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
-                                                                     From="30" To="0"
-                                                                     Duration="0:0:0.25">
-                                                        <DoubleAnimation.EasingFunction>
-                                                            <QuadraticEase EasingMode="EaseOut" />
-                                                        </DoubleAnimation.EasingFunction>
-                                                    </DoubleAnimation>
-                                                </Storyboard>
-                                            </BeginStoryboard>
-                                        </EventTrigger>
-                                    </Style.Triggers>
-                                    <Setter Property="RenderTransform">
-                                        <Setter.Value>
-                                            <TranslateTransform X="0" />
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </ContentControl.Resources>
-                        </ContentControl>
-                    </Border>
+            <Border Grid.Column="1" Grid.Row="1" Margin="0,2,0,0" Style="{DynamicResource BorderClip}" CornerRadius="8,0,0,8"  ClipToBounds="True"
+                    Background="{DynamicResource GradientBackground}">
+                <Grid>
+                    <Grid ClipToBounds="True">
+                        <!--<svg:SvgViewbox Source="{Binding Tema,Converter={StaticResource StringToUriConverter}}"
+                        Width="100" Height="100" HorizontalAlignment="Right" VerticalAlignment="Bottom" />-->
+                        <Image Source="{Binding CaminhoBackground, Converter={StaticResource StringParaImagemConverter}}"
+                               Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Grid>
+                    <Grid Background="{DynamicResource SurfaceOverlayBrush}" Opacity="0.85" ClipToBounds="True">
+                        <!--<Grid.Style>
+                        <Style TargetType="Grid">
+                        <Style.Triggers>
+                        <DataTrigger Binding="{Binding CaminhoBackground}" Value="">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                        </Style.Triggers>
+                        </Style>
+                        </Grid.Style>-->
+                    </Grid>
+                    <ContentControl  Content="{Binding CurrentPage}" ClipToBounds="True">
+                        <ContentControl.Resources>
+                            <Style TargetType="ContentPresenter">
+                                <Style.Triggers>
+                                    <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                 From="0" To="1"
+                                                                 Duration="0:0:0.25">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <QuadraticEase EasingMode="EaseOut" />
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+                                                                 From="30" To="0"
+                                                                 Duration="0:0:0.25">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <QuadraticEase EasingMode="EaseOut" />
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                </Style.Triggers>
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <TranslateTransform X="0" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ContentControl.Resources>
+                    </ContentControl>
                     <!--Modal Excluir-->
                     <Grid Visibility="{Binding Player.MostrarConfirmacaoExclusao, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <Border Background="{DynamicResource SurfaceBrush}" Opacity="0.6">

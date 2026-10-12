@@ -5,17 +5,15 @@
     <Style x:Key="ScrollBarThumbCustom" TargetType="{x:Type Thumb}" BasedOn="{StaticResource {x:Type Thumb}}">
         <Setter Property="OverridesDefaultStyle" Value="true" />
         <Setter Property="IsTabStop" Value="false" />
+
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Thumb}">
                     <Border x:Name="rectangle"
                             SnapsToDevicePixels="True"
-                            Background="{StaticResource AccentAltBrush}"
-                            CornerRadius="4"
-                            Opacity="1"
-                            MinHeight="20"
-                            Height="{TemplateBinding Height}"
-                            Width="{TemplateBinding Width}" />
+                            Background="{DynamicResource AccentAltBrush}"
+                            CornerRadius="5"
+                            Opacity="0.4" />
                     <ControlTemplate.Triggers>
                         <EventTrigger RoutedEvent="MouseEnter">
                             <BeginStoryboard>
@@ -46,19 +44,31 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ScrollBar}">
                     <Grid x:Name="Bg" SnapsToDevicePixels="true" Background="Transparent">
-                        <Border Padding="1,4">
+                        <Border Padding="1,4"  ClipToBounds="True">
                             <Track x:Name="PART_Track"
                                    IsDirectionReversed="true"
                                    Width="10"
                                    HorizontalAlignment="Center">
                                 <Track.DecreaseRepeatButton>
-                                    <RepeatButton Opacity="1" Command="{x:Static ScrollBar.PageUpCommand}" />
+                                    <RepeatButton Command="{x:Static ScrollBar.PageUpCommand}">
+                                        <RepeatButton.Template>
+                                            <ControlTemplate TargetType="RepeatButton">
+                                                <Grid Background="Transparent" />
+                                            </ControlTemplate>
+                                        </RepeatButton.Template>
+                                    </RepeatButton>
                                 </Track.DecreaseRepeatButton>
                                 <Track.Thumb>
                                     <Thumb Style="{StaticResource ScrollBarThumbCustom}" />
                                 </Track.Thumb>
                                 <Track.IncreaseRepeatButton>
-                                    <RepeatButton Opacity="1" Command="{x:Static ScrollBar.PageDownCommand}" />
+                                    <RepeatButton Command="{x:Static ScrollBar.PageDownCommand}">
+                                        <RepeatButton.Template>
+                                            <ControlTemplate TargetType="RepeatButton">
+                                                <Grid Background="Transparent" />
+                                            </ControlTemplate>
+                                        </RepeatButton.Template>
+                                    </RepeatButton>
                                 </Track.IncreaseRepeatButton>
                             </Track>
                         </Border>
@@ -74,19 +84,32 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type ScrollBar}">
                             <Grid x:Name="Bg" SnapsToDevicePixels="true" Background="Transparent">
-                                <Border Padding="4,1">
+                                <Border Padding="1,4" Background="red" ClipToBounds="True">
                                     <Track x:Name="PART_Track"
-                                           Height="10"
-                                           VerticalAlignment="Center">
+                                           IsDirectionReversed="true"
+                                           Width="10"
+                                           HorizontalAlignment="Center">
                                         <Track.DecreaseRepeatButton>
-                                            <RepeatButton Opacity="0" Command="{x:Static ScrollBar.PageLeftCommand}" />
+                                            <RepeatButton Command="{x:Static ScrollBar.PageUpCommand}">
+                                                <RepeatButton.Template>
+                                                    <ControlTemplate TargetType="RepeatButton">
+                                                        <Grid Background="Transparent" />
+                                                    </ControlTemplate>
+                                                </RepeatButton.Template>
+                                            </RepeatButton>
                                         </Track.DecreaseRepeatButton>
-                                        <Track.IncreaseRepeatButton>
-                                            <RepeatButton Opacity="0" Command="{x:Static ScrollBar.PageRightCommand}" />
-                                        </Track.IncreaseRepeatButton>
                                         <Track.Thumb>
                                             <Thumb Style="{StaticResource ScrollBarThumbCustom}" />
                                         </Track.Thumb>
+                                        <Track.IncreaseRepeatButton>
+                                            <RepeatButton Command="{x:Static ScrollBar.PageDownCommand}">
+                                                <RepeatButton.Template>
+                                                    <ControlTemplate TargetType="RepeatButton">
+                                                        <Grid Background="Transparent" />
+                                                    </ControlTemplate>
+                                                </RepeatButton.Template>
+                                            </RepeatButton>
+                                        </Track.IncreaseRepeatButton>
                                     </Track>
                                 </Border>
                             </Grid>

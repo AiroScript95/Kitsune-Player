@@ -16,7 +16,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Margin="30,10"
+        <TextBlock Grid.Row="0" Margin="30,20"
                    Text="{DynamicResource Str_Albuns}"
                    FontSize="24" FontWeight="Bold"
                    FontFamily="{StaticResource FonteHiragino}"
@@ -44,13 +44,13 @@
 
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <vwp:VirtualizingWrapPanel />
+                        <vwp:VirtualizingWrapPanel ItemSize="332,132" StretchItems="True" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
 
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Width="320" Height="120" Margin="6"
+                        <Border  Height="120" Margin="6"
                                 CornerRadius="16"
                                 ClipToBounds="True"
                                 Style="{StaticResource BorderClip}"
@@ -65,7 +65,7 @@
                             </Border.InputBindings>
 
                             <Grid>
-                                <Grid Background="{DynamicResource GradientBackground}" Opacity="0.5" />
+                                <Grid Background="{DynamicResource GradientBackground}" Opacity="0.85" />
                                 <Grid Margin="8">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />

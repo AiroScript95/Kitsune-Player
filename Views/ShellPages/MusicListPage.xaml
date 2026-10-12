@@ -493,7 +493,7 @@
                         </Style.Triggers>
                     </Style>
                 </Grid.Style>
-                <Grid Background="{DynamicResource SurfaceAltBrush}" Opacity="0.985"></Grid>
+                <Grid Background="{DynamicResource SurfaceAltBrush}" Opacity="0.9"></Grid>
                 <controls:PlayerControl />
             </Grid>
 
@@ -524,8 +524,10 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
                     </Grid.ColumnDefinitions>
                     <ListBox Grid.Column="0"
+                             x:Name="ListScroll"
                              ClipToBounds="True"
                              ItemsSource="{Binding Musicas}"
                              Padding="5,0,10,0"
@@ -533,9 +535,34 @@
                              VirtualizingPanel.IsVirtualizing="True"
                              VirtualizingPanel.VirtualizationMode="Recycling"
                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                             ScrollViewer.VerticalScrollBarVisibility="Visible"
+                             ScrollViewer.VerticalScrollBarVisibility="Auto"
                              Background="Transparent"
                              BorderThickness="0" Margin="0,0,10,0">
+                        <ListBox.Resources>
+
+                            <!-- 1º: o template -->
+                            <ControlTemplate x:Key="MeuScrollViewer" TargetType="ScrollViewer">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <ScrollContentPresenter x:Name="PART_ScrollContentPresenter"
+                                                            Margin="{TemplateBinding Padding}"
+                                                            CanContentScroll="{TemplateBinding CanContentScroll}" />
+                                    <ScrollBar x:Name="PART_VerticalScrollBar" Grid.Column="1"
+                                               Maximum="{TemplateBinding ScrollableHeight}"
+                                               ViewportSize="{TemplateBinding ViewportHeight}"
+                                               Value="{TemplateBinding VerticalOffset}"
+                                               Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" />
+                                </Grid>
+                            </ControlTemplate>
+
+                            <!-- 2º: o estilo que o aplica -->
+                            <Style TargetType="ScrollViewer">
+                                <Setter Property="Template" Value="{StaticResource MeuScrollViewer}" />
+                            </Style>
+                        </ListBox.Resources>
                         <i:Interaction.Behaviors>
                             <behaviors:ScrollIntoViewBehavior ScrollToItem="{Binding MusicaParaScroll}" />
                         </i:Interaction.Behaviors>
@@ -568,7 +595,7 @@
                             </Style>
                         </ListBox.Style>
                     </ListBox>
-                    <Border Grid.Column="1" CornerRadius="8" Style="{DynamicResource BorderClip}">
+                    <Border Grid.Column="2" CornerRadius="8" Style="{DynamicResource BorderClip}">
                         <Grid ClipToBounds="True">
                             <Grid Background="{DynamicResource SurfaceAltBrush}" Opacity="0.65"></Grid>
                             <ItemsControl ItemsSource="{Binding Alfabeto}"

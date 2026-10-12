@@ -14,23 +14,7 @@
     <NuGetAuditLevel>low</NuGetAuditLevel>
     <PlatformTarget>x64</PlatformTarget>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <ApplicationIcon>Resources/Icons/icon-app.ico</ApplicationIcon>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="Resources\Fonts\Inter.ttf" />
-    <None Remove="Resources\Fonts\Inter_18pt-Regular.ttf" />
-    <None Remove="Resources\Fonts\JetBrainsMono.ttf" />
-    <None Remove="Resources\Icons\icon-app.ico" />
-    <None Remove="Resources\Icons\icon-app.png" />
-    <None Remove="Resources\Icons\icon-logo.ico" />
-    <None Remove="Resources\Icons\Logo.png" />
-    <None Remove="Resources\Mascotes\asa.svg" />
-    <None Remove="Resources\Mascotes\mp3.svg" />
-    <None Remove="Resources\Mascotes\yako.svg" />
-    <None Remove="Resources\Mascotes\yoru.svg" />
-    <None Remove="Resources\Mascotes\zenko.svg" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
@@ -63,33 +47,6 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Fonts\JetBrainsMono.ttf">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Icons\icon-app.ico">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Icons\icon-app.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Icons\icon-logo.ico">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Icons\Logo.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Mascotes\asa.svg">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Mascotes\nogitsune.svg">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Mascotes\yako.svg">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Mascotes\yoru.svg">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Mascotes\zenko.svg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

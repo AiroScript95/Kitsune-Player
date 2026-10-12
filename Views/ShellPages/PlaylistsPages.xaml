@@ -59,156 +59,151 @@
             </Grid>
 
             <!-- ===== GRADE DE PLAYLISTS ===== -->
-            <ScrollViewer Grid.Row="1" Margin="10" VerticalScrollBarVisibility="Auto">
-                <ItemsControl ItemsSource="{Binding Playlists}"
-                              ScrollViewer.CanContentScroll="True"
-                              ScrollViewer.VerticalScrollBarVisibility="Auto">
-                    <ItemsControl.Template>
-                        <ControlTemplate TargetType="ItemsControl">
-                            <ScrollViewer Focusable="False">
-                                <ItemsPresenter />
-                            </ScrollViewer>
-                        </ControlTemplate>
-                    </ItemsControl.Template>
+            <ItemsControl Grid.Row="1" Margin="10"  ItemsSource="{Binding Playlists}"
+                          ScrollViewer.CanContentScroll="True"
+                          ScrollViewer.VerticalScrollBarVisibility="Auto">
+                <ItemsControl.Template>
+                    <ControlTemplate TargetType="ItemsControl">
+                        <ScrollViewer Focusable="False">
+                            <ItemsPresenter />
+                        </ScrollViewer>
+                    </ControlTemplate>
+                </ItemsControl.Template>
 
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <vwp:VirtualizingWrapPanel />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <vwp:VirtualizingWrapPanel ItemSize="332,132" StretchItems="True" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
 
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border Width="340" Height="120" Margin="6"
-                                    CornerRadius="16"
-                                    ClipToBounds="True"
-                                    Style="{StaticResource BorderClip}"
-                                    BorderThickness="0"
-                                    MouseLeftButtonUp="TextBlock_MouseLeftButtonUp"
-                                    Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                    Cursor="Hand">
-                                <Border.ContextMenu>
-                                    <ContextMenu Visibility="{Binding Playlist.Name, Converter={StaticResource NomeNaoFavoritosConverter}}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border  Height="120" Margin="6"
+                                CornerRadius="16"
+                                ClipToBounds="True"
+                                Style="{StaticResource BorderClip}"
+                                BorderThickness="0"
+                                MouseLeftButtonUp="TextBlock_MouseLeftButtonUp"
+                                Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                Cursor="Hand">
+                            <Border.ContextMenu>
+                                <ContextMenu Visibility="{Binding MenuOpen, Converter={StaticResource BooleanToVisibilityConverter}}">
 
-                                        <MenuItem CommandParameter="{Binding Playlist}"
-                                                  Visibility="{Binding Playlist.Name, Converter={StaticResource NomeNaoFavoritosConverter}}">
-                                            <MenuItem.Header>
-                                                <Grid>
-                                                    <TextBlock Text="{DynamicResource Str_Renomear}" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                                                    <iconPacks:PackIconBoxIcons Kind="SolidTag" HorizontalAlignment="Right"
-                                                                                VerticalAlignment="Center"
-                                                                                Foreground="{DynamicResource TextPrimaryBrush}" Width="14" />
-                                                </Grid>
-                                            </MenuItem.Header>
-                                        </MenuItem>
-                                        <MenuItem CommandParameter="{Binding Playlist}"
-                                                  Visibility="{Binding Playlist.Name, Converter={StaticResource NomeNaoFavoritosConverter}}">
-                                            <MenuItem.Header>
-                                                <Grid>
-                                                    <TextBlock Text="{DynamicResource Str_Add_Musica}" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                                                    <iconPacks:PackIconBoxIcons2 Kind="RegularMusic" HorizontalAlignment="Right"
-                                                                                 VerticalAlignment="Center"
-                                                                                 Foreground="{DynamicResource TextPrimaryBrush}" Width="14" />
-                                                </Grid>
-                                            </MenuItem.Header>
-                                        </MenuItem>
-                                        <MenuItem Command="{Binding PlacementTarget.Tag.PedirExclusaoCommand,
-                                                  RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                                                  CommandParameter="{Binding Playlist}"
-                                                  Visibility="{Binding Playlist.Name, Converter={StaticResource NomeNaoFavoritosConverter}}">
-                                            <MenuItem.Header>
-                                                <Grid>
-                                                    <TextBlock Text="{DynamicResource Str_Eliminar}" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                                                    <iconPacks:PackIconBoxIcons Kind="SolidTrashAlt" HorizontalAlignment="Right"
-                                                                                VerticalAlignment="Center"
-                                                                                Foreground="{DynamicResource TextError}" Width="14" />
-                                                </Grid>
-                                            </MenuItem.Header>
-                                        </MenuItem>
-                                    </ContextMenu>
-                                </Border.ContextMenu>
-                                <Grid>
-                                    <Grid Background="{DynamicResource GradientBackground}" Opacity="0.5" />
-                                    <Grid Margin="8">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="60*" />
-                                        </Grid.ColumnDefinitions>
-                                        <!-- Capa quadrada, topo -->
-                                        <Grid Grid.Column="0">
-                                            <Border CornerRadius="8" Width="100"
-                                                    Height="100"
-                                                    Background="{DynamicResource SurfaceRaisedBrush}"
-                                                    Style="{StaticResource BorderClip}"
-                                                    ClipToBounds="True">
-                                                <Grid>
-                                                    <Image Source="{Binding Capa, Converter={StaticResource BytesParaImagemConverter},ConverterParameter=240}"
-                                                           Stretch="UniformToFill"
-                                                           HorizontalAlignment="Center"
-                                                           VerticalAlignment="Center"/>
-                                                    <iconPacks:PackIconBoxIcons Kind="RegularListMusic"
-                                                                                Width="32" Height="32"
-                                                                                Foreground="{DynamicResource TextMutedBrush}"
-                                                                                HorizontalAlignment="Center"
-                                                                                VerticalAlignment="Center"
-                                                                                Visibility="{Binding Capa, Converter={StaticResource NullToVisibilityConverter}}" />
-                                                </Grid>
+                                    <MenuItem CommandParameter="{Binding Playlist}">
+                                        <MenuItem.Header>
+                                            <Grid>
+                                                <TextBlock Text="{DynamicResource Str_Renomear}" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                                <iconPacks:PackIconBoxIcons Kind="SolidTag" HorizontalAlignment="Right"
+                                                                            VerticalAlignment="Center"
+                                                                            Foreground="{DynamicResource TextPrimaryBrush}" Width="14" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                    <MenuItem CommandParameter="{Binding Playlist}">
+                                        <MenuItem.Header>
+                                            <Grid>
+                                                <TextBlock Text="{DynamicResource Str_Add_Musica}" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                                <iconPacks:PackIconBoxIcons2 Kind="RegularMusic" HorizontalAlignment="Right"
+                                                                             VerticalAlignment="Center"
+                                                                             Foreground="{DynamicResource TextPrimaryBrush}" Width="14" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                    <MenuItem Command="{Binding PlacementTarget.Tag.PedirExclusaoCommand,
+                                              RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                              CommandParameter="{Binding Playlist}">
+                                        <MenuItem.Header>
+                                            <Grid>
+                                                <TextBlock Text="{DynamicResource Str_Eliminar}" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                                <iconPacks:PackIconBoxIcons Kind="SolidTrashAlt" HorizontalAlignment="Right"
+                                                                            VerticalAlignment="Center"
+                                                                            Foreground="{DynamicResource TextError}" Width="14" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </Border.ContextMenu>
+                            <Grid>
+                                <Grid Background="{DynamicResource GradientBackground}" Opacity="0.85" />
+                                <Grid Margin="8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="60*" />
+                                    </Grid.ColumnDefinitions>
+                                    <!-- Capa quadrada, topo -->
+                                    <Grid Grid.Column="0">
+                                        <Border CornerRadius="8" Width="100"
+                                                Height="100"
+                                                Background="{DynamicResource SurfaceRaisedBrush}"
+                                                Style="{StaticResource BorderClip}"
+                                                ClipToBounds="True">
+                                            <Grid>
+                                                <Image Source="{Binding Capa, Converter={StaticResource BytesParaImagemConverter},ConverterParameter=240}"
+                                                       Stretch="UniformToFill"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center" />
+                                                <iconPacks:PackIconBoxIcons Kind="RegularListMusic"
+                                                                            Width="32" Height="32"
+                                                                            Foreground="{DynamicResource TextMutedBrush}"
+                                                                            HorizontalAlignment="Center"
+                                                                            VerticalAlignment="Center"
+                                                                            Visibility="{Binding Capa, Converter={StaticResource NullToVisibilityConverter}}" />
+                                            </Grid>
+                                        </Border>
+                                    </Grid>
+                                    <Grid Grid.Column="1" Margin="16,0,0,0">
+                                        <StackPanel Orientation="Horizontal"
+                                                    HorizontalAlignment="Right" VerticalAlignment="Top"
+                                                    Margin="6">
+                                            <Border Background="#00000090" CornerRadius="10" Padding="8,2" Margin="0,0,0,0">
+                                                <TextBlock Text="{Binding Playlist.NumMusicas, StringFormat={}{0:D2}}" FontFamily="{StaticResource FonteInter}"
+                                                           FontSize="12" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}" />
                                             </Border>
-                                        </Grid>
-                                        <Grid Grid.Column="1" Margin="16,0,0,0">
-                                            <StackPanel Orientation="Horizontal"
-                                                        HorizontalAlignment="Right" VerticalAlignment="Top"
-                                                        Margin="6">
-                                                <Border Background="#00000090" CornerRadius="10" Padding="8,2" Margin="0,0,0,0">
-                                                    <TextBlock Text="{Binding Playlist.NumMusicas, StringFormat={}{0:D2}}" FontFamily="{StaticResource FonteInter}"
-                                                               FontSize="12" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}" />
-                                                </Border>
-                                            </StackPanel>
+                                        </StackPanel>
 
-                                            <!-- Nome -->
-                                            <StackPanel>
-                                                <TextBlock
-                                                    FontSize="16" FontWeight="DemiBold"
-                                                    FontFamily="{StaticResource FonteInter}"
-                                                    Foreground="{DynamicResource TextPrimaryBrush}"
-                                                    TextTrimming="CharacterEllipsis"
-                                                    Margin="0,8,0,4">
-                                                    <TextBlock.Style>
-                                                        <Style TargetType="TextBlock">
-                                                            <Setter Property="Text" Value="{Binding Playlist.Name}" />
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding Playlist.Name}" Value="Favoritos">
-                                                                    <Setter Property="Text" Value="{DynamicResource Str_Favoritos}" />
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </TextBlock.Style>
-                                                </TextBlock>
+                                        <!-- Nome -->
+                                        <StackPanel>
+                                            <TextBlock
+                                                FontSize="16" FontWeight="DemiBold"
+                                                FontFamily="{StaticResource FonteInter}"
+                                                Foreground="{DynamicResource TextPrimaryBrush}"
+                                                TextTrimming="CharacterEllipsis"
+                                                Margin="0,8,0,4">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Text" Value="{Binding Playlist.Name}" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Playlist.Name}" Value="Favoritos">
+                                                                <Setter Property="Text" Value="{DynamicResource Str_Favoritos}" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
 
-                                                <!-- Duas músicas de exemplo -->
-                                                <StackPanel Margin="0,5">
-                                                    <ItemsControl ItemsSource="{Binding ListaMusicas}">
-                                                        <ItemsControl.ItemTemplate>
-                                                            <DataTemplate>
-                                                                <StackPanel Orientation="Horizontal" Margin="0,4">
-                                                                    <iconPacks:PackIconBoxIcons Kind="RegularMusicAlt" Foreground="{DynamicResource TextMutedBrush}" Width="12" Height="12"/>
-                                                                    <TextBlock Margin="8,0" Text="{Binding}"
-                                                                               FontSize="12" TextTrimming="CharacterEllipsis"
-                                                                               Foreground="{DynamicResource TextMutedBrush}" />
-                                                                </StackPanel>
-                                                            </DataTemplate>
-                                                        </ItemsControl.ItemTemplate>
-                                                    </ItemsControl>
-                                                </StackPanel>
+                                            <!-- Duas músicas de exemplo -->
+                                            <StackPanel Margin="0,5">
+                                                <ItemsControl ItemsSource="{Binding ListaMusicas}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <StackPanel Orientation="Horizontal" Margin="0,4">
+                                                                <iconPacks:PackIconBoxIcons Kind="RegularMusicAlt" Foreground="{DynamicResource TextMutedBrush}" Width="12" Height="12" />
+                                                                <TextBlock Margin="8,0" Text="{Binding}"
+                                                                           FontSize="12" TextTrimming="CharacterEllipsis"
+                                                                           Foreground="{DynamicResource TextMutedBrush}" />
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
                                             </StackPanel>
-                                        </Grid>
+                                        </StackPanel>
                                     </Grid>
                                 </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </Grid>
 
         <!-- ===== MODAL: NOVA PLAYLIST ===== -->

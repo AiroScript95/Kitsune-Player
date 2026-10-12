@@ -16,6 +16,7 @@ namespace Project_Kitsune.Converters
                 imagem.CacheOption = BitmapCacheOption.OnLoad;
                 imagem.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
                 imagem.UriSource = new Uri(caminho);
+                imagem.DecodePixelWidth = 1920;
                 imagem.EndInit();
                 imagem.Freeze();
                 return imagem;

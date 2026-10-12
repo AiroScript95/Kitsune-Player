@@ -6,6 +6,7 @@ using Project_Kitsune.ViewModels.ShellPages;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace Project_Kitsune.Views.ShellPages
 {
@@ -141,6 +142,18 @@ namespace Project_Kitsune.Views.ShellPages
             {
                 MessageBox.Show(ex.ToString());
             }
+        }
+
+        private static ScrollViewer? AcharScrollViewer(DependencyObject d)
+        {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(d); i++)
+            {
+                var filho = VisualTreeHelper.GetChild(d, i);
+                if (filho is ScrollViewer sv) return sv;
+                var r = AcharScrollViewer(filho);
+                if (r != null) return r;
+            }
+            return null;
         }
     }
 }

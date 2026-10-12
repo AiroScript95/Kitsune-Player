@@ -12,8 +12,8 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
              d:DesignHeight="700" d:DesignWidth="1000">
-    <Grid Style="{StaticResource TransicaoEntrada}" ClipToBounds="True">
-        <Grid Background="{DynamicResource SurfaceBrush}">
+    <Grid Style="{StaticResource TransicaoEntrada}"  ClipToBounds="True">
+        <Grid Background="{DynamicResource GradientBackground}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="100" />
@@ -589,4 +589,5 @@
             </Grid>
         </Grid>
     </Grid>
+
 </UserControl>

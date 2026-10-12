@@ -10,317 +10,317 @@ using System.Windows;
 
 namespace Project_Kitsune.ViewModels.ShellPages
 {
-public partial class PlaylistDetailPageViewModel : INotifyPropertyChanged
-{
-public ObservableCollection<Music> Musicas { get; set; } = new();
-    private ObservableCollection<Music> _todasAsMusicas = new();
+    public partial class PlaylistDetailPageViewModel : INotifyPropertyChanged
+    {
+        public ObservableCollection<Music> Musicas { get; set; } = new();
+        private ObservableCollection<Music> _todasAsMusicas = new();
 
         public ObservableCollection<Music> TodasAsMusicas
+        {
+            get => _todasAsMusicas;
+            set { _todasAsMusicas = value; OnPropertyChanged(); }
+        }
+
+        private List<Music> _todasAsMusicasOriginal = new();
+
+        public string NomePlaylist => _playlistAtual?.Name ?? "";
+        public bool EhComLetra => _playlistAtual?.Id == Playlist.IdComLetra;
+
+        public int NumMusicas => Musicas.Count;
+
+        private bool _mostrarPainelAdicionar;
+
+        public bool MostrarPainelAdicionar
+        {
+            get => _mostrarPainelAdicionar;
+            set
             {
-get => _todasAsMusicas;
-                set { _todasAsMusicas = value; OnPropertyChanged(); }
-                }
+                _mostrarPainelAdicionar = value;
+                OnPropertyChanged();
+            }
+        }
 
-                private List<Music> _todasAsMusicasOriginal = new();
+        private byte[]? _capa;
 
-public string NomePlaylist => _playlistAtual?.Name ?? "";
-public bool EhComLetra => _playlistAtual?.Id == Playlist.IdComLetra;
+        public byte[]? Capa
+        {
+            get => _capa;
+            set
+            {
+                _capa = value;
+                OnPropertyChanged();
+            }
+        }
 
-public int NumMusicas => Musicas.Count;
+        public string DuracaoTotalFormatada
+        {
+            get
+            {
+                var totalSegundos = Musicas.Sum(m => (m.Duracao.TotalSeconds)); // supondo que existe esse campo em segundos
+                var ts = TimeSpan.FromSeconds(totalSegundos);
+                return ts.Hours > 0
+                                                                ? $"{ts.Hours}h {ts.Minutes}min"
+                                                                : $"{ts.Minutes} min";
+            }
+        }
 
-                                private bool _mostrarPainelAdicionar;
+        private string _textoPesquisaAdicionar = string.Empty;
 
-                                public bool MostrarPainelAdicionar
-                                {
-get => _mostrarPainelAdicionar;
-                                    set
-                                    {
-                                    _mostrarPainelAdicionar = value;
-                                    OnPropertyChanged();
-                                    }
-                                    }
+        public string TextoPesquisaAdicionar
+        {
+            get => _textoPesquisaAdicionar;
+            set
+            {
+                _textoPesquisaAdicionar = value;
+                OnPropertyChanged();
+                AtualizarFiltroAdicionar();
+            }
+        }
 
-                                    private byte[]? _capa;
+        private int _numeroSelecionadas;
 
-                                    public byte[]? Capa
-                                    {
-get => _capa;
-                                        set
-                                        {
-                                        _capa = value;
-                                        OnPropertyChanged();
-                                        }
-                                        }
+        public int NumeroSelecionadas
+        {
+            get => _numeroSelecionadas;
+            set { _numeroSelecionadas = value; OnPropertyChanged(); }
+        }
 
-                                        public string DuracaoTotalFormatada
-                                        {
-                                        get
-                                        {
-var totalSegundos = Musicas.Sum(m => (m.Duracao.TotalSeconds)); // supondo que existe esse campo em segundos
-                                            var ts = TimeSpan.FromSeconds(totalSegundos);
-return ts.Hours > 0
-                                                ? $"{ts.Hours}h {ts.Minutes}min"
-                                                : $"{ts.Minutes} min";
-                                                }
-                                                }
+        private readonly DatabaseService _database;
+        private readonly BibliotecaService _biblioteca;
+        private readonly ConfiguracaoService _configuracao;
+        private readonly OrdenacaoService _ordenacaoService;
+        private readonly ShellViewModel _shell;
+        public PlayerViewModel PlayerViewModel { get; set; }
 
-                                                private string _textoPesquisaAdicionar = string.Empty;
+        private Playlist? _playlistAtual;
+        private bool EhFavoritos => _playlistAtual?.Name == "Favoritos";
 
-                                                public string TextoPesquisaAdicionar
-                                                {
-get => _textoPesquisaAdicionar;
-                                                    set
-                                                    {
-                                                    _textoPesquisaAdicionar = value;
-                                                    OnPropertyChanged();
-                                                    AtualizarFiltroAdicionar();
-                                                    }
-                                                    }
+        public PlaylistDetailPageViewModel(ShellViewModel shell)
+        {
+            _shell = shell;
+            _database = App.ServiceProvider.GetRequiredService<DatabaseService>();
+            _biblioteca = App.ServiceProvider.GetRequiredService<BibliotecaService>();
+            _configuracao = App.ServiceProvider.GetRequiredService<ConfiguracaoService>();
+            _ordenacaoService = App.ServiceProvider.GetRequiredService<OrdenacaoService>();
+            PlayerViewModel = App.ServiceProvider.GetRequiredService<PlayerViewModel>();
+            Musicas.CollectionChanged += (s, e) =>
+                                                                                                {
+                                                                                                    OnPropertyChanged(nameof(DuracaoTotalFormatada));
+                                                                                                    OnPropertyChanged(nameof(NumMusicas));
+                                                                                                };
+            WeakReferenceMessenger.Default.Register<GostoAlteradoMessage>(this, (r, m) => ((PlaylistDetailPageViewModel)r).AoGostoAlterado(m.Musica));
+        }
 
-                                                    private int _numeroSelecionadas;
+        public void Carregar(Playlist playlist)
+        {
+            _playlistAtual = playlist;
+            OnPropertyChanged(nameof(NomePlaylist));
 
-                                                    public int NumeroSelecionadas
-                                                    {
-get => _numeroSelecionadas;
-                                                        set { _numeroSelecionadas = value; OnPropertyChanged(); }
-                                                        }
+            Application.Current.Dispatcher.Invoke(() => Musicas.Clear());
 
-                                                        private readonly DatabaseService _database;
-                                                        private readonly BibliotecaService _biblioteca;
-                                                        private readonly ConfiguracaoService _configuracao;
-                                                        private readonly OrdenacaoService _ordenacaoService;
-                                                        private readonly ShellViewModel _shell;
-                                                        public PlayerViewModel PlayerViewModel { get; set; }
-
-                                                        private Playlist? _playlistAtual;
-private bool EhFavoritos => _playlistAtual?.Name == "Favoritos";
-
-                                                            public PlaylistDetailPageViewModel(ShellViewModel shell)
-                                                            {
-                                                            _shell = shell;
-                                                            _database = App.ServiceProvider.GetRequiredService<DatabaseService>();
-                                                                _biblioteca = App.ServiceProvider.GetRequiredService<BibliotecaService>();
-                                                                    _configuracao = App.ServiceProvider.GetRequiredService<ConfiguracaoService>();
-                                                                        _ordenacaoService = App.ServiceProvider.GetRequiredService<OrdenacaoService>();
-                                                                            PlayerViewModel = App.ServiceProvider.GetRequiredService<PlayerViewModel>();
-Musicas.CollectionChanged += (s, e) =>
-                                                                                    {
-                                                                                    OnPropertyChanged(nameof(DuracaoTotalFormatada));
-                                                                                    OnPropertyChanged(nameof(NumMusicas));
-                                                                                    };
-                                                                                    WeakReferenceMessenger.Default.Register<GostoAlteradoMessage>(this, (r, m) => ((PlaylistDetailPageViewModel)r).AoGostoAlterado(m.Musica));
-                                                                                            }
-
-                                                                                            public void Carregar(Playlist playlist)
-                                                                                            {
-                                                                                            _playlistAtual = playlist;
-                                                                                            OnPropertyChanged(nameof(NomePlaylist));
-
-Application.Current.Dispatcher.Invoke(() => Musicas.Clear());
-
-Task.Run(() =>
-                                                                                                    {
-                                                                                                    List<Music> musicasCarregadas = [];
-
-                                                                                                        if (EhComLetra)
-                                                                                                        {
-                                                                                                        musicasCarregadas = _ordenacaoService.Ordenar(playlist.Musics, "Alfabetica", false);
-                                                                                                        }
-                                                                                                        else
-                                                                                                        {
-                                                                                                        List<string> caminhos = EhFavoritos
-                                                                                                            ? _database.ListarMusicasFavoritas()
-                                                                                                            : _database.ListarMusicasDaPlaylist(playlist.Id);
-
-                                                                                                            foreach (string caminho in caminhos)
-                                                                                                            {
-                                                                                                            Music? musica = _biblioteca.LerMusicaPorCaminho(caminho);
-                                                                                                            if (musica != null) musicasCarregadas.Add(musica);
-                                                                                                            }
-                                                                                                            }
-
-Application.Current.Dispatcher.Invoke(() =>
+            Task.Run(() =>
                                                                                                                 {
-                                                                                                                foreach (Music m in musicasCarregadas) Musicas.Add(m);
-                                                                                                                });
+                                                                                                                    List<Music> musicasCarregadas = [];
 
-                                                                                                                if (EhComLetra)
-                                                                                                                {
-                                                                                                                byte[]? capa = musicasCarregadas.FirstOrDefault()?.Image;
-Application.Current.Dispatcher.Invoke(() => Capa = capa);
+                                                                                                                    if (EhComLetra)
+                                                                                                                    {
+                                                                                                                        musicasCarregadas = _ordenacaoService.Ordenar(playlist.Musics, "Alfabetica", false);
+                                                                                                                    }
+                                                                                                                    else
+                                                                                                                    {
+                                                                                                                        List<string> caminhos = EhFavoritos
+                                                                                                                ? _database.ListarMusicasFavoritas()
+                                                                                                                : _database.ListarMusicasDaPlaylist(playlist.Id);
+
+                                                                                                                        foreach (string caminho in caminhos)
+                                                                                                                        {
+                                                                                                                            Music? musica = _biblioteca.LerMusicaPorCaminho(caminho);
+                                                                                                                            if (musica != null) musicasCarregadas.Add(musica);
+                                                                                                                        }
+                                                                                                                    }
+
+                                                                                                                    Application.Current.Dispatcher.Invoke(() =>
+                                                                                                                                                                                                                        {
+                                                                                                                                                                                                                            foreach (Music m in musicasCarregadas) Musicas.Add(m);
+                                                                                                                                                                                                                        });
+
+                                                                                                                    if (EhComLetra)
+                                                                                                                    {
+                                                                                                                        byte[]? capa = musicasCarregadas.FirstOrDefault()?.Image;
+                                                                                                                        Application.Current.Dispatcher.Invoke(() => Capa = capa);
                                                                                                                     }
                                                                                                                     else if (!EhFavoritos) AtualizarCapa(playlist);
                                                                                                                     else AtualizarCapaFavoritos();
-                                                                                                                    });
-                                                                                                                    }
+                                                                                                                });
+        }
 
-                                                                                                                    public void AtualizarCapa(Playlist playlist)
-                                                                                                                    {
-                                                                                                                    string? caminhoRecente = _database.ObterCaminhoMusicaMaisRecente(playlist.Id);
-                                                                                                                    byte[]? capaEncontrada = null;
+        public void AtualizarCapa(Playlist playlist)
+        {
+            string? caminhoRecente = _database.ObterCaminhoMusicaMaisRecente(playlist.Id);
+            byte[]? capaEncontrada = null;
 
-                                                                                                                    if (caminhoRecente != null)
-                                                                                                                    {
-                                                                                                                    Music? musicaRecente = _biblioteca.LerMusicaPorCaminho(caminhoRecente);
-                                                                                                                    capaEncontrada = musicaRecente?.Image;
-                                                                                                                    }
+            if (caminhoRecente != null)
+            {
+                Music? musicaRecente = _biblioteca.LerMusicaPorCaminho(caminhoRecente);
+                capaEncontrada = musicaRecente?.Image;
+            }
 
-Application.Current.Dispatcher.Invoke(() => Capa = capaEncontrada);
-                                                                                                                        }
+            Application.Current.Dispatcher.Invoke(() => Capa = capaEncontrada);
+        }
 
-                                                                                                                        public void AtualizarCapaFavoritos()
-                                                                                                                        {
-                                                                                                                        string? caminhoRecente = _database.ListarMusicasFavoritas().FirstOrDefault();
-                                                                                                                        byte[]? capaEncontrada = null;
-                                                                                                                        if (caminhoRecente != null)
-                                                                                                                        {
-                                                                                                                        Music? musicaRecente = _biblioteca.LerMusicaPorCaminho(caminhoRecente);
-                                                                                                                        capaEncontrada = musicaRecente?.Image;
-                                                                                                                        }
-Application.Current.Dispatcher.Invoke(() => Capa = capaEncontrada);
-                                                                                                                            }
+        public void AtualizarCapaFavoritos()
+        {
+            string? caminhoRecente = _database.ListarMusicasFavoritas().FirstOrDefault();
+            byte[]? capaEncontrada = null;
+            if (caminhoRecente != null)
+            {
+                Music? musicaRecente = _biblioteca.LerMusicaPorCaminho(caminhoRecente);
+                capaEncontrada = musicaRecente?.Image;
+            }
+            Application.Current.Dispatcher.Invoke(() => Capa = capaEncontrada);
+        }
 
-                                                                                                                            public void TocarMusica(Music musica, List<Music> ListaMusica = null!)
-                                                                                                                                {
-                                                                                                                                PlayerViewModel.TocarMusica(musica, ListaMusica ?? Musicas.ToList());
-                                                                                                                                }
+        public void TocarMusica(Music musica, List<Music> ListaMusica = null!)
+        {
+            PlayerViewModel.TocarMusica(musica, ListaMusica ?? Musicas.ToList());
+        }
 
-                                                                                                                                public void AdicionarMusicaEscolhida(List<Music> musicas)
-                                                                                                                                    {
-                                                                                                                                    if (_playlistAtual == null) return;
+        public void AdicionarMusicaEscolhida(List<Music> musicas)
+        {
+            if (_playlistAtual == null) return;
 
-                                                                                                                                    var novas = new List<Music>();
-                                                                                                                                        foreach (Music music in musicas)
-                                                                                                                                        {
-if (Musicas.Any(m => m.Caminho == music.Caminho)) continue;
+            var novas = new List<Music>();
+            foreach (Music music in musicas)
+            {
+                if (Musicas.Any(m => m.Caminho == music.Caminho)) continue;
 
-                                                                                                                                            if (EhFavoritos)
-                                                                                                                                            {
-                                                                                                                                            music.Gosto = true;
-                                                                                                                                            _database.AlternarGosto(music.Caminho, true);
-                                                                                                                                            novas.Add(music);
-                                                                                                                                            continue;
-                                                                                                                                            }
+                if (EhFavoritos)
+                {
+                    music.Gosto = true;
+                    _database.AlternarGosto(music.Caminho, true);
+                    novas.Add(music);
+                    continue;
+                }
 
-                                                                                                                                            int musicaId = _database.ObterIdMusicaPorCaminho(music.Caminho);
-                                                                                                                                            if (musicaId == -1) continue;
-                                                                                                                                            _database.AdicionarMusicaAPlaylist(_playlistAtual.Id, musicaId);
-                                                                                                                                            novas.Add(music);
-                                                                                                                                            }
+                int musicaId = _database.ObterIdMusicaPorCaminho(music.Caminho);
+                if (musicaId == -1) continue;
+                _database.AdicionarMusicaAPlaylist(_playlistAtual.Id, musicaId);
+                novas.Add(music);
+            }
 
-                                                                                                                                            var lista = Musicas.ToList();
-                                                                                                                                            lista.InsertRange(0, novas);
-                                                                                                                                            Repovoar(lista);
+            var lista = Musicas.ToList();
+            lista.InsertRange(0, novas);
+            Repovoar(lista);
 
-                                                                                                                                            if (EhFavoritos)
-                                                                                                                                            {
-                                                                                                                                            AtualizarCapaFavoritos();
-                                                                                                                                            }
-                                                                                                                                            else
-                                                                                                                                            {
-                                                                                                                                            AtualizarCapa(_playlistAtual);
-                                                                                                                                            }
+            if (EhFavoritos)
+            {
+                AtualizarCapaFavoritos();
+            }
+            else
+            {
+                AtualizarCapa(_playlistAtual);
+            }
 
-                                                                                                                                            MostrarPainelAdicionar = false;
-                                                                                                                                            }
+            MostrarPainelAdicionar = false;
+        }
 
-                                                                                                                                            private void AtualizarFiltroAdicionar()
-                                                                                                                                            {
-                                                                                                                                            if (string.IsNullOrWhiteSpace(TextoPesquisaAdicionar))
-                                                                                                                                            {
-                                                                                                                                            TodasAsMusicas = new ObservableCollection<Music>(_todasAsMusicasOriginal);
-                                                                                                                                                return;
-                                                                                                                                                }
+        private void AtualizarFiltroAdicionar()
+        {
+            if (string.IsNullOrWhiteSpace(TextoPesquisaAdicionar))
+            {
+                TodasAsMusicas = new ObservableCollection<Music>(_todasAsMusicasOriginal);
+                return;
+            }
 
-                                                                                                                                                var termo = TextoPesquisaAdicionar.Trim();
-var filtradas = _todasAsMusicasOriginal.Where(m =>
-                                                                                                                                                    (m.Titulo?.Contains(termo, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                                                                                                                                                    (m.Artista?.Contains(termo, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                                                                                                                                                    (m.Album?.Contains(termo, StringComparison.OrdinalIgnoreCase) ?? false));
+            var termo = TextoPesquisaAdicionar.Trim();
+            var filtradas = _todasAsMusicasOriginal.Where(m =>
+                                                                                                                                                                (m.Titulo?.Contains(termo, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                                                                                                                                                                (m.Artista?.Contains(termo, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                                                                                                                                                                (m.Album?.Contains(termo, StringComparison.OrdinalIgnoreCase) ?? false));
 
-                                                                                                                                                    TodasAsMusicas = new ObservableCollection<Music>(filtradas);
-                                                                                                                                                        }
+            TodasAsMusicas = new ObservableCollection<Music>(filtradas);
+        }
 
-                                                                                                                                                        private void AoGostoAlterado(Music musica)
-                                                                                                                                                        {
-                                                                                                                                                        if (!EhFavoritos) return;
-var lista = Musicas.Where(m => m.Caminho != musica.Caminho).ToList();
-                                                                                                                                                            if (musica.Gosto) lista.Insert(0, musica);
-                                                                                                                                                            Repovoar(lista);
-                                                                                                                                                            AtualizarCapaFavoritos();
-                                                                                                                                                            }
+        private void AoGostoAlterado(Music musica)
+        {
+            if (!EhFavoritos) return;
+            var lista = Musicas.Where(m => m.Caminho != musica.Caminho).ToList();
+            if (musica.Gosto) lista.Insert(0, musica);
+            Repovoar(lista);
+            AtualizarCapaFavoritos();
+        }
 
-                                                                                                                                                            private void Repovoar(List<Music> itens)
-                                                                                                                                                                {
-                                                                                                                                                                Musicas.Clear();
-                                                                                                                                                                foreach (Music m in itens) Musicas.Add(m);
-                                                                                                                                                                }
+        private void Repovoar(List<Music> itens)
+        {
+            Musicas.Clear();
+            foreach (Music m in itens) Musicas.Add(m);
+        }
 
-                                                                                                                                                                [RelayCommand]
-                                                                                                                                                                private void Voltar()
-                                                                                                                                                                {
-                                                                                                                                                                _shell.CurrentPage = new PlaylistsPageViewModel(_shell);
-                                                                                                                                                                }
+        [RelayCommand]
+        private void Voltar()
+        {
+            _shell.CurrentPage = new PlaylistsPageViewModel(_shell);
+        }
 
-                                                                                                                                                                [RelayCommand]
-                                                                                                                                                                private void AbrirPainelAdicionar()
-                                                                                                                                                                {
-                                                                                                                                                                MostrarPainelAdicionar = true;
-                                                                                                                                                                TextoPesquisaAdicionar = string.Empty;
-                                                                                                                                                                NumeroSelecionadas = 0;
+        [RelayCommand]
+        private void AbrirPainelAdicionar()
+        {
+            MostrarPainelAdicionar = true;
+            TextoPesquisaAdicionar = string.Empty;
+            NumeroSelecionadas = 0;
 
-                                                                                                                                                                var candidatas = _biblioteca.Musicas
+            var candidatas = _biblioteca.Musicas
 .Where(m => !Musicas.Any(x => x.Caminho == m.Caminho));
 
-                                                                                                                                                                        _todasAsMusicasOriginal = _ordenacaoService.Ordenar(candidatas.ToList(), "Alfabetica", false);
-                                                                                                                                                                        TodasAsMusicas = new ObservableCollection<Music>(_todasAsMusicasOriginal);
-                                                                                                                                                                            }
+            _todasAsMusicasOriginal = _ordenacaoService.Ordenar(candidatas.ToList(), "Alfabetica", false);
+            TodasAsMusicas = new ObservableCollection<Music>(_todasAsMusicasOriginal);
+        }
 
-                                                                                                                                                                            [RelayCommand]
-                                                                                                                                                                            private void FecharPainelAdicionar()
-                                                                                                                                                                            {
-                                                                                                                                                                            MostrarPainelAdicionar = false;
-                                                                                                                                                                            }
+        [RelayCommand]
+        private void FecharPainelAdicionar()
+        {
+            MostrarPainelAdicionar = false;
+        }
 
-                                                                                                                                                                            [RelayCommand]
-                                                                                                                                                                            private void RemoverMusica(Music musica)
-                                                                                                                                                                            {
-                                                                                                                                                                            if (_playlistAtual == null || EhComLetra) return;
+        [RelayCommand]
+        private void RemoverMusica(Music musica)
+        {
+            if (_playlistAtual == null || EhComLetra) return;
 
-                                                                                                                                                                            if (EhFavoritos)
-                                                                                                                                                                            {
-                                                                                                                                                                            _database.AlternarGosto(musica.Caminho, false);
-                                                                                                                                                                            AtualizarCapaFavoritos();
-                                                                                                                                                                            }
-                                                                                                                                                                            else
-                                                                                                                                                                            {
-                                                                                                                                                                            int musicaId = _database.ObterIdMusicaPorCaminho(musica.Caminho);
-                                                                                                                                                                            if (musicaId == -1) return;
-                                                                                                                                                                            _database.RemoverMusicaDaPlaylist(_playlistAtual.Id, musicaId);
-                                                                                                                                                                            AtualizarCapa(_playlistAtual);
-                                                                                                                                                                            }
+            if (EhFavoritos)
+            {
+                _database.AlternarGosto(musica.Caminho, false);
+                AtualizarCapaFavoritos();
+            }
+            else
+            {
+                int musicaId = _database.ObterIdMusicaPorCaminho(musica.Caminho);
+                if (musicaId == -1) return;
+                _database.RemoverMusicaDaPlaylist(_playlistAtual.Id, musicaId);
+                AtualizarCapa(_playlistAtual);
+            }
 
-var itensAtuais = Musicas.Where(m => m.Caminho != musica.Caminho).ToList();
-                                                                                                                                                                                Musicas.Clear();
-                                                                                                                                                                                foreach (Music m in itensAtuais) Musicas.Add(m);
-                                                                                                                                                                                }
+            var itensAtuais = Musicas.Where(m => m.Caminho != musica.Caminho).ToList();
+            Musicas.Clear();
+            foreach (Music m in itensAtuais) Musicas.Add(m);
+        }
 
-                                                                                                                                                                                [RelayCommand]
-                                                                                                                                                                                private void TocarOrdemAleatorio()
-                                                                                                                                                                                {
-                                                                                                                                                                                if (Musicas.Count == 0) return;
+        [RelayCommand]
+        private void TocarOrdemAleatorio()
+        {
+            if (Musicas.Count == 0) return;
 
-                                                                                                                                                                                Music[] embaralhada = Musicas.ToArray(); // cópia: Musicas não é alterada
-                                                                                                                                                                                Random.Shared.Shuffle(embaralhada);
+            Music[] embaralhada = Musicas.ToArray(); // cópia: Musicas não é alterada
+            Random.Shared.Shuffle(embaralhada);
 
-                                                                                                                                                                                PlayerViewModel.TocarMusica(embaralhada[0], embaralhada.ToList());
-                                                                                                                                                                                }
+            PlayerViewModel.TocarMusica(embaralhada[0], embaralhada.ToList());
+        }
 
-                                                                                                                                                                                public event PropertyChangedEventHandler? PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
-                                                                                                                                                                                protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
-                                                                                                                                                                                {
-                                                                                                                                                                                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-                                                                                                                                                                                }
-                                                                                                                                                                                }
-                                                                                                                                                                                }
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+}

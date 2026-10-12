@@ -1,6 +1,8 @@
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Shell;
+using System.Windows.Controls;
+using System.Windows.Media;
 
 /// <summary>
 /// Title bar custom com animações nativas e Snap Layouts (Windows 11).
@@ -11,6 +13,7 @@ using System.Windows.Shell;
 public static class CustomTitleBar
 {
     private const int WM_NCLBUTTONDOWN = 0x00A1;
+    private const int WM_NCMOUSELEAVE = 0x02A2;
     private const int WM_NCLBUTTONUP = 0x00A2;
     private const int WM_NCHITTEST = 0x0084;
     private const int HTMINBUTTON = 8;
@@ -38,9 +41,20 @@ public static class CustomTitleBar
         window.StateChanged += (_, _) => AjustarMargem(window);
         window.Loaded += (_, _) => AjustarMargem(window);
 
+        FrameworkElement? hot = null;
+        void SetHot(FrameworkElement? novo)
+        {
+            if (ReferenceEquals(hot, novo)) return;
+            Pintar(hot, false);
+            hot = novo;
+            Pintar(hot, true);
+        }
+
         // Responde ao Windows com HTMAXBUTTON/HTMINBUTTON/HTCLOSE sobre os teus botões
         IntPtr Hook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
+            if (msg == WM_NCMOUSELEAVE) { SetHot(null); return IntPtr.Zero; }
+
             if (msg == WM_NCLBUTTONDOWN || msg == WM_NCLBUTTONUP)
             {
                 int ht = (int)wParam.ToInt64();
@@ -53,6 +67,7 @@ public static class CustomTitleBar
                         else if (ht == HTCLOSE) SystemCommands.CloseWindow(window);
                         else if (window.WindowState == WindowState.Maximized) SystemCommands.RestoreWindow(window);
                         else SystemCommands.MaximizeWindow(window);
+                        SetHot(null);
                     }
                     return IntPtr.Zero;
                 }
@@ -63,10 +78,11 @@ public static class CustomTitleBar
             int lp = unchecked((int)(long)lParam);
             var client = window.PointFromScreen(new Point((short)(lp & 0xFFFF), (short)((lp >> 16) & 0xFFFF)));
 
-            if (Hit(window, close, client)) { handled = true; return (IntPtr)HTCLOSE; }
-            if (Hit(window, maximize, client)) { handled = true; return (IntPtr)HTMAXBUTTON; }
-            if (Hit(window, minimize, client)) { handled = true; return (IntPtr)HTMINBUTTON; }
+            if (Hit(window, close, client)) { SetHot(close); handled = true; return (IntPtr)HTCLOSE; }
+            if (Hit(window, maximize, client)) { SetHot(maximize); handled = true; return (IntPtr)HTMAXBUTTON; }
+            if (Hit(window, minimize, client)) { SetHot(minimize); handled = true; return (IntPtr)HTMINBUTTON; }
 
+            SetHot(null);
             return IntPtr.Zero;
         }
 
@@ -94,5 +110,12 @@ public static class CustomTitleBar
             root.Margin = window.WindowState == WindowState.Maximized
             ? SystemParameters.WindowResizeBorderThickness
             : new Thickness(0);
+    }
+
+    private static void Pintar(FrameworkElement? botao, bool ativo)
+    {
+        if (botao is not Control c) return;
+        if (ativo) c.SetResourceReference(Control.BackgroundProperty, "SurfaceAltBrush");
+        else c.ClearValue(Control.BackgroundProperty); // volta ao Transparent do estilo
     }
 }
