@@ -168,8 +168,13 @@
 
             <!--  CONTEÚDO  -->
 
-            <Border Grid.Column="1" Grid.Row="1" Margin="0,2,0,0" Style="{DynamicResource BorderClip}" CornerRadius="8,0,0,8"  ClipToBounds="True"
-                    Background="{DynamicResource GradientBackground}">
+            <Border Grid.Column="1" Grid.Row="1" Margin="0,2,0,0" Style="{DynamicResource BorderClip}" CornerRadius="16,0,0,0"  ClipToBounds="True">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="{DynamicResource SurfaceAlt}" Offset="0" />
+                        <GradientStop Color="{DynamicResource Surface}" Offset="1" />
+                    </LinearGradientBrush>
+                </Border.Background>
                 <Grid>
                     <Grid ClipToBounds="True">
                         <!--<svg:SvgViewbox Source="{Binding Tema,Converter={StaticResource StringToUriConverter}}"
@@ -177,16 +182,16 @@
                         <Image Source="{Binding CaminhoBackground, Converter={StaticResource StringParaImagemConverter}}"
                                Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Grid>
-                    <Grid Background="{DynamicResource SurfaceOverlayBrush}" Opacity="0.85" ClipToBounds="True">
-                        <!--<Grid.Style>
-                        <Style TargetType="Grid">
-                        <Style.Triggers>
-                        <DataTrigger Binding="{Binding CaminhoBackground}" Value="">
-                        <Setter Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                        </Style.Triggers>
-                        </Style>
-                        </Grid.Style>-->
+                    <Grid Background="{DynamicResource SurfaceOverlayBrush}" Opacity="0.75" ClipToBounds="True">
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CaminhoBackground}" Value="">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
                     </Grid>
                     <ContentControl  Content="{Binding CurrentPage}" ClipToBounds="True">
                         <ContentControl.Resources>

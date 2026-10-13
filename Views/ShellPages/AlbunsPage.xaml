@@ -34,9 +34,11 @@
                 <i:Interaction.Behaviors>
                     <behaviors:ScrollGrupoViewBehavior ScrollToItem="{Binding GrupoParaScroll}" />
                 </i:Interaction.Behaviors>
+
                 <ItemsControl.Template>
                     <ControlTemplate TargetType="ItemsControl">
-                        <ScrollViewer Focusable="False">
+                        <ScrollViewer Focusable="False"
+                                      Template="{StaticResource MeuScrollViewer}">
                             <ItemsPresenter />
                         </ScrollViewer>
                     </ControlTemplate>
@@ -59,13 +61,13 @@
                                 Cursor="Hand">
                             <Border.InputBindings>
                                 <MouseBinding Gesture="LeftClick"
-                                              Command="{Binding DataContext.AbrirArtistaCommand,
+                                              Command="{Binding DataContext.AbrirAlbumCommand,
                                               RelativeSource={RelativeSource AncestorType=UserControl}}"
                                               CommandParameter="{Binding}" />
                             </Border.InputBindings>
 
                             <Grid>
-                                <Grid Background="{DynamicResource GradientBackground}" Opacity="0.85" />
+                                <Grid Background="{DynamicResource GradientBackground}" Opacity="0.6" />
                                 <Grid Margin="8">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />

@@ -13,7 +13,13 @@
              mc:Ignorable="d"
              d:DesignHeight="700" d:DesignWidth="1000">
     <Grid Style="{StaticResource TransicaoEntrada}"  ClipToBounds="True">
-        <Grid Background="{DynamicResource GradientBackground}">
+        <Grid>
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="{DynamicResource SurfaceAlt}" Offset="0" />
+                    <GradientStop Color="{DynamicResource Surface}" Offset="1" />
+                </LinearGradientBrush>
+            </Grid.Background>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="100" />

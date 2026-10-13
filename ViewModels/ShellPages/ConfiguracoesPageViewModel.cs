@@ -138,7 +138,7 @@ namespace Project_Kitsune.ViewModels.ShellPages
         [RelayCommand]
         private void IrParaTema()
         {
-            Shell.CurrentPage = new ConfigThemePageViewModel(Shell);
+            Shell.CurrentPage = new ConfigThemePageViewModel(Shell, () => new ConfiguracoesPageViewModel(Shell));
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

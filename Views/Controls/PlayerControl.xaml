@@ -10,25 +10,23 @@
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <Grid MaxHeight="680" Margin="16,16,16,8" ClipToBounds="True">
+        <Grid Background="{DynamicResource SurfaceAltBrush}" Opacity="1"></Grid>
+        <Grid MaxHeight="700" Margin="16,16,16,8" ClipToBounds="True">
             <Grid.RowDefinitions>
-                <RowDefinition Height="50*" />
+                <RowDefinition Height="52*" />
                 <RowDefinition Height="12*" />
-                <RowDefinition Height="5*" />
-                <RowDefinition Height="5*" />
+                <RowDefinition Height="10*" />
                 <RowDefinition Height="15*" />
                 <RowDefinition Height="10*" />
             </Grid.RowDefinitions>
 
             <!-- Capa grande: música que está a tocar agora -->
-            <Border Margin="0,0,0,0"
-                    MinWidth="350"
-                    MinHeight="320"
-                    MaxHeight="360"
+            <Border MinWidth="350"
+                    MinHeight="325"
                     Grid.Row="0"
                     Background="{DynamicResource SurfaceBrush}"
                     ClipToBounds="True"
-                    CornerRadius="16"
+                    CornerRadius="8"
                     Style="{StaticResource BorderClip}"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Top">
@@ -131,41 +129,41 @@
                 </StackPanel>
             </Grid>
             <!-- Barra de progresso + tempos -->
-            <Slider Style="{StaticResource PrettySlider}"
-                    Grid.Row="2"
-                    HorizontalAlignment="Stretch"
-                    Minimum="0"
-                    Maximum="{Binding DuracaoTotalMs}"
-                    Value="{Binding PosicaoAtualMs}"
-                    PreviewMouseLeftButtonDown="Slider_PreviewMouseLeftButtonDown"
-                    PreviewMouseMove="Slider_PreviewMouseMove"
-                    PreviewMouseLeftButtonUp="Slider_PreviewMouseUp"
-                    PreviewMouseUp="Slider_PreviewMouseUp"
-                    Cursor="Hand" />
+            <StackPanel Grid.Row="2">
+                <Slider Style="{StaticResource PrettySlider}"
+                        HorizontalAlignment="Stretch"
+                        Minimum="0"
+                        Maximum="{Binding DuracaoTotalMs}"
+                        Value="{Binding PosicaoAtualMs}"
+                        PreviewMouseLeftButtonDown="Slider_PreviewMouseLeftButtonDown"
+                        PreviewMouseMove="Slider_PreviewMouseMove"
+                        PreviewMouseLeftButtonUp="Slider_PreviewMouseUp"
+                        PreviewMouseUp="Slider_PreviewMouseUp"
+                        Cursor="Hand" />
 
-            <Grid Margin="0,4,0,10"
-                  Grid.Row="3">
-                <TextBlock Text="{Binding TempoAtualFormatado, FallbackValue='00:00'}"
-                           FontSize="12"
-                           FontFamily="{StaticResource FonteJetBrains}"
-                           Foreground="{DynamicResource TextMutedBrush}"
-                           HorizontalAlignment="Left" />
-                <TextBlock Text="{Binding TempoTotalFormatado, FallbackValue='00:00'}"
-                           FontSize="12"
-                           FontFamily="{StaticResource FonteJetBrains}"
-                           Foreground="{DynamicResource TextMutedBrush}"
-                           HorizontalAlignment="Right" />
-            </Grid>
+                <Grid Margin="0,4,0,10">
+                    <TextBlock Text="{Binding TempoAtualFormatado, FallbackValue='00:00'}"
+                               FontSize="12"
+                               FontFamily="{StaticResource FonteJetBrains}"
+                               Foreground="{DynamicResource TextMutedBrush}"
+                               HorizontalAlignment="Left" />
+                    <TextBlock Text="{Binding TempoTotalFormatado, FallbackValue='00:00'}"
+                               FontSize="12"
+                               FontFamily="{StaticResource FonteJetBrains}"
+                               Foreground="{DynamicResource TextMutedBrush}"
+                               HorizontalAlignment="Right" />
+                </Grid>
+            </StackPanel>
 
             <!-- Controlos -->
             <StackPanel Orientation="Horizontal"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Center"
-                        Grid.Row="4" Margin="0,10">
+                        Grid.Row="3" Margin="0,10">
                 <Button Command="{Binding AnteriorCommand}"
                         Style="{StaticResource PlayerControlButton}"
                         Margin="8,0">
-                    <Viewbox Width="auto" Height="auto" MaxHeight="40" MaxWidth="35">
+                    <Viewbox Width="auto" Height="auto" MaxHeight="40" MaxWidth="40">
                         <iconPacks:PackIconBoxIcons Kind="SolidSkipPrevious" />
                     </Viewbox>
                 </Button>
@@ -173,7 +171,7 @@
                 <Button Command="{Binding AlternarPlayPauseCommand}"
                         Style="{StaticResource PlayerPlayButton}"
                         Margin="0,0">
-                    <Viewbox Width="auto" Height="auto" MaxHeight="40" MaxWidth="35">
+                    <Viewbox Width="auto" Height="auto" MaxHeight="40" MaxWidth="40">
                         <iconPacks:PackIconBoxIcons>
                             <iconPacks:PackIconBoxIcons.Style>
                                 <Style TargetType="iconPacks:PackIconBoxIcons">
@@ -195,7 +193,7 @@
                 <Button Command="{Binding ProximaCommand}"
                         Style="{StaticResource PlayerControlButton}"
                         Margin="8,0">
-                    <Viewbox Width="auto" Height="auto" MaxHeight="40" MaxWidth="35">
+                    <Viewbox Width="auto" Height="auto" MaxHeight="40" MaxWidth="40">
                         <iconPacks:PackIconBoxIcons Kind="SolidSkipNext" />
                     </Viewbox>
                 </Button>
@@ -204,7 +202,7 @@
             <!-- Equalizador / Repetição -->
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Center"
-                        Grid.Row="5"
+                        Grid.Row="4"
                         Margin="0,20,0,10">
 
                 <!-- Botão Equalizador -->

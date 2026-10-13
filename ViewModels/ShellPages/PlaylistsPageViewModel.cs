@@ -169,7 +169,7 @@ namespace Project_Kitsune.ViewModels.ShellPages
         [RelayCommand]
         public void AbrirPlaylist(Playlist playlist)
         {
-            PlaylistDetailPageViewModel detalhe = new(_shell);
+            PlaylistDetailPageViewModel detalhe = new(_shell, () => new PlaylistsPageViewModel(_shell));
             detalhe.Carregar(playlist);
             _shell.CurrentPage = detalhe;
         }

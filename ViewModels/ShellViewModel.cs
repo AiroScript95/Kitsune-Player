@@ -152,7 +152,7 @@ namespace Project_Kitsune.ViewModels
         {
             Playlist? favoritos = _databaService.ListarPlaylists().FirstOrDefault(p => p.Name == "Favoritos");
             if (favoritos == null) return;
-            PlaylistDetailPageViewModel detalhe = new(this);
+            PlaylistDetailPageViewModel detalhe = new(this, () => new PlaylistsPageViewModel(this));
             detalhe.Carregar(favoritos);
             Page = "Favoritos";
             CurrentPage = detalhe;

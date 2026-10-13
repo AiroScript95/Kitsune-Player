@@ -34,9 +34,11 @@
                 <i:Interaction.Behaviors>
                     <behaviors:ScrollGrupoViewBehavior ScrollToItem="{Binding GrupoParaScroll}" />
                 </i:Interaction.Behaviors>
+
                 <ItemsControl.Template>
                     <ControlTemplate TargetType="ItemsControl">
-                        <ScrollViewer Focusable="False">
+                        <ScrollViewer Focusable="False"
+                                      Template="{StaticResource MeuScrollViewer}">
                             <ItemsPresenter />
                         </ScrollViewer>
                     </ControlTemplate>
@@ -50,13 +52,10 @@
 
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Height="120" Margin="6"
-                                CornerRadius="16"
-                                ClipToBounds="True"
+                        <Border Height="120" Margin="6" CornerRadius="16"
+                                ClipToBounds="True" BorderThickness="0"
                                 Style="{StaticResource BorderClip}"
-                                BorderThickness="0"
-                                Background="Transparent"
-                                Cursor="Hand">
+                                Background="Transparent" Cursor="Hand">
                             <Border.InputBindings>
                                 <MouseBinding Gesture="LeftClick"
                                               Command="{Binding DataContext.AbrirArtistaCommand,
@@ -65,7 +64,7 @@
                             </Border.InputBindings>
 
                             <Grid>
-                                <Grid Background="{DynamicResource GradientBackground}" Opacity="0.85" />
+                                <Grid Background="{DynamicResource GradientBackground}" Opacity="0.6" />
                                 <Grid Margin="8">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />

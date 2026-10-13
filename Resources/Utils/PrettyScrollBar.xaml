@@ -84,7 +84,7 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type ScrollBar}">
                             <Grid x:Name="Bg" SnapsToDevicePixels="true" Background="Transparent">
-                                <Border Padding="1,4" Background="red" ClipToBounds="True">
+                                <Border Padding="1,4"  ClipToBounds="True">
                                     <Track x:Name="PART_Track"
                                            IsDirectionReversed="true"
                                            Width="10"

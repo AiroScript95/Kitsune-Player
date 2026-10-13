@@ -160,10 +160,16 @@
                              VirtualizingPanel.VirtualizationMode="Recycling"
                              VirtualizingPanel.ScrollUnit="Pixel"
                              ScrollViewer.CanContentScroll="True"
+                             Style="{x:Null}"
                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                              ScrollViewer.VerticalScrollBarVisibility="Auto"
                              ItemContainerStyle="{StaticResource HoverListBoxItemStyle}"
                              BorderThickness="0">
+                        <ListBox.Resources>
+                            <Style TargetType="ScrollViewer">
+                                <Setter Property="Template" Value="{StaticResource MeuScrollViewer}" />
+                            </Style>
+                        </ListBox.Resources>
                         <ListBox.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <VirtualizingStackPanel Orientation="Vertical" />

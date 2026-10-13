@@ -12,6 +12,7 @@ namespace Project_Kitsune.ViewModels.ShellPages
     public partial class ConfigThemePageViewModel : INotifyPropertyChanged
     {
         protected ShellViewModel _shell;
+        private readonly Func<object> _voltarPara;
         private bool _temImage;
 
         public bool TemImage
@@ -72,7 +73,7 @@ namespace Project_Kitsune.ViewModels.ShellPages
             }
         }
 
-        public ConfigThemePageViewModel(ShellViewModel shell)
+        public ConfigThemePageViewModel(ShellViewModel shell, Func<object> voltarPara)
         {
             _shell = shell;
             configuracaoService = App.ServiceProvider.GetRequiredService<ConfiguracaoService>();
@@ -81,6 +82,7 @@ namespace Project_Kitsune.ViewModels.ShellPages
             ImagemBackground = config.Background;
             //Border = config.BorderColor;
             TemImage = !string.IsNullOrEmpty(config.Background);
+            _voltarPara = voltarPara;
         }
 
         public void MudarBorder(string SelectBorder)
@@ -131,10 +133,7 @@ namespace Project_Kitsune.ViewModels.ShellPages
         }
 
         [RelayCommand]
-        private void Voltar()
-        {
-            _shell.CurrentPage = new ConfiguracoesPageViewModel(_shell);
-        }
+        private void Voltar() => _shell.CurrentPage = _voltarPara;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 

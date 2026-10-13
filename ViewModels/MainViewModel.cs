@@ -236,7 +236,7 @@ namespace Project_Kitsune.ViewModels
         [RelayCommand]
         private void AbrirPlaylist(Playlist playlist)
         {
-            PlaylistDetailPageViewModel detalhe = new(_shell);
+            PlaylistDetailPageViewModel detalhe = new(_shell, () => new ConfiguracoesPageViewModel(_shell));
             detalhe.Carregar(playlist);
             _shell.CurrentPage = detalhe;
             TextoPesquisa = string.Empty;

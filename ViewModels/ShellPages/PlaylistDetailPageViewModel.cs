@@ -14,6 +14,7 @@ namespace Project_Kitsune.ViewModels.ShellPages
     {
         public ObservableCollection<Music> Musicas { get; set; } = new();
         private ObservableCollection<Music> _todasAsMusicas = new();
+        private readonly Func<object> _voltarPara;
 
         public ObservableCollection<Music> TodasAsMusicas
         {
@@ -58,9 +59,7 @@ namespace Project_Kitsune.ViewModels.ShellPages
             {
                 var totalSegundos = Musicas.Sum(m => (m.Duracao.TotalSeconds)); // supondo que existe esse campo em segundos
                 var ts = TimeSpan.FromSeconds(totalSegundos);
-                return ts.Hours > 0
-                                                                ? $"{ts.Hours}h {ts.Minutes}min"
-                                                                : $"{ts.Minutes} min";
+                return ts.Hours > 0 ? $"{ts.Hours}h {ts.Minutes}min" : $"{ts.Minutes} min";
             }
         }
 
@@ -95,19 +94,20 @@ namespace Project_Kitsune.ViewModels.ShellPages
         private Playlist? _playlistAtual;
         private bool EhFavoritos => _playlistAtual?.Name == "Favoritos";
 
-        public PlaylistDetailPageViewModel(ShellViewModel shell)
+        public PlaylistDetailPageViewModel(ShellViewModel shell, Func<object> voltarPara)
         {
             _shell = shell;
+            _voltarPara = voltarPara;
             _database = App.ServiceProvider.GetRequiredService<DatabaseService>();
             _biblioteca = App.ServiceProvider.GetRequiredService<BibliotecaService>();
             _configuracao = App.ServiceProvider.GetRequiredService<ConfiguracaoService>();
             _ordenacaoService = App.ServiceProvider.GetRequiredService<OrdenacaoService>();
             PlayerViewModel = App.ServiceProvider.GetRequiredService<PlayerViewModel>();
             Musicas.CollectionChanged += (s, e) =>
-                                                                                                {
-                                                                                                    OnPropertyChanged(nameof(DuracaoTotalFormatada));
-                                                                                                    OnPropertyChanged(nameof(NumMusicas));
-                                                                                                };
+            {
+                OnPropertyChanged(nameof(DuracaoTotalFormatada));
+                OnPropertyChanged(nameof(NumMusicas));
+            };
             WeakReferenceMessenger.Default.Register<GostoAlteradoMessage>(this, (r, m) => ((PlaylistDetailPageViewModel)r).AoGostoAlterado(m.Musica));
         }
 
@@ -119,39 +119,39 @@ namespace Project_Kitsune.ViewModels.ShellPages
             Application.Current.Dispatcher.Invoke(() => Musicas.Clear());
 
             Task.Run(() =>
-                                                                                                                {
-                                                                                                                    List<Music> musicasCarregadas = [];
+            {
+                List<Music> musicasCarregadas = [];
 
-                                                                                                                    if (EhComLetra)
+                if (EhComLetra)
+                {
+                    musicasCarregadas = _ordenacaoService.Ordenar(playlist.Musics, "Alfabetica", false);
+                }
+                else
+                {
+                    List<string> caminhos = EhFavoritos
+            ? _database.ListarMusicasFavoritas()
+            : _database.ListarMusicasDaPlaylist(playlist.Id);
+
+                    foreach (string caminho in caminhos)
+                    {
+                        Music? musica = _biblioteca.LerMusicaPorCaminho(caminho);
+                        if (musica != null) musicasCarregadas.Add(musica);
+                    }
+                }
+
+                Application.Current.Dispatcher.Invoke(() =>
                                                                                                                     {
-                                                                                                                        musicasCarregadas = _ordenacaoService.Ordenar(playlist.Musics, "Alfabetica", false);
-                                                                                                                    }
-                                                                                                                    else
-                                                                                                                    {
-                                                                                                                        List<string> caminhos = EhFavoritos
-                                                                                                                ? _database.ListarMusicasFavoritas()
-                                                                                                                : _database.ListarMusicasDaPlaylist(playlist.Id);
+                                                                                                                        foreach (Music m in musicasCarregadas) Musicas.Add(m);
+                                                                                                                    });
 
-                                                                                                                        foreach (string caminho in caminhos)
-                                                                                                                        {
-                                                                                                                            Music? musica = _biblioteca.LerMusicaPorCaminho(caminho);
-                                                                                                                            if (musica != null) musicasCarregadas.Add(musica);
-                                                                                                                        }
-                                                                                                                    }
-
-                                                                                                                    Application.Current.Dispatcher.Invoke(() =>
-                                                                                                                                                                                                                        {
-                                                                                                                                                                                                                            foreach (Music m in musicasCarregadas) Musicas.Add(m);
-                                                                                                                                                                                                                        });
-
-                                                                                                                    if (EhComLetra)
-                                                                                                                    {
-                                                                                                                        byte[]? capa = musicasCarregadas.FirstOrDefault()?.Image;
-                                                                                                                        Application.Current.Dispatcher.Invoke(() => Capa = capa);
-                                                                                                                    }
-                                                                                                                    else if (!EhFavoritos) AtualizarCapa(playlist);
-                                                                                                                    else AtualizarCapaFavoritos();
-                                                                                                                });
+                if (EhComLetra)
+                {
+                    byte[]? capa = musicasCarregadas.FirstOrDefault()?.Image;
+                    Application.Current.Dispatcher.Invoke(() => Capa = capa);
+                }
+                else if (!EhFavoritos) AtualizarCapa(playlist);
+                else AtualizarCapaFavoritos();
+            });
         }
 
         public void AtualizarCapa(Playlist playlist)
@@ -257,10 +257,7 @@ namespace Project_Kitsune.ViewModels.ShellPages
         }
 
         [RelayCommand]
-        private void Voltar()
-        {
-            _shell.CurrentPage = new PlaylistsPageViewModel(_shell);
-        }
+        private void Voltar() => _shell.CurrentPage = _voltarPara;
 
         [RelayCommand]
         private void AbrirPainelAdicionar()
