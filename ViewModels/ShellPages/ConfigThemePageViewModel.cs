@@ -133,7 +133,7 @@ namespace Project_Kitsune.ViewModels.ShellPages
         }
 
         [RelayCommand]
-        private void Voltar() => _shell.CurrentPage = _voltarPara;
+        private void Voltar() => _shell.CurrentPage = _voltarPara();
 
         public event PropertyChangedEventHandler? PropertyChanged;
 

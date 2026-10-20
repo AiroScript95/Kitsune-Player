@@ -50,5 +50,6 @@
     <system:String x:Key="Str_Pesquisa">曲名、アーティスト、アルバム...</system:String>
     <system:String x:Key="Str_RemoverDaPlaylist">プレイリストから削除</system:String>
     <system:String x:Key="Str_ComLetra">歌詞あり</system:String>
+    <system:String x:Key="Str_FilaReproducao">再生キュー</system:String>
     <system:String x:Key="Str_">ee</system:String>
 </ResourceDictionary>

@@ -70,15 +70,8 @@
                 <!-- ===== CABEÇALHO: hero com blur ===== -->
                 <Grid Grid.Row="0" Height="280" ClipToBounds="True" Background="{DynamicResource SurfaceOverlayBrush}">
                     <Grid>
-                        <Image Source="{Binding Capa, Converter={StaticResource BytesParaImagemConverter},ConverterParameter=10}"
-                               Stretch="UniformToFill"
-                               Opacity="1">
-                            <Image.Effect>
-                                <BlurEffect Radius="0" />
-                            </Image.Effect>
-                        </Image>
+                        <Border Background="{Binding Capa, Converter={StaticResource BytesParaGradienteConverter}}" />
                         <Border Background="{DynamicResource SurfaceOverlayBrush}" Opacity="0.45" />
-                        <!-- Gradient para garantir legibilidade do texto na base -->
                     </Grid>
                     <Button Command="{Binding VoltarCommand}" Grid.ColumnSpan="3" Panel.ZIndex="2"
                             Style="{StaticResource IconButtonSmall}"
@@ -111,9 +104,11 @@
                         </Border>
 
                         <StackPanel Grid.Column="1" VerticalAlignment="Bottom" Margin="20,0,0,0">
-                            <TextBlock FontSize="32" FontWeight="Bold"
+                            <TextBlock FontSize="28" FontWeight="DemiBold"
                                        FontFamily="{StaticResource FonteHiragino}"
                                        Foreground="{DynamicResource TextPrimaryBrush}"
+                                       MaxWidth="300"
+                                       HorizontalAlignment="Left"
                                        TextTrimming="CharacterEllipsis">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">

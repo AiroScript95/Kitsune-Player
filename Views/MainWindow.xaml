@@ -161,30 +161,18 @@
                 <Grid x:Name="PesquisaRoot" Grid.Column="1" Width="Auto" Margin="0,8,0,0"
                       WindowChrome.IsHitTestVisibleInChrome="True">
 
-                    <hc:SearchBar  x:Name="SearBar" Width="360" Height="32"
-                                  Text="{Binding TextoPesquisa, UpdateSourceTrigger=PropertyChanged}"
-                                  Grid.Column="1" CaretBrush="{DynamicResource TextMutedBrush}"
-                                  Foreground="{DynamicResource TextSecondaryBrush}" Focusable="True"
-                                  FontFamily="{DynamicResource FonteInter}"
-                                  hc:InfoElement.Placeholder="{DynamicResource Str_Pesquisa}"
-                                  WindowChrome.IsHitTestVisibleInChrome="True"
-                                  GotKeyboardFocus="SearBar_GotKeyboardFocus"
-                                  PreviewKeyDown="SearBar_PreviewKeyDown"
-                                  Padding="16,0">
-                        <hc:SearchBar.Style>
-                            <Style TargetType="hc:SearchBar" BasedOn="{StaticResource SearchBarExtend}">
-                                <Setter Property="Background" Value="{DynamicResource SurfaceAltBrush}" />
-                                <Setter Property="BorderThickness" Value="0" />
-                                <Setter Property="BorderBrush" Value="{DynamicResource TextMutedBrush}" />
-                                <Setter Property="hc:BorderElement.CornerRadius" Value="4" />
-                                <Style.Triggers>
-                                    <Trigger Property="IsFocused" Value="True">
-                                        <Setter Property="BorderBrush" Value="{DynamicResource TextPrimaryBrush}" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </hc:SearchBar.Style>
-                    </hc:SearchBar>
+                    <TextBox x:Name="SearBar" Style="{StaticResource PesquisaTextBox}"
+                             Width="360" Height="32" Grid.Column="1"
+                             Text="{Binding TextoPesquisa, UpdateSourceTrigger=PropertyChanged}"
+                             FontFamily="{DynamicResource FonteInter}"
+                             WindowChrome.IsHitTestVisibleInChrome="True"
+                             GotKeyboardFocus="SearBar_GotKeyboardFocus"
+                             PreviewKeyDown="SearBar_PreviewKeyDown">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding ResultadosEncontradosCommand}" />
+                        </TextBox.InputBindings>
+                    </TextBox>
+
                     <Popup PlacementTarget="{Binding ElementName=SearBar}"
                            Placement="Bottom" StaysOpen="True" Focusable="True"
                            AllowsTransparency="True" PopupAnimation="Fade">
@@ -369,24 +357,13 @@
                         <Popup.Style>
                             <Style TargetType="Popup">
                                 <Setter Property="IsOpen" Value="{Binding PesquisaAberta, Mode=OneWay}" />
-                                <Style.Triggers>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ResultadosMusica.Count}" Value="0" />
-                                            <Condition Binding="{Binding ResultadosArtistas.Count}" Value="0" />
-                                            <Condition Binding="{Binding ResultadosAlbuns.Count}" Value="0" />
-                                            <Condition Binding="{Binding ResultadosPlaylists.Count}" Value="0" />
-                                        </MultiDataTrigger.Conditions>
-                                        <Setter Property="IsOpen" Value="False" />
-                                    </MultiDataTrigger>
-                                </Style.Triggers>
                             </Style>
                         </Popup.Style>
                         <Grid  Width="{Binding ActualWidth, ElementName=SearBar}">
 
                             <Border x:Name="Container" Width="auto"
-                                    Margin="0,8,0,0" CornerRadius="8" BorderThickness="0"
-                                    Background="{DynamicResource SurfaceRaisedBrush}" Padding="4">
+                                    Margin="0,4,0,0" CornerRadius="8" BorderThickness="0.5" BorderBrush="{DynamicResource BorderBrush2}"
+                                    Background="{DynamicResource GradientBackground}" Padding="4">
                                 <StackPanel>
                                     <StackPanel Style="{StaticResource SecaoPesquisa}" Tag="{Binding ResultadosMusica.Count}">
                                         <ItemsControl ItemsSource="{Binding ResultadosMusica}">
@@ -423,6 +400,26 @@
                                                       Tag="{Binding AbrirPlaylistCommand}"
                                                       ItemTemplate="{StaticResource PlaylistResultadoTemplate}" />
                                     </StackPanel>
+                                    <Grid Margin="16,8">
+                                        <Grid.Style>
+                                            <Style TargetType="Grid">
+                                                <Setter  Property="Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding ResultadosMusica.Count}" Value="0" />
+                                                            <Condition Binding="{Binding ResultadosArtistas.Count}" Value="0" />
+                                                            <Condition Binding="{Binding ResultadosAlbuns.Count}" Value="0" />
+                                                            <Condition Binding="{Binding ResultadosPlaylists.Count}" Value="0" />
+                                                        </MultiDataTrigger.Conditions>
+                                                        <Setter  Property="Visibility" Value="Visible" />
+                                                    </MultiDataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Grid.Style>
+                                        <TextBlock Text="Sem Resultados..." Foreground="{DynamicResource TextMutedBrush}" FontSize="12" FontFamily="{StaticResource FonteInter}" />
+                                        <!--<iconPacks:PackIconBoxIcons Kind="RegularSearch" Foreground="{DynamicResource TextMutedBrush}" HorizontalAlignment="Right" />-->
+                                    </Grid>
                                 </StackPanel>
                             </Border>
                         </Grid>

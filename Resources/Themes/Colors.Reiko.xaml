@@ -5,45 +5,53 @@
     <Color x:Key="SurfaceAlt">#212427</Color>
     <Color x:Key="SurfaceRaised">#2C3033</Color>
     <Color x:Key="SurfaceOverlay">#E617191B</Color>
+
     <!-- ===== TEXTO ===== -->
     <Color x:Key="TextPrimary">#E8ECEE</Color>
     <Color x:Key="TextSecondary">#9AA3A8</Color>
-    <Color x:Key="TextMuted">#66706F</Color>
+    <Color x:Key="TextMuted">#7A8588</Color>
     <Color x:Key="TextDisabled">#3D4547</Color>
     <Color x:Key="TextOnAccent">#12161A</Color>
+
     <!-- ===== ACCENT PRIMÁRIO (Reiko, luar na névoa) ===== -->
     <Color x:Key="Accent">#8FAFC7</Color>
     <Color x:Key="AccentLight">#B3C7D9</Color>
     <Color x:Key="AccentDark">#6F8FA8</Color>
-    <Color x:Key="AccentSoft">#263640</Color>
-    <Color x:Key="AccentTertiary">#8A7FA8</Color>
+    <Color x:Key="AccentSoft">#2A4050</Color>
+    <Color x:Key="AccentTertiary">#9488B5</Color>
 
     <!-- ===== ACCENT SECUNDÁRIO (bruma prateada) ===== -->
     <Color x:Key="AccentAlt">#A6A8B4</Color>
     <Color x:Key="AccentAltLight">#C4C6D0</Color>
+
     <!-- ===== BOTÕES ===== -->
-    <Color x:Key="ButtonSurface">#212427</Color>
-    <Color x:Key="ButtonSurfaceHover">#2C3033</Color>
-    <Color x:Key="ButtonSurfacePressed">#363B3F</Color>
+    <Color x:Key="ButtonSurface">#2C3033</Color>
+    <Color x:Key="ButtonSurfaceHover">#363D42</Color>
+    <Color x:Key="ButtonSurfacePressed">#41494F</Color>
     <Color x:Key="ButtonIcon">#9AA3A8</Color>
-    <Color x:Key="ButtonIconHover">#8FAFC7</Color>
+    <Color x:Key="ButtonIconHover">#B3C7D9</Color>
+
     <!-- ===== LISTA ===== -->
     <Color x:Key="ListHover">#2C3033</Color>
-    <Color x:Key="ListSelected">#263640</Color>
+    <Color x:Key="ListSelected">#2A4050</Color>
     <Color x:Key="ListSelectedBorder">#8FAFC7</Color>
+
     <!-- ===== BORDAS ===== -->
     <Color x:Key="Border">#2E3336</Color>
-    <Color x:Key="BorderStrong">#3B4144</Color>
-    <Color x:Key="Divider">#2C3033</Color>
+    <Color x:Key="BorderStrong">#4B5459</Color>
+    <Color x:Key="Divider">#252A2D</Color>
+
     <!-- ===== ESTADOS FUNCIONAIS ===== -->
     <Color x:Key="Success">#7BAF8F</Color>
     <Color x:Key="Warning">#C9B368</Color>
     <Color x:Key="Error">#E56B6B</Color>
+
     <!-- ===== PLAYER ===== -->
     <Color x:Key="ProgressFill">#8FAFC7</Color>
     <Color x:Key="ProgressTrack">#2C3033</Color>
+
     <!-- ===== SOMBRA ===== -->
-    <Color x:Key="Shadow">#40000000</Color>
+    <Color x:Key="Shadow">#66000000</Color>
     <!-- ===== BRUSHES ===== -->
     <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource Surface}" />
     <SolidColorBrush x:Key="SurfaceAltBrush" Color="{StaticResource SurfaceAlt}" />

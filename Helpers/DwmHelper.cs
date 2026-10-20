@@ -75,8 +75,7 @@ namespace Project_Kitsune.Helpers
             SendMessage(hwnd, WM_SETICON, new IntPtr(1), IntPtr.Zero); // ICON_BIG
             SendMessage(hwnd, WM_SETICON, IntPtr.Zero, IntPtr.Zero);   // ICON_SMALL
 
-            SetWindowPos(hwnd, IntPtr.Zero, 0, 0, 0, 0,
-                SWP_NOSIZE | SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED);
+            SetWindowPos(hwnd, IntPtr.Zero, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED);
         }
     }
 }

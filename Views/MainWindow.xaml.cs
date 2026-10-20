@@ -35,8 +35,8 @@ namespace Project_Kitsune.Views
         {
             _shellViewModel = App.ServiceProvider.GetRequiredService<ShellViewModel>();
             _shellViewModel.PropertyChanged += ShellViewModel_PropertyChanged;
-            ((App)Application.Current).TemaAlterado += AtualizarCorBordaNativa;
-            ((App)Application.Current).TemaAlterado += AtualizarCorTitle;
+            ( (App)Application.Current ).TemaAlterado += AtualizarCorBordaNativa;
+            ( (App)Application.Current ).TemaAlterado += AtualizarCorTitle;
 
             player = App.ServiceProvider.GetRequiredService<PlayerViewModel>();
             smtcService = App.ServiceProvider.GetRequiredService<SmtcService>();
@@ -54,18 +54,16 @@ namespace Project_Kitsune.Views
             double y = configuracao.JanelaY;
 
             bool estaNaTela = x >= SystemParameters.VirtualScreenLeft &&
-                                    x < (SystemParameters.VirtualScreenLeft + SystemParameters.VirtualScreenWidth) &&
+                                    x < ( SystemParameters.VirtualScreenLeft + SystemParameters.VirtualScreenWidth ) &&
                                       y >= SystemParameters.VirtualScreenTop &&
-                                        y < (SystemParameters.VirtualScreenTop + SystemParameters.VirtualScreenHeight);
+                                        y < ( SystemParameters.VirtualScreenTop + SystemParameters.VirtualScreenHeight );
 
-            if (estaNaTela && (x != 0 || y != 0))
-            {
+            if (estaNaTela && ( x != 0 || y != 0 )) {
                 this.WindowStartupLocation = WindowStartupLocation.Manual;
                 this.Top = y;
                 this.Left = x;
             }
-            else
-            {
+            else {
                 this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             }
 
@@ -82,13 +80,10 @@ namespace Project_Kitsune.Views
             base.OnSourceInitialized(e);
             CustomTitleBar.Apply(this, MinimizeButton, MaximizeButton, CloseButton);
             smtcService?.Inicializar(this, player);
-            // DwmHelper.AtivarCantosArredondados(this);
-            // DwmHelper.OcultarIcon(this);
             AtualizarCorBordaNativa();
             AtualizarCorTitle();
 
-            if (PresentationSource.FromVisual(this) is HwndSource source)
-            {
+            if (PresentationSource.FromVisual(this) is HwndSource source) {
                 _hwndSource = source;
                 _hwndSource.AddHook(WndProc);
             }
@@ -102,26 +97,22 @@ namespace Project_Kitsune.Views
 
         private async Task WndProc_TratarDeviceArrivalAsync()
         {
-            try
-            {
+            try {
                 BibliotecaService bibliotecaService = App.ServiceProvider.GetRequiredService<BibliotecaService>();
                 Configuracao config = configuracaoService.CarregarConfiguracao();
                 await bibliotecaService.GarantirBibliotecaCarregadaAsync(config.RotaMusica, forcar: true);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Debug.WriteLine($"Erro ao atualizar biblioteca após dispositivo: {ex}");
             }
         }
 
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
-            if (msg == WM_DEVICECHANGE)
-            {
+            if (msg == WM_DEVICECHANGE) {
                 int evento = wParam.ToInt32();
 
-                if (evento == DBT_DEVICEARRIVAL)
-                {
+                if (evento == DBT_DEVICEARRIVAL) {
                     _ = WndProc_TratarDeviceArrivalAsync();
                 }
             }
@@ -131,8 +122,7 @@ namespace Project_Kitsune.Views
 
         private void AtualizarCorTitle()
         {
-            if (Application.Current.Resources["SurfaceBrush"] is SolidColorBrush brush)
-            {
+            if (Application.Current.Resources["SurfaceBrush"] is SolidColorBrush brush) {
                 DwmHelper.DefinirCorTitleBar(this, brush.Color);
             }
         }
@@ -148,8 +138,7 @@ namespace Project_Kitsune.Views
                 _ => "BorderBrush2"
             };
 
-            if (TryFindResource(chaveRecurso) is SolidColorBrush brush)
-            {
+            if (TryFindResource(chaveRecurso) is SolidColorBrush brush) {
                 DwmHelper.DefinirCorBorda(this, brush.Color);
             }
         }
@@ -162,15 +151,11 @@ namespace Project_Kitsune.Views
 
         private void AtualizarIconeMaximizar()
         {
-            if (WindowState == WindowState.Maximized)
-            {
+            if (WindowState == WindowState.Maximized) {
                 MaximizeButton.Content = "\uE923"; // Duas janelas sobrepostas (Restaurar)
-                MaximizeButton.ToolTip = "元に戻す";
             }
-            else
-            {
+            else {
                 MaximizeButton.Content = "\uE922"; // Quadrado único (Maximizar)
-                MaximizeButton.ToolTip = "最大化";
             }
         }
 
@@ -194,8 +179,7 @@ namespace Project_Kitsune.Views
             configuracao.JanelaY = this.RestoreBounds.Top;
             configuracao.JanelaX = this.RestoreBounds.Left;
 
-            if (player.MusicaAtual != null)
-            {
+            if (player.MusicaAtual != null) {
                 configuracao.UltimaMusica ??= new UltimaMusicaInfo();
                 configuracao.UltimaMusica.Caminho = player.MusicaAtual.Caminho;
                 configuracao.UltimaMusica.PosicaoMs = audioPlayerService.ObterPosicaoAtual();
@@ -209,11 +193,10 @@ namespace Project_Kitsune.Views
         private void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
         {
             _shellViewModel.PropertyChanged -= ShellViewModel_PropertyChanged;
-            ((App)Application.Current).TemaAlterado -= AtualizarCorBordaNativa;
-            ((App)Application.Current).TemaAlterado -= AtualizarCorTitle;
+            ( (App)Application.Current ).TemaAlterado -= AtualizarCorBordaNativa;
+            ( (App)Application.Current ).TemaAlterado -= AtualizarCorTitle;
 
-            if (_hwndSource != null)
-            {
+            if (_hwndSource != null) {
                 _hwndSource.RemoveHook(WndProc);
                 _hwndSource = null;
             }

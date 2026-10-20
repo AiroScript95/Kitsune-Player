@@ -31,7 +31,7 @@
                         BorderThickness="0"
                         Width="40" Height="40"
                         hc:BorderElement.CornerRadius="50"
-                        Foreground="{DynamicResource TextOnAccentBrush}"
+                        Foreground="{DynamicResource TextSecondaryBrush}"
                         Margin="10">
                     <iconPacks:PackIconBoxIcons Kind="SolidUndo" />
                 </Button>
@@ -82,21 +82,6 @@
                         </Grid.RowDefinitions>
                         <Grid Grid.Row="0" Grid.Column="1"></Grid>
                         <Grid Grid.Row="1" Grid.Column="0">
-                            <Grid.Resources>
-                                <Style TargetType="iconPacks:PackIconBoxIcons">
-                                    <Setter Property="Width" Value="12" />
-                                </Style>
-                            </Grid.Resources>
-                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <iconPacks:PackIconBoxIcons Kind="SolidMusic" Margin="0,6" Foreground="{DynamicResource TextSecondaryBrush}" />
-                                <iconPacks:PackIconBoxIcons Kind="SolidMusicLibrary" Margin="0,6" Foreground="{DynamicResource TextSecondaryBrush}" />
-                                <iconPacks:PackIconBoxIcons Kind="SolidHeart" Margin="0,6" Foreground="{DynamicResource TextSecondaryBrush}" />
-                                <iconPacks:PackIconBoxIcons Kind="SolidBlock" Margin="0,6" Foreground="{DynamicResource TextSecondaryBrush}" />
-                                <iconPacks:PackIconBoxIcons Kind="SolidBlock" Margin="0,6" Foreground="{DynamicResource TextSecondaryBrush}" />
-                            </StackPanel>
-                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,16">
-                                <iconPacks:PackIconBoxIcons Kind="SolidCog" Foreground="{DynamicResource TextSecondaryBrush}" />
-                            </StackPanel>
                         </Grid>
                         <Border Grid.Row="1" Grid.Column="1" CornerRadius="5,5,10,0"
                                 Background="{DynamicResource SurfaceBrush}"
@@ -192,11 +177,7 @@
 
                                             <!-- Letras / shuffle-repeat -->
                                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                                <iconPacks:PackIconBoxIcons Kind="SolidShuffle" Width="12" Margin="6,0"
-                                                                            Foreground="{DynamicResource TextMutedBrush}" />
                                                 <Border Width="60" CornerRadius="6" Height="14" Background="{DynamicResource SurfaceBrush}"></Border>
-                                                <iconPacks:PackIconBoxIcons Kind="SolidRepeat" Width="12" Margin="6,0"
-                                                                            Foreground="{DynamicResource TextMutedBrush}" />
                                             </StackPanel>
                                         </StackPanel>
                                     </Grid>
@@ -344,14 +325,14 @@
                                                 <Border BorderThickness="3" CornerRadius="30" SnapsToDevicePixels="True" x:Name="border">
                                                     <Border.BorderBrush>
                                                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                                            <GradientStop Color="#D9683F" Offset="0" />
-                                                            <GradientStop Color="#C99A2E" Offset="1" />
+                                                            <GradientStop Color="#E0561F" Offset="0" />
+                                                            <GradientStop Color="#D9A21F" Offset="1" />
                                                         </LinearGradientBrush>
                                                     </Border.BorderBrush>
                                                     <Border.Background>
                                                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                                            <GradientStop Color="#FDF8F2" Offset="0" />
-                                                            <GradientStop Color="#ECE0CE" Offset="1" />
+                                                            <GradientStop Color="#FEF7EE" Offset="0" />
+                                                            <GradientStop Color="#F2D8BC" Offset="1" />
                                                         </LinearGradientBrush>
                                                     </Border.Background>
                                                     <ContentPresenter HorizontalAlignment="Center" TextElement.Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" x:Name="content" />
@@ -373,14 +354,72 @@
                                                 <Border BorderThickness="3" CornerRadius="30" SnapsToDevicePixels="True" x:Name="border">
                                                     <Border.BorderBrush>
                                                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                                            <GradientStop Color="#E8637A" Offset="0" />
-                                                            <GradientStop Color="#8B5FA8" Offset="1" />
+                                                            <GradientStop Color="#CE3E58" Offset="0" />
+                                                            <GradientStop Color="#8E2C47" Offset="1" />
                                                         </LinearGradientBrush>
                                                     </Border.BorderBrush>
                                                     <Border.Background>
                                                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                                            <GradientStop Color="#FAF1EC" Offset="0" />
-                                                            <GradientStop Color="#E5C4B4" Offset="1" />
+                                                            <GradientStop Color="#FCEBDD" Offset="0" />
+                                                            <GradientStop Color="#EEC8B0" Offset="1" />
+                                                        </LinearGradientBrush>
+                                                    </Border.Background>
+                                                    <ContentPresenter HorizontalAlignment="Center" TextElement.Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" x:Name="content" />
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </RadioButton.Style>
+                        </RadioButton>
+
+                        <RadioButton x:Name="RadioZenko" GroupName="tema" ToolTip="Zenko"
+                                     Checked="TemaSelect_Checked" Foreground="#A0917D">
+                            <RadioButton.Style>
+                                <Style TargetType="RadioButton" BasedOn="{StaticResource IconRadioButton}">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="RadioButton">
+                                                <Border BorderThickness="3" CornerRadius="30" SnapsToDevicePixels="True" x:Name="border">
+                                                    <Border.BorderBrush>
+                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                            <GradientStop Color="#BF8208" Offset="0" />
+                                                            <GradientStop Color="#4B5D16" Offset="1" />
+                                                        </LinearGradientBrush>
+                                                    </Border.BorderBrush>
+                                                    <Border.Background>
+                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                            <GradientStop Color="#F6F4F1" Offset="0" />
+                                                            <GradientStop Color="#E6D8B8" Offset="1" />
+                                                        </LinearGradientBrush>
+                                                    </Border.Background>
+                                                    <ContentPresenter HorizontalAlignment="Center" TextElement.Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" x:Name="content" />
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </RadioButton.Style>
+                        </RadioButton>
+
+                        <RadioButton x:Name="RadioYako" GroupName="tema" ToolTip="Yako"
+                                     Checked="TemaSelect_Checked" Foreground="#A0917D">
+                            <RadioButton.Style>
+                                <Style TargetType="RadioButton" BasedOn="{StaticResource IconRadioButton}">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="RadioButton">
+                                                <Border BorderThickness="3" CornerRadius="30" SnapsToDevicePixels="True" x:Name="border">
+                                                    <Border.BorderBrush>
+                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                            <GradientStop Color="#C24D16" Offset="0" />
+                                                            <GradientStop Color="#522B5B" Offset="1" />
+                                                        </LinearGradientBrush>
+                                                    </Border.BorderBrush>
+                                                    <Border.Background>
+                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                            <GradientStop Color="#FBE4D8" Offset="0" />
+                                                            <GradientStop Color="#DFB6B2" Offset="1" />
                                                         </LinearGradientBrush>
                                                     </Border.Background>
                                                     <ContentPresenter HorizontalAlignment="Center" TextElement.Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" x:Name="content" />
@@ -402,14 +441,14 @@
                                                 <Border BorderThickness="3" CornerRadius="30" SnapsToDevicePixels="True" x:Name="border">
                                                     <Border.BorderBrush>
                                                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                                            <GradientStop Color="#6B1A16" Offset="0" />
-                                                            <GradientStop Color="#3A2740" Offset="1" />
+                                                            <GradientStop Color="#CC3340" Offset="0" />
+                                                            <GradientStop Color="#7B62B0" Offset="1" />
                                                         </LinearGradientBrush>
                                                     </Border.BorderBrush>
                                                     <Border.Background>
                                                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                                            <GradientStop Color="#161210" Offset="0" />
-                                                            <GradientStop Color="#2B2420" Offset="1" />
+                                                            <GradientStop Color="#0F0B16" Offset="0" />
+                                                            <GradientStop Color="#291E3A" Offset="1" />
                                                         </LinearGradientBrush>
                                                     </Border.Background>
                                                     <ContentPresenter HorizontalAlignment="Center" TextElement.Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" x:Name="content" />
@@ -479,35 +518,6 @@
                             </RadioButton.Style>
                         </RadioButton>
 
-                        <RadioButton x:Name="RadioYako" GroupName="tema" ToolTip="Yako"
-                                     Checked="TemaSelect_Checked" Foreground="#A0917D">
-                            <RadioButton.Style>
-                                <Style TargetType="RadioButton" BasedOn="{StaticResource IconRadioButton}">
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="RadioButton">
-                                                <Border BorderThickness="3" CornerRadius="30" SnapsToDevicePixels="True" x:Name="border">
-                                                    <Border.BorderBrush>
-                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                                            <GradientStop Color="#D9702E" Offset="0" />
-                                                            <GradientStop Color="#6B5878" Offset="1" />
-                                                        </LinearGradientBrush>
-                                                    </Border.BorderBrush>
-                                                    <Border.Background>
-                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                                            <GradientStop Color="#1F1826" Offset="0" />
-                                                            <GradientStop Color="#382C40" Offset="1" />
-                                                        </LinearGradientBrush>
-                                                    </Border.Background>
-                                                    <ContentPresenter HorizontalAlignment="Center" TextElement.Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" x:Name="content" />
-                                                </Border>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </RadioButton.Style>
-                        </RadioButton>
-
                         <RadioButton x:Name="RadioYoru" GroupName="tema" ToolTip="Yoru"
                                      Checked="TemaSelect_Checked" Foreground="#A0917D">
                             <RadioButton.Style>
@@ -519,42 +529,13 @@
                                                     <Border.BorderBrush>
                                                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
                                                             <GradientStop Color="#D9502E" Offset="0" />
-                                                            <GradientStop Color="#3A4A73" Offset="1" />
+                                                            <GradientStop Color="#5E74B0" Offset="1" />
                                                         </LinearGradientBrush>
                                                     </Border.BorderBrush>
                                                     <Border.Background>
                                                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
                                                             <GradientStop Color="#0A0C11" Offset="0" />
                                                             <GradientStop Color="#1E2430" Offset="1" />
-                                                        </LinearGradientBrush>
-                                                    </Border.Background>
-                                                    <ContentPresenter HorizontalAlignment="Center" TextElement.Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" x:Name="content" />
-                                                </Border>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </RadioButton.Style>
-                        </RadioButton>
-
-                        <RadioButton x:Name="RadioZenko" GroupName="tema" ToolTip="Zenko"
-                                     Checked="TemaSelect_Checked" Foreground="#A0917D">
-                            <RadioButton.Style>
-                                <Style TargetType="RadioButton" BasedOn="{StaticResource IconRadioButton}">
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="RadioButton">
-                                                <Border BorderThickness="3" CornerRadius="30" SnapsToDevicePixels="True" x:Name="border">
-                                                    <Border.BorderBrush>
-                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                                            <GradientStop Color="#C99A2E" Offset="0" />
-                                                            <GradientStop Color="#4A7A4E" Offset="1" />
-                                                        </LinearGradientBrush>
-                                                    </Border.BorderBrush>
-                                                    <Border.Background>
-                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                                            <GradientStop Color="#F9F6ED" Offset="0" />
-                                                            <GradientStop Color="#E7DFC9" Offset="1" />
                                                         </LinearGradientBrush>
                                                     </Border.Background>
                                                     <ContentPresenter HorizontalAlignment="Center" TextElement.Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" x:Name="content" />
@@ -595,5 +576,4 @@
             </Grid>
         </Grid>
     </Grid>
-
 </UserControl>

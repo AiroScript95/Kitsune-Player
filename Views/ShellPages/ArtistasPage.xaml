@@ -16,7 +16,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Margin="30,20"
+        <TextBlock Grid.Row="0" Margin="30,20,0,10"
                    Text="{DynamicResource Str_Artistas}"
                    FontSize="24" FontWeight="Bold"
                    FontFamily="{StaticResource FonteHiragino}"
@@ -46,13 +46,13 @@
 
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <vwp:VirtualizingWrapPanel ItemSize="332,132" StretchItems="True" />
+                        <vwp:VirtualizingWrapPanel ItemSize="192,232" StretchItems="True" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
 
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Height="120" Margin="6" CornerRadius="16"
+                        <Border Width="180" Height="220" Margin="6" CornerRadius="16"
                                 ClipToBounds="True" BorderThickness="0"
                                 Style="{StaticResource BorderClip}"
                                 Background="Transparent" Cursor="Hand">
@@ -64,66 +64,40 @@
                             </Border.InputBindings>
 
                             <Grid>
-                                <Grid Background="{DynamicResource GradientBackground}" Opacity="0.6" />
-                                <Grid Margin="8">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="60*" />
-                                    </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
 
-                                    <!-- Capa -->
-                                    <Border Grid.Column="0" CornerRadius="8" Width="100" Height="100"
-                                            Background="{DynamicResource SurfaceRaisedBrush}"
-                                            Style="{StaticResource BorderClip}"
-                                            ClipToBounds="True">
-                                        <Grid>
-                                            <Image Source="{Binding Capa, Converter={StaticResource BytesParaImagemConverter}, ConverterParameter=240}"
-                                                   Stretch="UniformToFill"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center" />
-                                            <iconPacks:PackIconBoxIcons Kind="RegularUser"
-                                                                        Width="32" Height="32"
-                                                                        Foreground="{DynamicResource TextMutedBrush}"
-                                                                        HorizontalAlignment="Center"
-                                                                        VerticalAlignment="Center"
-                                                                        Visibility="{Binding Capa, Converter={StaticResource NullToVisibilityConverter}}" />
-                                        </Grid>
-                                    </Border>
-
-                                    <Grid Grid.Column="1" Margin="16,0,0,0">
-                                        <!-- Nº de músicas -->
-                                        <Border Background="#00000090" CornerRadius="10" Padding="8,2" Margin="6"
-                                                HorizontalAlignment="Right" VerticalAlignment="Top">
-                                            <TextBlock Text="{Binding NumMusicas, StringFormat={}{0:D2}}"
-                                                       FontFamily="{StaticResource FonteInter}"
-                                                       FontSize="12" FontWeight="Bold"
-                                                       Foreground="{DynamicResource TextMutedBrush}" />
-                                        </Border>
-
-                                        <StackPanel>
-                                            <TextBlock Text="{Binding Nome}"
-                                                       FontSize="16" FontWeight="DemiBold"
-                                                       FontFamily="{StaticResource FonteInter}"
-                                                       Foreground="{DynamicResource TextPrimaryBrush}"
-                                                       TextTrimming="CharacterEllipsis"
-                                                       Margin="0,8,40,4" />
-
-                                            <ItemsControl ItemsSource="{Binding ListaMusicas}" Margin="0,5">
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <StackPanel Orientation="Horizontal" Margin="0,4">
-                                                            <iconPacks:PackIconBoxIcons Kind="RegularMusicAlt" Width="12" Height="12"
-                                                                                        Foreground="{DynamicResource TextMutedBrush}" />
-                                                            <TextBlock Margin="8,0" Text="{Binding}"
-                                                                       FontSize="12" TextTrimming="CharacterEllipsis"
-                                                                       Foreground="{DynamicResource TextMutedBrush}" />
-                                                        </StackPanel>
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
-                                        </StackPanel>
+                                <!-- Capa -->
+                                <Border Grid.Row="0" Width="145" Height="145"
+                                        Background="{DynamicResource SurfaceRaisedBrush}"
+                                        Style="{StaticResource BorderCircularClip}"
+                                        HorizontalAlignment="Center" ClipToBounds="True">
+                                    <Grid>
+                                        <Image Source="{Binding Capa, Converter={StaticResource BytesParaImagemConverter}, ConverterParameter=240}"
+                                               Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <iconPacks:PackIconBoxIcons Kind="RegularUser" Width="32" Height="32"
+                                                                    Foreground="{DynamicResource TextMutedBrush}"
+                                                                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                                    Visibility="{Binding Capa, Converter={StaticResource NullToVisibilityConverter}}" />
                                     </Grid>
-                                </Grid>
+                                </Border>
+
+                                <StackPanel Grid.Row="1" Margin="0,8,0,0">
+                                    <TextBlock Text="{Binding Nome}" ToolTip="{Binding Nome}"
+                                               FontSize="14" FontWeight="DemiBold"
+                                               FontFamily="{StaticResource FonteInter}"
+                                               Foreground="{DynamicResource TextPrimaryBrush}"
+                                               TextTrimming="CharacterEllipsis"
+                                               HorizontalAlignment="Center" />
+
+                                    <TextBlock Text="{Binding ListaMusicas[0], FallbackValue=''}" FontSize="12"
+                                               Foreground="{DynamicResource TextMutedBrush}"
+                                               TextTrimming="CharacterEllipsis"
+                                               FontFamily="{StaticResource FonteInter}"
+                                               HorizontalAlignment="Center" Margin="8,2,8,0" />
+                                </StackPanel>
                             </Grid>
                         </Border>
                     </DataTemplate>

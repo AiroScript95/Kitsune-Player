@@ -2,58 +2,57 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!-- ===== SUPERFÍCIES (fundos) ===== -->
-    <Color x:Key="Surface">#1F1826</Color>
-    <Color x:Key="SurfaceAlt">#2C2233</Color>
-    <Color x:Key="SurfaceRaised">#382C40</Color>
-    <Color x:Key="SurfaceOverlay">#E61F1826</Color>
+    <Color x:Key="Surface">#FBE4D8</Color>
+    <Color x:Key="SurfaceAlt">#DFB6B2</Color>
+    <Color x:Key="SurfaceRaised">#FFF3EC</Color>
+    <Color x:Key="SurfaceOverlay">#E6FBE4D8</Color>
 
     <!-- ===== TEXTO ===== -->
-    <Color x:Key="TextPrimary">#F0E9F5</Color>
-    <Color x:Key="TextSecondary">#B39FC4</Color>
-    <Color x:Key="TextMuted">#8A7799</Color>
-    <Color x:Key="TextDisabled">#5C4E66</Color>
-    <Color x:Key="TextOnAccent">#FFFFFF</Color>
+    <Color x:Key="TextPrimary">#190019</Color>
+    <Color x:Key="TextSecondary">#522B5B</Color>
+    <Color x:Key="TextMuted">#854F6C</Color>
+    <Color x:Key="TextDisabled">#B28A98</Color>
+    <Color x:Key="TextOnAccent">#FFF4EC</Color>
 
     <!-- ===== ACCENT PRIMÁRIO (Kitsunebi) ===== -->
-    <Color x:Key="Accent">#D9702E</Color>
-    <Color x:Key="AccentLight">#EC8A44</Color>
-    <Color x:Key="AccentDark">#B85A22</Color>
-    <Color x:Key="AccentSoft">#3D2A22</Color>
-    <Color x:Key="AccentTertiary">#4A8F8A</Color>
+    <Color x:Key="Accent">#C24D16</Color>
+    <Color x:Key="AccentLight">#DB6A2E</Color>
+    <Color x:Key="AccentDark">#96390F</Color>
+    <Color x:Key="AccentSoft">#F6CDB6</Color>
+    <Color x:Key="AccentTertiary">#3A8A86</Color>
 
-    <!-- ===== ACCENT SECUNDÁRIO (Kijiyabu, menos saturado) ===== -->
-    <Color x:Key="AccentAlt">#6B5878</Color>
-    <Color x:Key="AccentAltLight">#816C8F</Color>
+    <!-- ===== ACCENT SECUNDÁRIO (Kijiyabu) ===== -->
+    <Color x:Key="AccentAlt">#522B5B</Color>
+    <Color x:Key="AccentAltLight">#6E4478</Color>
 
     <!-- ===== BOTÕES ===== -->
-    <Color x:Key="ButtonSurface">#2C2233</Color>
-    <Color x:Key="ButtonSurfaceHover">#382C40</Color>
-    <Color x:Key="ButtonSurfacePressed">#44364D</Color>
-    <Color x:Key="ButtonIcon">#B39FC4</Color>
-    <Color x:Key="ButtonIconHover">#EC8A44</Color>
+    <Color x:Key="ButtonSurface">#D4A9A8</Color>
+    <Color x:Key="ButtonSurfaceHover">#C8999A</Color>
+    <Color x:Key="ButtonSurfacePressed">#BB8A8D</Color>
+    <Color x:Key="ButtonIcon">#522B5B</Color>
+    <Color x:Key="ButtonIconHover">#C24D16</Color>
 
     <!-- ===== LISTA ===== -->
-    <Color x:Key="ListHover">#382C40</Color>
-    <Color x:Key="ListSelected">#3D2A22</Color>
-    <Color x:Key="ListSelectedBorder">#EC8A44</Color>
+    <Color x:Key="ListHover">#F6DACF</Color>
+    <Color x:Key="ListSelected">#F6CDB6</Color>
+    <Color x:Key="ListSelectedBorder">#C24D16</Color>
 
     <!-- ===== BORDAS ===== -->
-    <Color x:Key="Border">#382C40</Color>
-    <Color x:Key="BorderStrong">#50405A</Color>
-    <Color x:Key="Divider">#2C2233</Color>
+    <Color x:Key="Border">#E6C3BB</Color>
+    <Color x:Key="BorderStrong">#D0A5A6</Color>
+    <Color x:Key="Divider">#EFD0C7</Color>
 
     <!-- ===== ESTADOS FUNCIONAIS ===== -->
-    <Color x:Key="Success">#5A8A6A</Color>
-    <Color x:Key="Warning">#D9702E</Color>
-    <Color x:Key="Error">#FF5252</Color>
+    <Color x:Key="Success">#4F8A66</Color>
+    <Color x:Key="Warning">#C98A2E</Color>
+    <Color x:Key="Error">#B83A4B</Color>
 
     <!-- ===== PLAYER ===== -->
-    <Color x:Key="ProgressFill">#D9702E</Color>
-    <Color x:Key="ProgressTrack">#382C40</Color>
+    <Color x:Key="ProgressFill">#C24D16</Color>
+    <Color x:Key="ProgressTrack">#F0D6CF</Color>
 
     <!-- ===== SOMBRA ===== -->
-    <Color x:Key="Shadow">#801F1826</Color>
-
+    <Color x:Key="Shadow">#33190019</Color>
     <!-- ===== BRUSHES ===== -->
     <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource Surface}" />
     <SolidColorBrush x:Key="SurfaceAltBrush" Color="{StaticResource SurfaceAlt}" />

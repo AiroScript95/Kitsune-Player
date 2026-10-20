@@ -1,0 +1,201 @@
+﻿<UserControl x:Class="Project_Kitsune.Views.ShellPages.SearchPages.SearchMusicPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             xmlns:local="clr-namespace:Project_Kitsune.Views.ShellPages"
+             xmlns:vwp="clr-namespace:WpfToolkit.Controls;assembly=VirtualizingWrapPanel"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+
+        <DataTemplate x:Key="MusicaResultadoTemplate">
+            <Border CornerRadius="8" Style="{DynamicResource BorderClip}"
+                    MouseLeftButtonUp="Music_MouseLeftButtonUp" BorderThickness="1"
+                    ContextMenuOpening="ContextMenu_Opening"
+                    Tag="{Binding DataContext.PlayerViewModel, RelativeSource={RelativeSource AncestorType=UserControl}}">
+
+                <Border.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem ItemsSource="{Binding PlacementTarget.Tag.PlaylistsDisponiveis,
+                                  RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                            <MenuItem.Header>
+                                <Grid>
+                                    <TextBlock Text="{DynamicResource Str_AdicionarAPlaylist}" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                    <iconPacks:PackIconBoxIcons Kind="RegularListPlus" HorizontalAlignment="Right"
+                                                                VerticalAlignment="Center"
+                                                                Foreground="{DynamicResource TextPrimaryBrush}" Width="14" />
+                                </Grid>
+                            </MenuItem.Header>
+                            <MenuItem.ItemContainerStyle>
+                                <Style TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
+                                    <Setter Property="Command"
+                                            Value="{Binding PlacementTarget.Tag.AdicionarAPlaylistCommand,
+                                            RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                                    <Setter Property="CommandParameter">
+                                        <Setter.Value>
+                                            <MultiBinding Converter="{StaticResource MusicaEPlaylistConverter}">
+                                                <Binding Path="PlacementTarget.DataContext"
+                                                         RelativeSource="{RelativeSource AncestorType=ContextMenu}" />
+                                                <Binding />
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </MenuItem.ItemContainerStyle>
+                            <MenuItem.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock>
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Text" Value="{Binding Name}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Name}" Value="Favoritos">
+                                                        <Setter Property="Text" Value="{DynamicResource Str_Favoritos}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </MenuItem.ItemTemplate>
+                        </MenuItem>
+
+                        <MenuItem Command="{Binding PlacementTarget.Tag.EditarMusicaCommand,
+                                  RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                  CommandParameter="{Binding PlacementTarget.DataContext,
+                                  RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                            <MenuItem.Header>
+                                <Grid>
+                                    <TextBlock Text="{DynamicResource Str_Editar}" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                    <iconPacks:PackIconBoxIcons Kind="SolidPencil" HorizontalAlignment="Right"
+                                                                VerticalAlignment="Center"
+                                                                Foreground="{DynamicResource TextPrimaryBrush}" Width="14" />
+                                </Grid>
+                            </MenuItem.Header>
+                        </MenuItem>
+
+                        <MenuItem Command="{Binding PlacementTarget.Tag.PedirEliminarMusicaCommand,
+                                  RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                  CommandParameter="{Binding PlacementTarget.DataContext,
+                                  RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                            <MenuItem.Header>
+                                <Grid>
+                                    <TextBlock Text="{DynamicResource Str_Eliminar}" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                    <iconPacks:PackIconBoxIcons Kind="SolidTrashAlt" HorizontalAlignment="Right"
+                                                                VerticalAlignment="Center"
+                                                                Foreground="{DynamicResource TextError}" Width="14" />
+                                </Grid>
+                            </MenuItem.Header>
+                        </MenuItem>
+                    </ContextMenu>
+                </Border.ContextMenu>
+                <Grid>
+                    <Grid Opacity="0.65">
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="Background" Value="Transparent" />
+                                <Style.Triggers>
+                                    <DataTrigger Value="True">
+                                        <DataTrigger.Binding>
+                                            <MultiBinding Converter="{StaticResource MusicaAtualConverter}">
+                                                <Binding />
+                                                <Binding Path="DataContext.PlayerViewModel.MusicaAtual"
+                                                         RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                            </MultiBinding>
+                                        </DataTrigger.Binding>
+                                        <Setter Property="Background" Value="{DynamicResource GradientBackground}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                    </Grid>
+                    <Grid Margin="8,6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <Border Width="60" Height="60" CornerRadius="8" ClipToBounds="True"
+                                Background="{DynamicResource SurfaceRaisedBrush}"
+                                Style="{StaticResource BorderClip}">
+                            <Grid>
+                                <Image Source="{Binding Image, Converter={StaticResource BytesParaImagemConverter}, ConverterParameter=120}"
+                                       Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <iconPacks:PackIconBoxIcons Kind="RegularMusic" Width="18" Height="18"
+                                                            Foreground="{DynamicResource TextMutedBrush}"
+                                                            HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                            Visibility="{Binding Image, Converter={StaticResource NullToVisibilityConverter}}" />
+                            </Grid>
+                        </Border>
+
+                        <StackPanel Grid.Column="1" Margin="12,0" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Titulo}" FontSize="14" FontWeight="SemiBold"
+                                       FontFamily="{StaticResource FonteInter}" TextTrimming="CharacterEllipsis">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Value="True">
+                                                <DataTrigger.Binding>
+                                                    <MultiBinding Converter="{StaticResource MusicaAtualConverter}">
+                                                        <Binding />
+                                                        <Binding Path="DataContext.PlayerViewModel.MusicaAtual"
+                                                                 RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                                    </MultiBinding>
+                                                </DataTrigger.Binding>
+                                                <Setter Property="Foreground" Value="{DynamicResource AccentLightBrush}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                <TextBlock Text="{Binding Artista}" FontSize="12" MaxWidth="150"
+                                           FontFamily="{StaticResource FonteInter}"
+                                           Foreground="{DynamicResource TextSecondaryBrush}"
+                                           TextTrimming="CharacterEllipsis" />
+                                <TextBlock Text="•" Margin="4,0" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                <TextBlock Text="{Binding Album}" FontSize="12" MaxWidth="150"
+                                           FontFamily="{StaticResource FonteInter}"
+                                           Foreground="{DynamicResource TextSecondaryBrush}"
+                                           TextTrimming="CharacterEllipsis" />
+                            </StackPanel>
+                        </StackPanel>
+
+                        <TextBlock Grid.Column="2" Text="{Binding DuracaoArredondada}" FontSize="11"
+                                   Margin="10,0" VerticalAlignment="Center"
+                                   FontFamily="{StaticResource FonteInter}"
+                                   Foreground="{DynamicResource TextSecondaryBrush}" />
+                    </Grid>
+                </Grid>
+            </Border>
+        </DataTemplate>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <ListBox Style="{x:Null}"
+                 Grid.Row="1"
+                 ItemsSource="{Binding ResultadosMusica}"
+                 ItemTemplate="{StaticResource MusicaResultadoTemplate}"
+                 ItemContainerStyle="{StaticResource HoverListBoxItemStyle}"
+                 Margin="6,0"
+                 Background="Transparent" BorderThickness="0"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 ScrollViewer.CanContentScroll="True"
+                 VirtualizingPanel.IsVirtualizing="True"
+                 VirtualizingPanel.VirtualizationMode="Recycling">
+            <ListBox.Resources>
+                <Style TargetType="ScrollViewer">
+                    <Setter Property="Template" Value="{StaticResource MeuScrollViewer}" />
+                </Style>
+            </ListBox.Resources>
+        </ListBox>
+    </Grid>
+</UserControl>

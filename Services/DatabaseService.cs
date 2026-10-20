@@ -19,8 +19,6 @@ namespace Project_Kitsune.Services
             _database = $"Data Source={caminhoDb}";
         }
 
-        /* METODOS */
-
         public void IniciarDatabase()
         {
             string comandoMusicas = @"
@@ -57,8 +55,7 @@ namespace Project_Kitsune.Services
                  UNIQUE(PlaylistId, MusicaId)
              )";
 
-            using (SqliteConnection connection = new(_database))
-            {
+            using (SqliteConnection connection = new(_database)) {
                 connection.Open();
 
                 SqliteCommand cmd = connection.CreateCommand();
@@ -82,8 +79,7 @@ namespace Project_Kitsune.Services
         {
             List<string> caminhos = new List<string>();
 
-            using (SqliteConnection connection = new(_database))
-            {
+            using (SqliteConnection connection = new(_database)) {
                 connection.Open();
                 SqliteCommand cmd = connection.CreateCommand();
                 cmd.CommandText = @"
@@ -94,10 +90,8 @@ namespace Project_Kitsune.Services
                     ORDER BY PlaylistMusicas.DataAdicionado DESC";
                 cmd.Parameters.AddWithValue("@playlistId", playlistId);
 
-                using (SqliteDataReader reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
+                using (SqliteDataReader reader = cmd.ExecuteReader()) {
+                    while (reader.Read()) {
                         caminhos.Add(reader.GetString(0));
                     }
                 }
@@ -110,16 +104,13 @@ namespace Project_Kitsune.Services
         {
             List<(int Id, string Caminho)> musicas = new List<(int Id, string Caminho)>();
 
-            using (SqliteConnection connection = new(_database))
-            {
+            using (SqliteConnection connection = new(_database)) {
                 connection.Open();
                 SqliteCommand cmd = connection.CreateCommand();
                 cmd.CommandText = "SELECT Id, Caminho FROM Musicas";
 
-                using (SqliteDataReader reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
+                using (SqliteDataReader reader = cmd.ExecuteReader()) {
+                    while (reader.Read()) {
                         musicas.Add((reader.GetInt32(0), reader.GetString(1)));
                     }
                 }
@@ -133,16 +124,13 @@ namespace Project_Kitsune.Services
             List<Playlist> playlists = new List<Playlist>();
             Dictionary<int, int> contagens = ContarMusicasPorPlaylist();
 
-            using (SqliteConnection connection = new(_database))
-            {
+            using (SqliteConnection connection = new(_database)) {
                 connection.Open();
                 SqliteCommand cmd = connection.CreateCommand();
                 cmd.CommandText = "SELECT Id, Nome, DataCriacao, Ordem FROM Playlists";
 
-                using (SqliteDataReader reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
+                using (SqliteDataReader reader = cmd.ExecuteReader()) {
+                    while (reader.Read()) {
                         Playlist playlist = new Playlist();
                         playlist.Id = reader.GetInt32(0);
                         playlist.Name = reader.GetString(1);
@@ -160,8 +148,7 @@ namespace Project_Kitsune.Services
         {
             var resultado = new Dictionary<int, int>();
 
-            using (SqliteConnection connection = new(_database))
-            {
+            using (SqliteConnection connection = new(_database)) {
                 connection.Open();
                 SqliteCommand cmd = connection.CreateCommand();
                 cmd.CommandText = @"
@@ -169,10 +156,8 @@ namespace Project_Kitsune.Services
                 FROM PlaylistMusicas
                 GROUP BY PlaylistId";
 
-                using (SqliteDataReader reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
+                using (SqliteDataReader reader = cmd.ExecuteReader()) {
+                    while (reader.Read()) {
                         int playlistId = reader.GetInt32(0);
                         int quantidade = reader.GetInt32(1);
                         resultado[playlistId] = quantidade;
@@ -185,8 +170,7 @@ namespace Project_Kitsune.Services
 
         public void RemoverPlaylist(int playlistId)
         {
-            using (SqliteConnection connection = new(_database))
-            {
+            using (SqliteConnection connection = new(_database)) {
                 connection.Open();
 
                 SqliteCommand cmd = connection.CreateCommand();
@@ -203,8 +187,7 @@ namespace Project_Kitsune.Services
 
         public void AdicionarMusicaAPlaylist(int playlistId, int musicaId)
         {
-            using (SqliteConnection connection = new(_database))
-            {
+            using (SqliteConnection connection = new(_database)) {
                 connection.Open();
                 SqliteCommand cmd = connection.CreateCommand();
                 cmd.CommandText = "INSERT OR IGNORE INTO PlaylistMusicas (PlaylistId, MusicaId, DataAdicionado) VALUES (@playlistId, @musicaId, @data)";
@@ -217,8 +200,7 @@ namespace Project_Kitsune.Services
 
         public void RemoverMusicaPorId(int musicaId)
         {
-            using (SqliteConnection connection = new(_database))
-            {
+            using (SqliteConnection connection = new(_database)) {
                 connection.Open();
                 SqliteCommand cmd = connection.CreateCommand();
 
@@ -237,27 +219,21 @@ namespace Project_Kitsune.Services
         {
             List<(int Id, string Caminho)> todas = ListarTodasMusicas();
 
-            foreach (var (Id, Caminho) in todas)
-            {
+            foreach (var (Id, Caminho) in todas) {
                 bool existe = File.Exists(Caminho);
 
-                if (existe)
-                {
+                if (existe) {
                     LimparAusencia(Id);
                 }
-                else
-                {
+                else {
                     string? primeiraAusencia = ObterPrimeiraAusencia(Id);
 
-                    if (primeiraAusencia == null)
-                    {
+                    if (primeiraAusencia == null) {
                         MarcarComoAusente(Id);
                     }
-                    else
-                    {
+                    else {
                         DateTime data = DateTime.Parse(primeiraAusencia);
-                        if ((DateTime.Now - data).TotalDays >= 180)
-                        {
+                        if (( DateTime.Now - data ).TotalDays >= 180) {
                             RemoverMusicaPorId(Id);
                         }
                     }
@@ -267,8 +243,7 @@ namespace Project_Kitsune.Services
 
         private void MarcarComoAusente(int musicaId)
         {
-            using (SqliteConnection connection = new(_database))
-            {
+            using (SqliteConnection connection = new(_database)) {
                 connection.Open();
                 SqliteCommand cmd = connection.CreateCommand();
                 cmd.CommandText = "UPDATE Musicas SET PrimeiraVezAusente = @data WHERE Id = @id";
@@ -280,8 +255,7 @@ namespace Project_Kitsune.Services
 
         private void LimparAusencia(int musicaId)
         {
-            using (SqliteConnection connection = new(_database))
-            {
+            using (SqliteConnection connection = new(_database)) {
                 connection.Open();
                 SqliteCommand cmd = connection.CreateCommand();
                 cmd.CommandText = "UPDATE Musicas SET PrimeiraVezAusente = NULL WHERE Id = @id AND PrimeiraVezAusente IS NOT NULL";
@@ -292,8 +266,7 @@ namespace Project_Kitsune.Services
 
         public void AtualizarOrdemPlaylist(int playlistId, string ordem)
         {
-            using (SqliteConnection connection = new(_database))
-            {
+            using (SqliteConnection connection = new(_database)) {
                 connection.Open();
                 SqliteCommand cmd = connection.CreateCommand();
                 cmd.CommandText = "UPDATE Playlists SET Ordem = @ordem WHERE Id = @id";
@@ -305,8 +278,7 @@ namespace Project_Kitsune.Services
 
         public void RemoverMusicaDaPlaylist(int playlistId, int musicaId)
         {
-            using (SqliteConnection connection = new(_database))
-            {
+            using (SqliteConnection connection = new(_database)) {
                 connection.Open();
                 SqliteCommand cmd = connection.CreateCommand();
                 cmd.CommandText = "DELETE FROM PlaylistMusicas WHERE PlaylistId = @playlistId AND MusicaId = @musicaId";
@@ -318,8 +290,7 @@ namespace Project_Kitsune.Services
 
         public void IncrementarReproducoes(string caminho)
         {
-            using (SqliteConnection connection = new(_database))
-            {
+            using (SqliteConnection connection = new(_database)) {
                 connection.Open();
                 SqliteCommand cmd = connection.CreateCommand();
                 cmd.CommandText = "UPDATE Musicas SET VezesTocada = VezesTocada + 1 WHERE Caminho = @caminho";
@@ -330,8 +301,7 @@ namespace Project_Kitsune.Services
 
         public bool CriarPlaylist(string playlist)
         {
-            using (SqliteConnection connection = new(_database))
-            {
+            using (SqliteConnection connection = new(_database)) {
                 connection.Open();
 
                 SqliteCommand cmd = connection.CreateCommand();
@@ -345,8 +315,7 @@ namespace Project_Kitsune.Services
 
         public int ObterIdMusicaPorCaminho(string caminho)
         {
-            using (SqliteConnection connection = new(_database))
-            {
+            using (SqliteConnection connection = new(_database)) {
                 connection.Open();
                 SqliteCommand cmd = connection.CreateCommand();
                 cmd.CommandText = "SELECT Id FROM Musicas WHERE Caminho = @caminho";
@@ -359,8 +328,7 @@ namespace Project_Kitsune.Services
 
         public int ObterVezesTocada(string caminho)
         {
-            using (SqliteConnection connection = new(_database))
-            {
+            using (SqliteConnection connection = new(_database)) {
                 connection.Open();
                 SqliteCommand cmd = connection.CreateCommand();
                 cmd.CommandText = "SELECT VezesTocada FROM Musicas WHERE Caminho = @caminho";
@@ -372,8 +340,7 @@ namespace Project_Kitsune.Services
 
         private string? ObterPrimeiraAusencia(int musicaId)
         {
-            using (SqliteConnection connection = new(_database))
-            {
+            using (SqliteConnection connection = new(_database)) {
                 connection.Open();
                 SqliteCommand cmd = connection.CreateCommand();
                 cmd.CommandText = "SELECT PrimeiraVezAusente FROM Musicas WHERE Id = @id";
@@ -385,8 +352,7 @@ namespace Project_Kitsune.Services
 
         public string? ObterCaminhoMusicaMaisRecente(int playlistId)
         {
-            using (SqliteConnection connection = new(_database))
-            {
+            using (SqliteConnection connection = new(_database)) {
                 connection.Open();
                 SqliteCommand cmd = connection.CreateCommand();
                 cmd.CommandText = @"
@@ -405,8 +371,7 @@ namespace Project_Kitsune.Services
 
         public void SalvarMusicaCompleta(Music musica, long dataModificacao)
         {
-            using (SqliteConnection connection = new(_database))
-            {
+            using (SqliteConnection connection = new(_database)) {
                 connection.Open();
                 SqliteCommand cmd = connection.CreateCommand();
                 cmd.CommandText = @"
@@ -437,18 +402,15 @@ namespace Project_Kitsune.Services
 
         public (Music? Musica, long DataModificacao) ObterMusicaCache(string caminho)
         {
-            using (SqliteConnection connection = new(_database))
-            {
+            using (SqliteConnection connection = new(_database)) {
                 connection.Open();
                 SqliteCommand cmd = connection.CreateCommand();
                 cmd.CommandText = @"SELECT Titulo, Artista, Album, Genero, DuracaoSegundos, DataModificacao, Imagem, Gosto
                                     FROM Musicas WHERE Caminho = @caminho";
                 cmd.Parameters.AddWithValue("@caminho", caminho);
 
-                using (SqliteDataReader reader = cmd.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
+                using (SqliteDataReader reader = cmd.ExecuteReader()) {
+                    if (reader.Read()) {
                         int duracaoSegundos = reader.GetInt32(4);
                         long dataMod = reader.GetInt64(5);
                         byte[] imagem = reader.IsDBNull(6) ? Array.Empty<byte>() : (byte[])reader["Imagem"];
@@ -476,17 +438,14 @@ namespace Project_Kitsune.Services
         public Dictionary<string, (Music Musica, long DataModificacao)> ObterTodoCache()
         {
             var resultado = new Dictionary<string, (Music, long)>();
-            using (SqliteConnection connection = new(_database))
-            {
+            using (SqliteConnection connection = new(_database)) {
                 connection.Open();
                 SqliteCommand cmd = connection.CreateCommand();
                 cmd.CommandText = @"SELECT Caminho, Titulo, Artista, Album, Genero, DuracaoSegundos,
                           DataModificacao, VezesTocada, Imagem, Gosto
                           FROM Musicas";
-                using (SqliteDataReader reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
+                using (SqliteDataReader reader = cmd.ExecuteReader()) {
+                    while (reader.Read()) {
                         string caminho = reader.GetString(0);
                         int duracaoSegundos = reader.GetInt32(5);
                         long dataMod = reader.GetInt64(6);
@@ -513,8 +472,7 @@ namespace Project_Kitsune.Services
 
         public void AlternarGosto(string caminho, bool gosto)
         {
-            using (SqliteConnection connection = new(_database))
-            {
+            using (SqliteConnection connection = new(_database)) {
                 connection.Open();
                 SqliteCommand cmd = connection.CreateCommand();
                 cmd.CommandText = "UPDATE Musicas SET Gosto = @gosto, DataGosto = @data WHERE Caminho = @caminho";
@@ -527,8 +485,7 @@ namespace Project_Kitsune.Services
 
         public void GarantirPlaylistFavoritos()
         {
-            using (SqliteConnection connection = new(_database))
-            {
+            using (SqliteConnection connection = new(_database)) {
                 connection.Open();
                 SqliteCommand cmd = connection.CreateCommand();
                 cmd.CommandText = @"
@@ -544,13 +501,11 @@ namespace Project_Kitsune.Services
         public List<string> ListarMusicasFavoritas()
         {
             List<string> caminhos = new List<string>();
-            using (SqliteConnection connection = new(_database))
-            {
+            using (SqliteConnection connection = new(_database)) {
                 connection.Open();
                 SqliteCommand cmd = connection.CreateCommand();
                 cmd.CommandText = "SELECT Caminho FROM Musicas WHERE Gosto = 1 ORDER BY DataGosto DESC";
-                using (SqliteDataReader reader = cmd.ExecuteReader())
-                {
+                using (SqliteDataReader reader = cmd.ExecuteReader()) {
                     while (reader.Read()) caminhos.Add(reader.GetString(0));
                 }
             }
@@ -559,11 +514,9 @@ namespace Project_Kitsune.Services
 
         public void SalvarMusicasEmLote(List<(Music Musica, long DataModificacao)> musicas)
         {
-            using (SqliteConnection connection = new(_database))
-            {
+            using (SqliteConnection connection = new(_database)) {
                 connection.Open();
-                using (var transaction = connection.BeginTransaction())
-                {
+                using (var transaction = connection.BeginTransaction()) {
                     SqliteCommand cmd = connection.CreateCommand();
                     cmd.Transaction = transaction;
                     cmd.CommandText = @"
@@ -583,8 +536,7 @@ namespace Project_Kitsune.Services
                     var pImagem = cmd.Parameters.Add("@imagem", SqliteType.Blob);
                     var pGosto = cmd.Parameters.Add("@gosto", SqliteType.Integer);
 
-                    foreach (var (musica, dataMod) in musicas)
-                    {
+                    foreach (var (musica, dataMod) in musicas) {
                         pCaminho.Value = musica.Caminho;
                         pTitulo.Value = musica.Titulo;
                         pArtista.Value = musica.Artista;
@@ -604,8 +556,7 @@ namespace Project_Kitsune.Services
 
         public void AtualizarMetadados(string caminho, string titulo, string artista, string album, string genero)
         {
-            using (SqliteConnection connection = new(_database))
-            {
+            using (SqliteConnection connection = new(_database)) {
                 connection.Open();
 
                 SqliteCommand cmd = connection.CreateCommand();

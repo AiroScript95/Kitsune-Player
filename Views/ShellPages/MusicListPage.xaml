@@ -22,7 +22,7 @@
     <UserControl.Resources>
         <DataTemplate x:Key="ListaMusicaTemplate">
             <Border CornerRadius="8" Style="{DynamicResource BorderClip}"
-                    MouseLeftButtonUp="StackPanel_MouseLeftButtonUp" BorderThickness="1"
+                    MouseLeftButtonUp="Music_MouseLeftButtonUp" BorderThickness="1"
                     ContextMenuOpening="ContextMenu_Opening"
                     Tag="{Binding DataContext.PlayerViewModel, RelativeSource={RelativeSource AncestorType=UserControl}}">
 
@@ -286,7 +286,7 @@
                     Width="140"
                     Height="auto"
                     Margin="4" Style="{StaticResource BorderClip}"
-                    MouseLeftButtonUp="StackPanel_MouseLeftButtonUp"
+                    MouseLeftButtonUp="Music_MouseLeftButtonUp"
                     ContextMenuOpening="ContextMenu_Opening"
                     Tag="{Binding DataContext.Player, RelativeSource={RelativeSource AncestorType=UserControl}}">
 
@@ -457,11 +457,12 @@
             <Grid Grid.Column="0" ClipToBounds="True">
                 <Grid.Style>
                     <Style TargetType="Grid">
-                        <Setter Property="Width"
-                                Value="0" />
+                        <Setter Property="Width" Value="0" />
+                        <Setter Property="Margin" Value="0" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding PlayerViewModel.MusicaAtual, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=Invert}"
-                                         Value="Visible">
+
+                            <DataTrigger Binding="{Binding PlayerViewModel.MusicaAtual, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=Invert}" Value="Visible">
+                                <Setter Property="Margin" Value="0,0,16,0" />
                                 <DataTrigger.EnterActions>
                                     <BeginStoryboard>
                                         <Storyboard>
@@ -519,12 +520,28 @@
                     </Button>
                 </Grid>
                 <Grid Grid.Row="1"
-                      Margin="14,0,0,0">
+                      Margin="0,0,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="auto" />
                         <ColumnDefinition Width="auto" />
                     </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Musicas.Count}" Value="0">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <iconPacks:PackIconBoxIcons Kind="RegularSearchBig" Height="80" Width="80" Foreground="{DynamicResource TextDisabledBrush}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                            <TextBlock Text="Nenhuma Musica encontrada" FontFamily="{StaticResource FonteInter}" Margin="8" FontSize="14" HorizontalAlignment="Center" Foreground="{DynamicResource TextDisabledBrush}" />
+                        </StackPanel>
+                    </Grid>
                     <ListBox Grid.Column="0"
                              x:Name="ListScroll"
                              ClipToBounds="True"
@@ -535,6 +552,7 @@
                              VirtualizingPanel.VirtualizationMode="Recycling"
                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                             ScrollViewer.CanContentScroll="True"
                              Background="Transparent"
                              BorderThickness="0" Margin="0,0,10,0">
                         <ListBox.Resources>
@@ -548,8 +566,8 @@
                         <ListBox.Style>
                             <Style TargetType="ListBox">
                                 <Setter Property="VirtualizingPanel.ScrollUnit" Value="Pixel" />
-                                <Setter Property="ScrollViewer.CanContentScroll" Value="True" />
                                 <Setter Property="ItemTemplate" Value="{StaticResource ListaMusicaTemplate}" />
+                                <Setter Property="Visibility" Value="Visible" />
                                 <Setter Property="ItemsPanel">
                                     <Setter.Value>
                                         <ItemsPanelTemplate>
@@ -560,7 +578,6 @@
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding FormatoLista}" Value="Grid">
                                         <Setter Property="VirtualizingPanel.ScrollUnit" Value="Item" />
-                                        <Setter Property="ScrollViewer.CanContentScroll" Value="True" />
                                         <Setter Property="ItemTemplate" Value="{StaticResource GridMusicaTemplate}" />
                                         <Setter Property="ItemsPanel">
                                             <Setter.Value>
@@ -569,6 +586,9 @@
                                                 </ItemsPanelTemplate>
                                             </Setter.Value>
                                         </Setter>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Musicas.Count}" Value="0">
+                                        <Setter Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -741,12 +761,9 @@
                 <Grid.RenderTransform>
                     <ScaleTransform ScaleX="0.95" ScaleY="0.95" />
                 </Grid.RenderTransform>
-                <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="10"
-                        MinWidth="240" Padding="4,8" Style="{StaticResource BorderClip}"
+                <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="8"
+                        Width="260" Padding="0" Style="{StaticResource BorderClip}"
                         BorderThickness="1" BorderBrush="{DynamicResource BorderBrush2}">
-                    <Border.Effect>
-                        <DropShadowEffect BlurRadius="16" ShadowDepth="2" Opacity="0.4" />
-                    </Border.Effect>
                     <Grid>
                         <Grid.Resources>
                             <Style TargetType="RadioButton" BasedOn="{StaticResource IconRadioButton}">
@@ -770,7 +787,14 @@
                             </Style>
                         </Grid.Resources>
                         <StackPanel>
-                            <TextBlock Text="{DynamicResource Str_MusicasOrdenadasPor}" FontFamily="{StaticResource FonteInter}" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="14" Margin="0,8" HorizontalAlignment="Center" />
+                            <Grid Margin="0,8">
+                                <TextBlock Text="{DynamicResource Str_MusicasOrdenadasPor}" FontFamily="{StaticResource FonteInter}"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" FontSize="14" Margin="20,0" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <Button Command="{Binding FecharPainelOrdenacaoCommand}" HorizontalAlignment="Right" Margin="10,0"  VerticalAlignment="Center"
+                                        Style="{StaticResource IconButtonSmall}" Width="24" Height="24">
+                                    <iconPacks:PackIconBoxIcons Kind="SolidX" Foreground="{DynamicResource TextMutedBrush}" Width="12" />
+                                </Button>
+                            </Grid>
                             <StackPanel  ClipToBounds="True">
                                 <RadioButton Checked="Ordenacao_Changed"
                                              GroupName="Ordenacao"
@@ -813,7 +837,7 @@
                                     </StackPanel>
                                 </RadioButton>
                             </StackPanel>
-                            <Border Background="{DynamicResource SurfaceAltBrush}" Width="Auto" Height="2" CornerRadius="2" />
+                            <Border Background="{DynamicResource BorderBrush2}" Width="Auto" Height="2" CornerRadius="2" Opacity="0.2" />
                             <StackPanel>
                                 <RadioButton Checked="Ordenacao_Changed"
                                              GroupName="Direcao"

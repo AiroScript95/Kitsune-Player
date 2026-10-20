@@ -23,11 +23,9 @@ namespace Project_Kitsune.ViewModels
         private const int MaxResultados = 2;
         private readonly DispatcherTimer _debounce;
 
-        public object? CurrentView
-        {
+        public object? CurrentView {
             get => _currentView;
-            set
-            {
+            set {
                 _currentView = value;
                 OnPropertyChanged();
             }
@@ -35,8 +33,7 @@ namespace Project_Kitsune.ViewModels
 
         private ObservableCollection<Music> _todasAsMusicas = new();
 
-        public ObservableCollection<Music> TodasAsMusicas
-        {
+        public ObservableCollection<Music> TodasAsMusicas {
             get => _todasAsMusicas;
             set { _todasAsMusicas = value; OnPropertyChanged(); }
         }
@@ -44,11 +41,9 @@ namespace Project_Kitsune.ViewModels
         private List<Music> _todasAsMusicasOriginal = new();
         private string _textoPesquisaAdicionar = string.Empty;
 
-        public string TextoPesquisaAdicionar
-        {
+        public string TextoPesquisaAdicionar {
             get => _textoPesquisaAdicionar;
-            set
-            {
+            set {
                 _textoPesquisaAdicionar = value;
                 OnPropertyChanged();
                 AtualizarFiltroAdicionar();
@@ -57,11 +52,9 @@ namespace Project_Kitsune.ViewModels
 
         private string _textoPesquisa = string.Empty;
 
-        public string TextoPesquisa
-        {
+        public string TextoPesquisa {
             get => _textoPesquisa;
-            set
-            {
+            set {
                 _textoPesquisa = value;
                 OnPropertyChanged();
                 _debounce.Stop();
@@ -71,32 +64,28 @@ namespace Project_Kitsune.ViewModels
 
         private bool _pesquisaAberta;
 
-        public bool PesquisaAberta
-        {
+        public bool PesquisaAberta {
             get => _pesquisaAberta;
             set { _pesquisaAberta = value; OnPropertyChanged(); }
         }
 
         private ObservableCollection<Music> _resultadosMusica = new();
 
-        public ObservableCollection<Music> ResultadosMusica
-        {
+        public ObservableCollection<Music> ResultadosMusica {
             get => _resultadosMusica;
             private set { _resultadosMusica = value; OnPropertyChanged(); }
         }
 
         private ObservableCollection<GrupoMusicas> _resultadosAlbuns = new();
 
-        public ObservableCollection<GrupoMusicas> ResultadosAlbuns
-        {
+        public ObservableCollection<GrupoMusicas> ResultadosAlbuns {
             get => _resultadosAlbuns;
             private set { _resultadosAlbuns = value; OnPropertyChanged(); }
         }
 
         private ObservableCollection<GrupoMusicas> _resultadosArtistas = new();
 
-        public ObservableCollection<GrupoMusicas> ResultadosArtistas
-        {
+        public ObservableCollection<GrupoMusicas> ResultadosArtistas {
             get => _resultadosArtistas;
             private set { _resultadosArtistas = value; OnPropertyChanged(); }
         }
@@ -104,8 +93,7 @@ namespace Project_Kitsune.ViewModels
         // Propriedade nova
         private ObservableCollection<Playlist> _resultadosPlaylists = new();
 
-        public ObservableCollection<Playlist> ResultadosPlaylists
-        {
+        public ObservableCollection<Playlist> ResultadosPlaylists {
             get => _resultadosPlaylists;
             private set { _resultadosPlaylists = value; OnPropertyChanged(); }
         }
@@ -150,17 +138,16 @@ namespace Project_Kitsune.ViewModels
 
         private void AtualizarFiltroAdicionar()
         {
-            if (string.IsNullOrWhiteSpace(TextoPesquisaAdicionar))
-            {
+            if (string.IsNullOrWhiteSpace(TextoPesquisaAdicionar)) {
                 TodasAsMusicas = new ObservableCollection<Music>(_todasAsMusicasOriginal);
                 return;
             }
 
             var termo = TextoPesquisaAdicionar.Trim();
             var filtradas = _todasAsMusicasOriginal.Where(m =>
-                (m.Titulo?.Contains(termo, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                (m.Artista?.Contains(termo, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                (m.Album?.Contains(termo, StringComparison.OrdinalIgnoreCase) ?? false));
+                ( m.Titulo?.Contains(termo, StringComparison.OrdinalIgnoreCase) ?? false ) ||
+                ( m.Artista?.Contains(termo, StringComparison.OrdinalIgnoreCase) ?? false ) ||
+                ( m.Album?.Contains(termo, StringComparison.OrdinalIgnoreCase) ?? false ));
 
             TodasAsMusicas = new ObservableCollection<Music>(filtradas);
         }
@@ -168,8 +155,7 @@ namespace Project_Kitsune.ViewModels
         private async Task Pesquisar()
         {
             string termo = TextoPesquisa.Trim();
-            if (termo.Length == 0)
-            {
+            if (termo.Length == 0) {
                 ResultadosMusica = new();
                 ResultadosAlbuns = new();
                 ResultadosArtistas = new();
@@ -185,9 +171,9 @@ namespace Project_Kitsune.ViewModels
 
             var musicasEncontradas = _biblioteca.Musicas.ToList()
                 .Where(m =>
-                    (m.Titulo?.Contains(termo, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                    (m.Artista?.Contains(termo, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                    (m.Album?.Contains(termo, StringComparison.OrdinalIgnoreCase) ?? false))
+                    ( m.Titulo?.Contains(termo, StringComparison.OrdinalIgnoreCase) ?? false ) ||
+                    ( m.Artista?.Contains(termo, StringComparison.OrdinalIgnoreCase) ?? false ) ||
+                    ( m.Album?.Contains(termo, StringComparison.OrdinalIgnoreCase) ?? false ))
                 .Take(MaxResultados);
 
             var albunsEncontrados = albuns
@@ -236,9 +222,17 @@ namespace Project_Kitsune.ViewModels
         [RelayCommand]
         private void AbrirPlaylist(Playlist playlist)
         {
-            PlaylistDetailPageViewModel detalhe = new(_shell, () => new ConfiguracoesPageViewModel(_shell));
+            PlaylistDetailPageViewModel detalhe = new(_shell, () => new PlaylistsPageViewModel(_shell));
             detalhe.Carregar(playlist);
             _shell.CurrentPage = detalhe;
+            TextoPesquisa = string.Empty;
+        }
+
+        [RelayCommand]
+        private void ResultadosEncontrados()
+        {
+            string termo = TextoPesquisa;
+            _shell.CurrentPage = new SearchResultPageViewModel(_shell, termo);
             TextoPesquisa = string.Empty;
         }
 

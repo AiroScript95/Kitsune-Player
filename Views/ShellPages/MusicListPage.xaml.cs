@@ -22,8 +22,7 @@ namespace Project_Kitsune.Views.ShellPages
             InitializeComponent();
             _config = App.ServiceProvider.GetRequiredService<ConfiguracaoService>();
             Configuracao configuracao = _config.CarregarConfiguracao();
-            switch (configuracao.OrdemMusicList)
-            {
+            switch (configuracao.OrdemMusicList) {
                 case "Alfabetica":
                     RadioAlfabetica.IsChecked = true;
                     break;
@@ -54,12 +53,10 @@ namespace Project_Kitsune.Views.ShellPages
 
         /* MUSIC EVENTS */
 
-        private void StackPanel_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void Music_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (sender is FrameworkElement elemento && elemento.DataContext is Music musica)
-            {
-                if (DataContext is MusicListPageViewModel viewModel)
-                {
+            if (sender is FrameworkElement elemento && elemento.DataContext is Music musica) {
+                if (DataContext is MusicListPageViewModel viewModel) {
                     viewModel.TocarMusica(musica);
                 }
             }
@@ -90,11 +87,9 @@ namespace Project_Kitsune.Views.ShellPages
                 };
             }
 
-            if (sender is RadioButton rb)
-            {
+            if (sender is RadioButton rb) {
                 // Se o usuário clicou em um radio de CRITÉRIO
-                if (rb.GroupName == "Ordenacao")
-                {
+                if (rb.GroupName == "Ordenacao") {
                     string criterio = ObterCriterioAtual();
                     bool defaultDesc = DirecaoPadraoPara(criterio);
 
@@ -108,8 +103,7 @@ namespace Project_Kitsune.Views.ShellPages
                 }
 
                 // Se o usuário clicou em um radio de DIREÇÃO
-                if (rb.GroupName == "Direcao")
-                {
+                if (rb.GroupName == "Direcao") {
                     string criterio = ObterCriterioAtual();
                     bool ordemDesc = RadioDescendete.IsChecked == true;
                     vm.MudarOrdenacao(criterio, ordemDesc);
@@ -125,29 +119,25 @@ namespace Project_Kitsune.Views.ShellPages
 
         private void ContextMenu_Opening(object sender, ContextMenuEventArgs e)
         {
-            try
-            {
+            try {
                 var playerViewModel = App.ServiceProvider.GetRequiredService<PlayerViewModel>();
 
                 if (sender is FrameworkElement { DataContext: Music musica }
-                    && musica.Caminho == playerViewModel.MusicaAtual?.Caminho)
-                {
+                    && musica.Caminho == playerViewModel.MusicaAtual?.Caminho) {
                     e.Handled = true; // música a tocar: não abre menu
                     return;
                 }
 
                 playerViewModel.CarregarPlaylistsDisponiveis();
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 MessageBox.Show(ex.ToString());
             }
         }
 
         private static ScrollViewer? AcharScrollViewer(DependencyObject d)
         {
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(d); i++)
-            {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(d); i++) {
                 var filho = VisualTreeHelper.GetChild(d, i);
                 if (filho is ScrollViewer sv) return sv;
                 var r = AcharScrollViewer(filho);

@@ -24,7 +24,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="RepeatButton">
                     <Grid Background="Transparent">
-                        <Border CornerRadius="3,0,0,3" Height="6.5" Background="{DynamicResource ProgressFillBrush}" VerticalAlignment="Center" />
+                        <Border CornerRadius="3,0,0,3" Height="6.5" Margin="0,0,-1,0" Background="{DynamicResource ProgressFillBrush}" VerticalAlignment="Center" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
@@ -42,18 +42,15 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Thumb">
                     <Border x:Name="thumb"
-                            Width="Auto"
-                            Height="Auto"
+                            Height="20"
+                            Width="20"
                             HorizontalAlignment="Center" VerticalAlignment="Center"
                             Background="Transparent"
                             Style="{DynamicResource BorderCircular}">
-                        <Ellipse Height="18"
-                                 Width="18"
-                                 StrokeThickness="2"
-                                 Stroke="{DynamicResource AccentBrush}"
-                                 Fill="White"
-                                 HorizontalAlignment="Center"
-                                 VerticalAlignment="Center" />
+                        <Ellipse
+                            StrokeThickness="3"
+                            Stroke="{DynamicResource ProgressFillBrush}"
+                            Fill="White" />
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
@@ -62,6 +59,9 @@
 
     <ControlTemplate x:Key="Slider" TargetType="Slider">
         <Grid Height="26" Background="Transparent" x:Name="SliderRoot">
+            <Border Height="6.5" CornerRadius="3" VerticalAlignment="Center"
+                    IsHitTestVisible="False"
+                    Background="{DynamicResource TextDisabledBrush}" />
             <Track x:Name="PART_Track" VerticalAlignment="Center" Height="26">
                 <Track.DecreaseRepeatButton>
                     <RepeatButton Style="{StaticResource SliderRepeatButton1}" Command="Slider.DecreaseLarge" />
@@ -81,13 +81,13 @@
                         <Storyboard>
                             <DoubleAnimation Storyboard.TargetName="ThumbElement"
                                              Storyboard.TargetProperty="Opacity"
-                                             To="1" Duration="0:0:0.10" />
+                                             To="1" Duration="0:0:0.15" />
                             <DoubleAnimation Storyboard.TargetName="ThumbElement"
                                              Storyboard.TargetProperty="Width"
-                                             To="20" Duration="0:0:0.10" />
+                                             To="20" Duration="0:0:0.15" />
                             <DoubleAnimation Storyboard.TargetName="ThumbElement"
                                              Storyboard.TargetProperty="Height"
-                                             To="20" Duration="0:0:0.10" />
+                                             To="20" Duration="0:0:0.15" />
                         </Storyboard>
                     </BeginStoryboard>
                 </Trigger.EnterActions>
@@ -96,13 +96,13 @@
                         <Storyboard>
                             <DoubleAnimation Storyboard.TargetName="ThumbElement"
                                              Storyboard.TargetProperty="Opacity"
-                                             To="0" Duration="0:0:0.10" />
+                                             To="0" Duration="0:0:0.15" />
                             <DoubleAnimation Storyboard.TargetName="ThumbElement"
                                              Storyboard.TargetProperty="Width"
-                                             To="0" Duration="0:0:0.10" />
+                                             To="0" Duration="0:0:0.15" />
                             <DoubleAnimation Storyboard.TargetName="ThumbElement"
                                              Storyboard.TargetProperty="Height"
-                                             To="0" Duration="0:0:0.10" />
+                                             To="0" Duration="0:0:0.15" />
                         </Storyboard>
                     </BeginStoryboard>
                 </Trigger.ExitActions>

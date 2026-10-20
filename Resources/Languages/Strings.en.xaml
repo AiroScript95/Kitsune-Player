@@ -50,6 +50,7 @@
     <system:String x:Key="Str_Pesquisa">Song, artist, or album...</system:String>
     <system:String x:Key="Str_RemoverDaPlaylist">Remove from playlist</system:String>
     <system:String x:Key="Str_ComLetra">With lyrics</system:String>
+    <system:String x:Key="Str_FilaReproducao">Queue</system:String>
 
     <system:String x:Key="Str_">ee</system:String>
 </ResourceDictionary>

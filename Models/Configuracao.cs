@@ -29,5 +29,6 @@
         public List<string> RotaMusica { get; set; } = new List<string>();
         public UltimaMusicaInfo? UltimaMusica { get; set; }
         public bool OrdemDescendente { get; set; } = false;
+        public bool ScrollAutomatico { get; set; } = false;
     }
 }

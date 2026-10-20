@@ -1,32 +1,30 @@
 ﻿using Project_Kitsune.Models;
 using System.IO;
 using System.Text.Json;
+using System.Diagnostics;
 
 namespace Project_Kitsune.Services
 {
     public class ConfiguracaoService
     {
+        private static string caminhoData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        private static string caminhoPasta = Path.Combine(caminhoData, "Kitsune");
+        private static string caminhoPastaConfig = Path.Combine(caminhoPasta, "Settings");
+        private static string caminhoArquivo = Path.Combine(caminhoPastaConfig, "settings.json");
+
         public Configuracao CarregarConfiguracao()
         {
-            string caminhoData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            string caminhoPasta = Path.Combine(caminhoData, "Kitsune");
-            string caminhoPastaConfig = Path.Combine(caminhoPasta, "Settings");
-            string caminhoArquivo = Path.Combine(caminhoPastaConfig, "settings.json");
-
-            if (!File.Exists(caminhoArquivo))
-            {
+            if (!File.Exists(caminhoArquivo)) {
                 Configuracao novaConfig = new Configuracao();
                 novaConfig.RotaMusica.Add(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic));
                 return novaConfig;
             }
 
-            try
-            {
+            try {
                 string TextJson = File.ReadAllText(caminhoArquivo);
                 return JsonSerializer.Deserialize<Configuracao>(TextJson) ?? new Configuracao();
             }
-            catch (JsonException)
-            {
+            catch (JsonException) {
                 // Ficheiro corrompido de uma tentativa anterior — cai para config nova em vez de crashar
                 Configuracao novaConfig = new Configuracao();
                 novaConfig.RotaMusica.Add(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic));
@@ -36,54 +34,40 @@ namespace Project_Kitsune.Services
 
         public void GuardarConfiguracao(Configuracao config)
         {
-            try
-            {
+            try {
                 string TextJson = JsonSerializer.Serialize(config);
-                string caminhoData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                string caminhoPasta = Path.Combine(caminhoData, "Kitsune");
-                string caminhoPastaConfig = Path.Combine(caminhoPasta, "Settings");
-                string caminhoArquivo = Path.Combine(caminhoPastaConfig, "settings.json");
                 Directory.CreateDirectory(caminhoPastaConfig);
 
                 string caminhoTemp = caminhoArquivo + ".tmp";
                 File.WriteAllText(caminhoTemp, TextJson);
 
-                if (File.Exists(caminhoArquivo))
-                {
+                if (File.Exists(caminhoArquivo)) {
                     File.Replace(caminhoTemp, caminhoArquivo, null);
                 }
-                else
-                {
+                else {
                     File.Move(caminhoTemp, caminhoArquivo);
                 }
             }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
+            catch (Exception ex) {
+                Debug.WriteLine(ex.Message);
             }
         }
 
         public void GuardarBackground(string caminho)
         {
-            try
-            {
+            try {
                 HashSet<string> extensoesValidas = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
                 {
                     ".png",".jpg",".jpeg",
                 };
 
                 string extensao = Path.GetExtension(caminho);
-
                 if (!extensoesValidas.Contains(extensao)) return;
-
-                string caminhoData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                string caminhoPasta = Path.Combine(caminhoData, "Kitsune");
                 string caminhoPastaAssets = Path.Combine(caminhoPasta, "Assets");
                 Directory.CreateDirectory(caminhoPastaAssets);
 
                 // Apaga qualquer "background.*" antigo, independente da extensão
-                foreach (string arquivoAntigo in Directory.EnumerateFiles(caminhoPastaAssets, "background.*"))
-                {
+                foreach (string arquivoAntigo in Directory.EnumerateFiles(caminhoPastaAssets, "background.*")) {
                     File.Delete(arquivoAntigo);
                 }
 
@@ -95,29 +79,25 @@ namespace Project_Kitsune.Services
                 config.Background = caminhoDestino;
                 GuardarConfiguracao(config);
             }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"ERRO: {ex.Message}");
+            catch (Exception ex) {
+                Debug.WriteLine($"ERRO: {ex.Message}");
             }
         }
 
         public void RemoverBackground()
         {
-            try
-            {
+            try {
                 Configuracao config = CarregarConfiguracao();
 
-                if (!string.IsNullOrWhiteSpace(config.Background) && File.Exists(config.Background))
-                {
+                if (!string.IsNullOrWhiteSpace(config.Background) && File.Exists(config.Background)) {
                     File.Delete(config.Background);
                 }
 
                 config.Background = string.Empty;
                 GuardarConfiguracao(config);
             }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"ERRO: {ex.Message}");
+            catch (Exception ex) {
+                Debug.WriteLine($"ERRO: {ex.Message}");
             }
         }
 

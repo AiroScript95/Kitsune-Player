@@ -25,8 +25,7 @@ namespace Project_Kitsune.Services
         private static List<T> Shuffle<T>(List<T> list)
         {
             var copy = list.ToList();
-            for (int i = copy.Count - 1; i > 0; i--)
-            {
+            for (int i = copy.Count - 1; i > 0; i--) {
                 int j = _random.Next(i + 1);
                 (copy[i], copy[j]) = (copy[j], copy[i]);
             }

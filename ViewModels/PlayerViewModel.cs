@@ -10,6 +10,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Threading;
+using System.Diagnostics;
 
 namespace Project_Kitsune.ViewModels
 {
@@ -22,22 +23,23 @@ namespace Project_Kitsune.ViewModels
     {
         /* ESTADOS - (Campos/Propriedades) */
         public ObservableCollection<Music> Musicas => BibliotecaService.Musicas;
-        public ObservableCollection<BandaEqualizador> Bandas { get; set; } = new ObservableCollection<BandaEqualizador>();
+        public ObservableCollection<BandaEqualizador> Bandas { get; set; } = new();
         public DatabaseService DatabaseService { get; set; }
         public BibliotecaService BibliotecaService { get; set; }
         protected ConfiguracaoService configuracaoService;
         protected AudioPlayerService audioPlayerService;
         private DispatcherTimer _timer;
         private List<Music>? _listaEmbaralhada = null;
-        public ObservableCollection<PresetEqualizador> Presets { get; set; } = new ObservableCollection<PresetEqualizador>();
+        public ObservableCollection<PresetEqualizador> Presets { get; set; } = new();
         public ObservableCollection<Playlist> PlaylistsDisponiveis { get; } = new();
+        public ObservableCollection<Music> Fila { get; } = new();
+        public List<Music> ListaAtual { get; set; } = new List<Music>();
+
         private uint _presetSelecionadoIndice;
 
-        public uint PresetSelecionadoIndice
-        {
+        public uint PresetSelecionadoIndice {
             get => _presetSelecionadoIndice;
-            set
-            {
+            set {
                 _presetSelecionadoIndice = value;
                 OnPropertyChanged();
 
@@ -57,11 +59,9 @@ namespace Project_Kitsune.ViewModels
 
         private double _progressoPercentual;
 
-        public double ProgressoPercentual
-        {
+        public double ProgressoPercentual {
             get => _progressoPercentual;
-            set
-            {
+            set {
                 _progressoPercentual = value;
                 OnPropertyChanged();
             }
@@ -69,11 +69,9 @@ namespace Project_Kitsune.ViewModels
 
         private double _posicaoAtualMs;
 
-        public double PosicaoAtualMs
-        {
+        public double PosicaoAtualMs {
             get => _posicaoAtualMs;
-            set
-            {
+            set {
                 _posicaoAtualMs = value;
                 OnPropertyChanged();
             }
@@ -81,11 +79,9 @@ namespace Project_Kitsune.ViewModels
 
         private bool _estaArrastando;
 
-        public bool EstaArrastando
-        {
+        public bool EstaArrastando {
             get => _estaArrastando;
-            set
-            {
+            set {
                 _estaArrastando = value;
                 OnPropertyChanged();
             }
@@ -93,11 +89,9 @@ namespace Project_Kitsune.ViewModels
 
         private double _duracaoTotalMs = 100;
 
-        public double DuracaoTotalMs
-        {
+        public double DuracaoTotalMs {
             get => _duracaoTotalMs;
-            set
-            {
+            set {
                 _duracaoTotalMs = value;
                 OnPropertyChanged();
             }
@@ -109,11 +103,9 @@ namespace Project_Kitsune.ViewModels
 
         private string _tempoAtualFormatado = "00:00";
 
-        public string TempoAtualFormatado
-        {
+        public string TempoAtualFormatado {
             get => _tempoAtualFormatado;
-            set
-            {
+            set {
                 _tempoAtualFormatado = value;
                 OnPropertyChanged();
             }
@@ -121,11 +113,9 @@ namespace Project_Kitsune.ViewModels
 
         private string _tempoTotalFormatado = "00:00";
 
-        public string TempoTotalFormatado
-        {
+        public string TempoTotalFormatado {
             get => _tempoTotalFormatado;
-            set
-            {
+            set {
                 _tempoTotalFormatado = value;
                 OnPropertyChanged();
             }
@@ -133,11 +123,9 @@ namespace Project_Kitsune.ViewModels
 
         private Music? _musicaAtual;
 
-        public Music? MusicaAtual
-        {
+        public Music? MusicaAtual {
             get => _musicaAtual;
-            set
-            {
+            set {
                 _musicaAtual = value;
                 OnPropertyChanged();
             }
@@ -145,11 +133,9 @@ namespace Project_Kitsune.ViewModels
 
         private bool _estaTocando;
 
-        public bool EstaTocando
-        {
+        public bool EstaTocando {
             get => _estaTocando;
-            set
-            {
+            set {
                 _estaTocando = value;
                 OnPropertyChanged();
             }
@@ -157,11 +143,9 @@ namespace Project_Kitsune.ViewModels
 
         private bool _gostoAtual;
 
-        public bool GostoAtual
-        {
+        public bool GostoAtual {
             get => _gostoAtual;
-            set
-            {
+            set {
                 _gostoAtual = value;
                 OnPropertyChanged();
             }
@@ -177,28 +161,23 @@ namespace Project_Kitsune.ViewModels
 
         private ModoRepeticao _repeticao = ModoRepeticao.Nenhum;
 
-        public ModoRepeticao Repeticao
-        {
+        public ModoRepeticao Repeticao {
             get => _repeticao;
-            set
-            {
+            set {
                 _repeticao = value;
                 OnPropertyChanged();
             }
         }
 
         protected Random _random = new Random();
-        public List<Music> ListaAtual { get; set; } = new List<Music>();
 
         public bool TemLetra => LetraAtual?.Linhas.Count > 0;
 
         private bool _mostrarletra;
 
-        public bool MostrarLetra
-        {
+        public bool MostrarLetra {
             get => _mostrarletra;
-            set
-            {
+            set {
                 _mostrarletra = value;
                 OnPropertyChanged();
             }
@@ -206,11 +185,9 @@ namespace Project_Kitsune.ViewModels
 
         private Letra? _letraAtual;
 
-        public Letra? LetraAtual
-        {
+        public Letra? LetraAtual {
             get => _letraAtual;
-            set
-            {
+            set {
                 if (_letraAtual == value)
                     return;
 
@@ -221,13 +198,11 @@ namespace Project_Kitsune.ViewModels
             }
         }
 
-        private bool _scrollAutomaticoAtivo = false;
+        private bool _scrollAutomaticoAtivo;
 
-        public bool ScrollAutomaticoAtivo
-        {
+        public bool ScrollAutomaticoAtivo {
             get => _scrollAutomaticoAtivo;
-            set
-            {
+            set {
                 _scrollAutomaticoAtivo = value;
                 OnPropertyChanged();
             }
@@ -235,11 +210,9 @@ namespace Project_Kitsune.ViewModels
 
         private LinhaLetra? _linhaAtual;
 
-        public LinhaLetra? LinhaAtual
-        {
-            get => _linhaAtual ?? (LetraAtual?.Sincronizada == false ? LetraAtual.Linhas?.FirstOrDefault() : null);
-            set
-            {
+        public LinhaLetra? LinhaAtual {
+            get => _linhaAtual ?? ( LetraAtual?.Sincronizada == false ? LetraAtual.Linhas?.FirstOrDefault() : null );
+            set {
                 _linhaAtual = value;
                 OnPropertyChanged();
             }
@@ -247,11 +220,9 @@ namespace Project_Kitsune.ViewModels
 
         private bool _mostrarEqualizador;
 
-        public bool MostrarEqualizador
-        {
+        public bool MostrarEqualizador {
             get => _mostrarEqualizador;
-            set
-            {
+            set {
                 _mostrarEqualizador = value;
                 OnPropertyChanged();
             }
@@ -259,11 +230,9 @@ namespace Project_Kitsune.ViewModels
 
         public bool _oculatarControles = false;
 
-        public bool OcultarControles
-        {
+        public bool OcultarControles {
             get => _oculatarControles;
-            set
-            {
+            set {
                 _oculatarControles = value;
                 OnPropertyChanged();
             }
@@ -274,12 +243,20 @@ namespace Project_Kitsune.ViewModels
 
         private bool mostrarConfirmacaoExclusao;
 
-        public bool MostrarConfirmacaoExclusao
-        {
+        public bool MostrarConfirmacaoExclusao {
             get => mostrarConfirmacaoExclusao;
-            set
-            {
+            set {
                 mostrarConfirmacaoExclusao = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool mostrarFila = false;
+
+        public bool MostrarFila {
+            get => mostrarFila;
+            set {
+                mostrarFila = value;
                 OnPropertyChanged();
             }
         }
@@ -296,16 +273,11 @@ namespace Project_Kitsune.ViewModels
             Configuracao config = configuracaoService.CarregarConfiguracao();
             if (config.ModoRepeticao == "RepetirUma") Repeticao = ModoRepeticao.RepetirUma;
             if (config.ModoRepeticao == "RepetirLista") Repeticao = ModoRepeticao.RepetirLista;
-            if (config.ModoRepeticao == "Aleatorio")
-            {
-                Repeticao = ModoRepeticao.Aleatorio;
-                _listaEmbaralhada = ListaAtual.ToList();
-                Shuffle(_listaEmbaralhada, _random);
-            }
+            if (config.ModoRepeticao == "Aleatorio") Repeticao = ModoRepeticao.Aleatorio;
+            ScrollAutomaticoAtivo = config.ScrollAutomatico;
             foreach (var preset in audioPlayerService.CarregarPresets()) Presets.Add(preset);
 
-            for (int i = 0; i < 10; i++)
-            {
+            for (int i = 0; i < 10; i++) {
                 var banda = new BandaEqualizador
                 {
                     Indice = (uint)i,
@@ -324,13 +296,11 @@ namespace Project_Kitsune.ViewModels
                 Bandas.Add(banda);
             }
 
-            if (config.EqualizadorGanhosCustom != null)
-            {
+            if (config.EqualizadorGanhosCustom != null) {
                 for (int i = 0; i < config.EqualizadorGanhosCustom.Length && i < Bandas.Count; i++)
                     Bandas[i].AtualizarGanhoSemNotificar(config.EqualizadorGanhosCustom[i]);
             }
-            else if (config.EqualizadorPreset >= 0 && config.EqualizadorPreset < Presets.Count)
-            {
+            else if (config.EqualizadorPreset >= 0 && config.EqualizadorPreset < Presets.Count) {
                 _presetSelecionadoIndice = (uint)config.EqualizadorPreset; // sem passar pelo setter, para não regravar config nem chamar DefinirEqualizador de novo (AudioPlayerService já aplicou isso no construtor dele)
                 AtualizarBandasComPresetAtual();
             }
@@ -347,6 +317,14 @@ namespace Project_Kitsune.ViewModels
             _timer.Tick += Timer_Tick;
             _timer.Start();
             ListaAtual = Musicas.ToList();
+            CarregarFila(ListaAtual);
+
+            if (Repeticao == ModoRepeticao.Aleatorio) {
+                _listaEmbaralhada = ListaAtual.ToList();
+                Shuffle(_listaEmbaralhada, _random);
+                CarregarFila(_listaEmbaralhada);
+            }
+
             RestaurarUltimaMusica();
         }
 
@@ -354,15 +332,13 @@ namespace Project_Kitsune.ViewModels
 
         public void Dispose()
         {
-            if (_timer != null)
-            {
+            if (_timer != null) {
                 _timer.Tick -= Timer_Tick;
                 _timer.Stop();
                 _timer = null!;
             }
 
-            if (audioPlayerService != null)
-            {
+            if (audioPlayerService != null) {
                 audioPlayerService.MusicaTerminou -= AudioPlayer_MusicaTerminou;
                 audioPlayerService.ErroReproducao -= AudioPlayer_ErroReproducao;
                 audioPlayerService.PlaybackStarted -= AudioPlayer_PlaybackStarted;
@@ -377,8 +353,7 @@ namespace Project_Kitsune.ViewModels
 
                 TocarProxima();
 
-                if (musicaQueTerminou != null)
-                {
+                if (musicaQueTerminou != null) {
                     musicaQueTerminou.VezesTocada++;
                     DatabaseService.IncrementarReproducoes(musicaQueTerminou.Caminho);
                 }
@@ -408,14 +383,12 @@ namespace Project_Kitsune.ViewModels
 
         private async Task AplicarPosicaoRestauradaQuandoProntoAsync()
         {
-            try
-            {
+            try {
                 const int intervaloMs = 100;
                 const int timeoutMs = 3000;
                 int waited = 0;
 
-                while (waited < timeoutMs)
-                {
+                while (waited < timeoutMs) {
                     long dur = 0;
                     try { dur = audioPlayerService.ObterDuracaoTotal(); } catch { dur = 0; }
 
@@ -425,23 +398,20 @@ namespace Project_Kitsune.ViewModels
                     waited += intervaloMs;
                 }
 
-                if (_temPosicaoRestaurada && _posicaoRestaurar > 0)
-                {
+                if (_temPosicaoRestaurada && _posicaoRestaurar > 0) {
                     // limita a posição para não exceder a duração conhecida
                     long duracao = 0;
                     try { duracao = audioPlayerService.ObterDuracaoTotal(); } catch { duracao = 0; }
 
                     long posParaAplicar = _posicaoRestaurar;
-                    if (duracao > 0 && posParaAplicar >= duracao)
-                    {
+                    if (duracao > 0 && posParaAplicar >= duracao) {
                         posParaAplicar = Math.Max(0, duracao - 1000); // ajusta 1s antes do fim
                     }
 
                     // aplicar no thread da UI
                     InvokeOnUI(() =>
                     {
-                        try
-                        {
+                        try {
                             audioPlayerService.RetomarAudio();
                             DefinirPosicaoManual(posParaAplicar);
 
@@ -452,7 +422,7 @@ namespace Project_Kitsune.ViewModels
                             DuracaoTotalMs = dur;
                             TempoAtualFormatado = FormatarTempo(pos);
                             TempoTotalFormatado = dur > 0 ? FormatarTempo(dur) : "00:00";
-                            ProgressoPercentual = (dur > 0) ? (double)pos / dur * 100 : 0;
+                            ProgressoPercentual = ( dur > 0 ) ? (double)pos / dur * 100 : 0;
                         }
                         catch { }
                     });
@@ -464,10 +434,8 @@ namespace Project_Kitsune.ViewModels
 
                 InvokeOnUI(() =>
                 {
-                    if (MusicaAtual != null)
-                    {
-                        try
-                        {
+                    if (MusicaAtual != null) {
+                        try {
                             var cfg = configuracaoService.CarregarConfiguracao();
                             cfg.UltimaMusica = new UltimaMusicaInfo
                             {
@@ -489,19 +457,19 @@ namespace Project_Kitsune.ViewModels
         public void RestaurarUltimaMusica()
         {
             if (MusicaAtual != null) return;
-            try
-            {
+            if (ListaAtual.Count == 0) {
+                ListaAtual = Musicas.ToList();
+                CarregarFila(ListaAtual);
+            }
+            try {
                 var cfg = configuracaoService.CarregarConfiguracao();
                 var last = cfg.UltimaMusica;
-                if (last?.Caminho != null && File.Exists(last.Caminho))
-                {
+                if (last?.Caminho != null && File.Exists(last.Caminho)) {
                     var encontrada = Musicas.FirstOrDefault(m => string.Equals(m.Caminho, last.Caminho, StringComparison.OrdinalIgnoreCase));
-                    if (encontrada != null)
-                    {
+                    if (encontrada != null) {
                         MusicaAtual = encontrada;
 
-                        if (last.PosicaoMs > 0)
-                        {
+                        if (last.PosicaoMs > 0) {
                             _posicaoRestaurar = last.PosicaoMs;
                             _duracaoRestaurar = (long)encontrada.Duracao.TotalMilliseconds;
                             _temPosicaoRestaurada = true;
@@ -510,8 +478,7 @@ namespace Project_Kitsune.ViewModels
                             TempoTotalFormatado = FormatarTempo(_duracaoRestaurar);
                             DuracaoTotalMs = _duracaoRestaurar;
 
-                            if (_duracaoRestaurar > 0)
-                            {
+                            if (_duracaoRestaurar > 0) {
                                 ProgressoPercentual = (double)_posicaoRestaurar / _duracaoRestaurar * 100;
                             }
                         }
@@ -519,9 +486,8 @@ namespace Project_Kitsune.ViewModels
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Erro ao restaurar última música: {ex.Message}");
+            catch (Exception ex) {
+                Debug.WriteLine($"Erro ao restaurar última música: {ex.Message}");
             }
         }
 
@@ -538,19 +504,17 @@ namespace Project_Kitsune.ViewModels
         {
             if (_carregando) return;
 
-            if (lista != null)
-            {
+            if (lista != null) {
                 ListaAtual = lista;
+                CarregarFila(ListaAtual);
             }
 
-            while (!File.Exists(musica.Caminho))
-            {
+            while (!File.Exists(musica.Caminho)) {
                 int indiceRemovido = ListaAtual.FindIndex(m => string.Equals(m.Caminho, musica.Caminho, StringComparison.OrdinalIgnoreCase));
                 Musicas.Remove(musica);
                 ListaAtual.RemoveAll(m => string.Equals(m.Caminho, musica.Caminho, StringComparison.OrdinalIgnoreCase));
-
-                if (ListaAtual.Count == 0)
-                {
+                CarregarFila(ListaAtual);
+                if (ListaAtual.Count == 0) {
                     _letraCts?.Cancel();
                     MostrarLetra = false;
                     LetraAtual = null;
@@ -559,34 +523,28 @@ namespace Project_Kitsune.ViewModels
                     return;
                 }
 
-                int proximoIndice = (indiceRemovido >= 0 && indiceRemovido < ListaAtual.Count) ? indiceRemovido : 0;
+                int proximoIndice = ( indiceRemovido >= 0 && indiceRemovido < ListaAtual.Count ) ? indiceRemovido : 0;
                 musica = ListaAtual[proximoIndice];
             }
-            if (!string.Equals(MusicaAtual?.Caminho, musica.Caminho, StringComparison.OrdinalIgnoreCase))
-            {
+            if (!string.Equals(MusicaAtual?.Caminho, musica.Caminho, StringComparison.OrdinalIgnoreCase)) {
                 _posicaoRestaurar = 0;
                 _temPosicaoRestaurada = false;
             }
-            try
-            {
+            try {
                 DefinirCarregando(true);
 
-                if (lista != null)
-                {
-                    ListaAtual = lista;
-
-                    if (Repeticao == ModoRepeticao.Aleatorio)
-                    {
+                if (lista != null) {
+                    if (Repeticao == ModoRepeticao.Aleatorio) {
                         _listaEmbaralhada = ListaAtual.ToList();
-                        Shuffle(_listaEmbaralhada, _random);
+                        Shuffle(_listaEmbaralhada, _random, musica);
+                        CarregarFila(_listaEmbaralhada);
                     }
                 }
 
                 MusicaAtual = musica;
                 GostoAtual = musica.Gosto;
 
-                if (_listaEmbaralhada != null && !manterIndiceEmbaralhado)
-                {
+                if (_listaEmbaralhada != null && !manterIndiceEmbaralhado) {
                     _indiceEmbaralhado = _listaEmbaralhada.FindIndex(m =>
                         !string.IsNullOrEmpty(m?.Caminho)
                         && string.Equals(m.Caminho, musica.Caminho, StringComparison.OrdinalIgnoreCase));
@@ -599,19 +557,16 @@ namespace Project_Kitsune.ViewModels
                 TempoTotalFormatado = FormatarTempo((long)DuracaoTotalMs);
                 TempoAtualFormatado = "0:00";
 
-                try
-                {
+                try {
                     audioPlayerService.TocarAudio(MusicaAtual.Caminho);
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     Console.WriteLine(ex.ToString());
                     EstaTocando = false;
                     DefinirCarregando(false); // ✅ NOVO: Garante que não fica travado
                 }
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Console.WriteLine(ex.ToString());
                 DefinirCarregando(false); // ✅ NOVO: Garante que não fica travado
             }
@@ -619,56 +574,44 @@ namespace Project_Kitsune.ViewModels
 
         private void TocarProxima()
         {
-            try
-            {
+            try {
                 if (MusicaAtual == null || ListaAtual.Count == 0) return;
 
-                //ListaAtual.RemoveAll(m => !File.Exists(m.Caminho));
-
-                if (Repeticao == ModoRepeticao.RepetirUma && audioPlayerService.Terminou == true)
-                {
+                if (Repeticao == ModoRepeticao.RepetirUma && audioPlayerService.Terminou == true) {
                     TocarMusica(MusicaAtual);
                     return;
                 }
-                if (Repeticao == ModoRepeticao.Aleatorio && _listaEmbaralhada != null)
-                {
+                if (Repeticao == ModoRepeticao.Aleatorio && _listaEmbaralhada != null) {
                     _indiceEmbaralhado++;
-                    if (_indiceEmbaralhado < _listaEmbaralhada.Count)
-                    {
+                    if (_indiceEmbaralhado < _listaEmbaralhada.Count) {
                         TocarMusica(_listaEmbaralhada[_indiceEmbaralhado], manterIndiceEmbaralhado: true);
                     }
-                    else
-                    {
+                    else {
                         _indiceEmbaralhado = 0;
                         TocarMusica(_listaEmbaralhada[_indiceEmbaralhado], manterIndiceEmbaralhado: true);
                     }
                     return;
                 }
                 int indiceAtual = ObterIndiceAtual();
-                if (indiceAtual == -1)
-                {
+                if (indiceAtual == -1) {
                     TocarMusica(ListaAtual[0], manterIndiceEmbaralhado: true);
                     return;
                 }
                 int proximoIndice = indiceAtual + 1;
 
-                if (proximoIndice < ListaAtual.Count)
-                {
+                if (proximoIndice < ListaAtual.Count) {
                     TocarMusica(ListaAtual[proximoIndice], manterIndiceEmbaralhado: true);
                 }
-                else if (Repeticao == ModoRepeticao.RepetirLista)
-                {
+                else if (Repeticao == ModoRepeticao.RepetirLista) {
                     TocarMusica(ListaAtual[0]);
                 }
-                else
-                {
+                else {
                     EstaTocando = false;
                 }
                 return;
             }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
+            catch (Exception ex) {
+                Debug.WriteLine(ex.Message);
                 EstaTocando = false;
                 DefinirCarregando(false); // ✅ NOVO
             }
@@ -676,27 +619,20 @@ namespace Project_Kitsune.ViewModels
 
         private void TocarAnterior()
         {
-            try
-            {
+            try {
                 if (MusicaAtual == null || ListaAtual.Count == 0) return;
 
-                //ListaAtual.RemoveAll(m => !File.Exists(m.Caminho));
-
-                if (Repeticao == ModoRepeticao.RepetirUma && audioPlayerService.Terminou == true)
-                {
+                if (Repeticao == ModoRepeticao.RepetirUma && audioPlayerService.Terminou == true) {
                     TocarMusica(MusicaAtual);
                     return;
                 }
 
-                if (Repeticao == ModoRepeticao.Aleatorio && _listaEmbaralhada != null)
-                {
+                if (Repeticao == ModoRepeticao.Aleatorio && _listaEmbaralhada != null) {
                     _indiceEmbaralhado--;
-                    if (_indiceEmbaralhado >= 0)
-                    {
+                    if (_indiceEmbaralhado >= 0) {
                         TocarMusica(_listaEmbaralhada[_indiceEmbaralhado], manterIndiceEmbaralhado: true);
                     }
-                    else
-                    {
+                    else {
                         _indiceEmbaralhado = _listaEmbaralhada.Count - 1;
                         TocarMusica(_listaEmbaralhada[_indiceEmbaralhado], manterIndiceEmbaralhado: true);
                     }
@@ -705,14 +641,12 @@ namespace Project_Kitsune.ViewModels
 
                 int indiceAtual = ObterIndiceAtual();
 
-                if (indiceAtual < 0)
-                {
+                if (indiceAtual < 0) {
                     TocarMusica(ListaAtual[0]);
                     return;
                 }
 
-                if (indiceAtual == 0)
-                {
+                if (indiceAtual == 0) {
                     if (Repeticao == ModoRepeticao.RepetirLista)
                         TocarMusica(ListaAtual[ListaAtual.Count - 1]);
                     else
@@ -723,9 +657,8 @@ namespace Project_Kitsune.ViewModels
                 TocarMusica(ListaAtual[indiceAtual - 1]);
                 return;
             }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
+            catch (Exception ex) {
+                Debug.WriteLine(ex.Message);
                 EstaTocando = false;
                 DefinirCarregando(false); // ✅ NOVO
             }
@@ -733,13 +666,11 @@ namespace Project_Kitsune.ViewModels
 
         public void Pausar()
         {
-            try
-            {
+            try {
                 audioPlayerService.PausarAudio();
                 EstaTocando = false;
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 EstaTocando = false;
                 Console.WriteLine(ex.ToString());
             }
@@ -747,12 +678,10 @@ namespace Project_Kitsune.ViewModels
 
         public void Retomar()
         {
-            try
-            {
+            try {
                 if (MusicaAtual == null || _carregando) return;
 
-                if (audioPlayerService.ObterPosicaoAtual() <= 0 && audioPlayerService.ObterDuracaoTotal() <= 0)
-                {
+                if (audioPlayerService.ObterPosicaoAtual() <= 0 && audioPlayerService.ObterDuracaoTotal() <= 0) {
                     TocarMusica(MusicaAtual, ListaAtual);
                     return;
                 }
@@ -760,8 +689,7 @@ namespace Project_Kitsune.ViewModels
                 audioPlayerService.RetomarAudio();
                 EstaTocando = true;
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 EstaTocando = false;
                 Console.WriteLine(ex.ToString());
             }
@@ -769,24 +697,16 @@ namespace Project_Kitsune.ViewModels
 
         private void Timer_Tick(object? sender, EventArgs e)
         {
-            try
-            {
+            try {
                 if (!EstaTocando || EstaArrastando) return;
 
-                // Verifica se a música atual ainda pertence à biblioteca
-                if (MusicaAtual != null &&
-                 !Musicas.Any(m => string.Equals(
-                     m.Caminho,
-                     MusicaAtual.Caminho,
-                     StringComparison.OrdinalIgnoreCase)))
-                {
+                if (MusicaAtual != null && !Musicas.Any(m => string.Equals(m.Caminho, MusicaAtual.Caminho, StringComparison.OrdinalIgnoreCase))) {
                     audioPlayerService.PararAudio();
                     _letraCts?.Cancel();
                     MostrarLetra = false;
                     MusicaAtual = null;
                     LetraAtual = null;
                     EstaTocando = false;
-
                     return;
                 }
 
@@ -799,16 +719,13 @@ namespace Project_Kitsune.ViewModels
                 TempoAtualFormatado = FormatarTempo(posicao);
                 TempoTotalFormatado = FormatarTempo(duracao);
 
-                if (duracao > 0)
-                    ProgressoPercentual = (double)posicao / duracao * 100;
-                else
-                    ProgressoPercentual = 0;
+                if (duracao > 0) ProgressoPercentual = (double)posicao / duracao * 100;
+                else ProgressoPercentual = 0;
 
                 AtualizarLinhaAtual(posicao);
             }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
+            catch (Exception ex) {
+                Debug.WriteLine(ex.Message);
                 EstaTocando = false;
                 EstaArrastando = false;
             }
@@ -835,8 +752,7 @@ namespace Project_Kitsune.ViewModels
         {
             if (MusicaAtual == null) return;
 
-            try
-            {
+            try {
                 _letraCts?.Cancel();
             }
             catch { }
@@ -844,8 +760,7 @@ namespace Project_Kitsune.ViewModels
             _letraCts = cts;
             CancellationToken token = cts.Token;
 
-            try
-            {
+            try {
                 var letra = await BibliotecaService.ObterLetra(MusicaAtual).ConfigureAwait(false);
 
                 if (token.IsCancellationRequested) return;
@@ -858,14 +773,11 @@ namespace Project_Kitsune.ViewModels
                     OnPropertyChanged(nameof(TemLetra));
                 });
             }
-            catch (OperationCanceledException)
-            {
+            catch (OperationCanceledException) {
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Console.WriteLine(ex.ToString());
-                if (!token.IsCancellationRequested)
-                {
+                if (!token.IsCancellationRequested) {
                     InvokeOnUI(() =>
                     {
                         LetraAtual = null;
@@ -873,10 +785,8 @@ namespace Project_Kitsune.ViewModels
                     });
                 }
             }
-            finally
-            {
-                if (_letraCts == cts)
-                {
+            finally {
+                if (_letraCts == cts) {
                     _letraCts = null;
                 }
             }
@@ -884,20 +794,17 @@ namespace Project_Kitsune.ViewModels
 
         public void DefinirPosicaoManual(long milissegundos)
         {
-            try
-            {
+            try {
                 audioPlayerService.DefinirPosicao(milissegundos);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Console.WriteLine(ex.ToString());
             }
         }
 
         private void AtualizarLinhaAtual(long posicaoMs)
         {
-            if (LetraAtual == null || !LetraAtual.Sincronizada)
-            {
+            if (LetraAtual == null || !LetraAtual.Sincronizada) {
                 LinhaAtual = null;
                 return;
             }
@@ -909,21 +816,29 @@ namespace Project_Kitsune.ViewModels
                 .OrderByDescending(l => l.Tempo)
                 .FirstOrDefault();
 
-            if (linha != LinhaAtual)
-            {
+            if (linha != LinhaAtual) {
                 LinhaAtual = linha;
             }
         }
 
-        private void Shuffle<T>(IList<T> list, Random rng)
+        private void Shuffle(List<Music> list, Random rng, Music? primeira = null)
         {
             int n = list.Count;
-            while (n > 1)
-            {
+            while (n > 1) {
                 n--;
                 int k = rng.Next(n + 1);
                 (list[k], list[n]) = (list[n], list[k]);
             }
+
+            if (primeira == null) return;
+
+            int i = list.FindIndex(m =>
+                string.Equals(m.Caminho, primeira.Caminho, StringComparison.OrdinalIgnoreCase));
+            if (i <= 0) return;
+
+            Music item = list[i];
+            list.RemoveAt(i);
+            list.Insert(0, item);
         }
 
         private bool PodeNavegar() => !_carregando;
@@ -942,8 +857,7 @@ namespace Project_Kitsune.ViewModels
 
             var preset = Presets[(int)PresetSelecionadoIndice];
 
-            for (int i = 0; i < preset.Bandas.Count && i < Bandas.Count; i++)
-            {
+            for (int i = 0; i < preset.Bandas.Count && i < Bandas.Count; i++) {
                 Bandas[i].AtualizarGanhoSemNotificar((float)preset.Bandas[i].GanhoDb);
             }
         }
@@ -951,16 +865,14 @@ namespace Project_Kitsune.ViewModels
         public void CarregarPlaylistsDisponiveis()
         {
             PlaylistsDisponiveis.Clear();
-            foreach (var playlist in DatabaseService.ListarPlaylists())
-            {
+            foreach (var playlist in DatabaseService.ListarPlaylists()) {
                 PlaylistsDisponiveis.Add(playlist);
             }
         }
 
         private void EliminarMusica(Music musica)
         {
-            if (MusicaAtual?.Caminho == musica.Caminho)
-            {
+            if (MusicaAtual?.Caminho == musica.Caminho) {
                 audioPlayerService.PararAudio();
                 EstaTocando = false;
                 MusicaAtual = null;
@@ -968,17 +880,44 @@ namespace Project_Kitsune.ViewModels
             BibliotecaService.EliminarMusica(musica); // manda pra lixeira; FileSystemWatcher cuida do resto
         }
 
+        private void CarregarFila(List<Music> Lista)
+        {
+            Fila.Clear();
+            foreach (var music in Lista) {
+                Fila.Add(music);
+            }
+        }
+
+        public void MoverNaFila(int de, int para)
+        {
+            if (de == para) return;
+            if (de < 0 || para < 0 || de >= Fila.Count || para >= Fila.Count) return;
+
+            Fila.Move(de, para);
+
+            if (_listaEmbaralhada != null) {
+                _listaEmbaralhada = Fila.ToList();
+
+                string? caminho = MusicaAtual?.Caminho;
+                _indiceEmbaralhado = caminho == null
+                    ? -1
+                    : _listaEmbaralhada.FindIndex(m =>
+                        string.Equals(m.Caminho, caminho, StringComparison.OrdinalIgnoreCase));
+            }
+            else {
+                ListaAtual = Fila.ToList();
+            }
+        }
+
         /* RELAYCOMMANDS */
 
         [RelayCommand(CanExecute = nameof(PodeNavegar))]
         private void AlternarPlayPause()
         {
-            if (EstaTocando)
-            {
+            if (EstaTocando) {
                 Pausar();
             }
-            else
-            {
+            else {
                 Retomar();
             }
         }
@@ -1001,25 +940,23 @@ namespace Project_Kitsune.ViewModels
                 ModoRepeticao.Aleatorio => ModoRepeticao.Nenhum,
                 _ => ModoRepeticao.Nenhum
             };
-            if (Repeticao == ModoRepeticao.Aleatorio)
-            {
+            if (Repeticao == ModoRepeticao.Aleatorio) {
                 _listaEmbaralhada = ListaAtual.ToList();
-                Shuffle(_listaEmbaralhada, _random);
+                Shuffle(_listaEmbaralhada, _random, MusicaAtual);
+                CarregarFila(_listaEmbaralhada);
 
-                if (MusicaAtual != null)
-                {
+                if (MusicaAtual != null) {
                     _indiceEmbaralhado = _listaEmbaralhada.FindIndex(m =>
                         !string.IsNullOrEmpty(m?.Caminho)
                         && string.Equals(m.Caminho, MusicaAtual.Caminho, StringComparison.OrdinalIgnoreCase));
                     if (_indiceEmbaralhado < 0) _indiceEmbaralhado = -1;
                 }
-                else
-                {
+                else {
                     _indiceEmbaralhado = -1;
                 }
             }
-            else
-            {
+            else {
+                if (_listaEmbaralhada != null) CarregarFila(ListaAtual);
                 _listaEmbaralhada = null;
                 _indiceEmbaralhado = -1;
             }
@@ -1119,12 +1056,10 @@ namespace Project_Kitsune.ViewModels
         {
             if (parametro is not (Music musica, Playlist playlist)) return;
 
-            if (playlist.Name == "Favoritos")
-            {
+            if (playlist.Name == "Favoritos") {
                 DatabaseService.AlternarGosto(musica.Caminho, true);
                 musica.Gosto = true;
-                if (MusicaAtual?.Caminho == musica.Caminho)
-                {
+                if (MusicaAtual?.Caminho == musica.Caminho) {
                     MusicaAtual.Gosto = true;
                     GostoAtual = true;
                 }
@@ -1132,8 +1067,7 @@ namespace Project_Kitsune.ViewModels
             }
 
             int musicaId = DatabaseService.ObterIdMusicaPorCaminho(musica.Caminho);
-            if (musicaId != -1)
-            {
+            if (musicaId != -1) {
                 DatabaseService.AdicionarMusicaAPlaylist(playlist.Id, musicaId);
             }
         }
@@ -1141,7 +1075,16 @@ namespace Project_Kitsune.ViewModels
         [RelayCommand]
         private void AlternarScrollAutomatico()
         {
+            Configuracao config = configuracaoService.CarregarConfiguracao();
             ScrollAutomaticoAtivo = !ScrollAutomaticoAtivo;
+            config.ScrollAutomatico = ScrollAutomaticoAtivo;
+            configuracaoService.GuardarConfiguracao(config);
+        }
+
+        [RelayCommand]
+        private void MostrarFilaReproducao()
+        {
+            MostrarFila = !MostrarFila;
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

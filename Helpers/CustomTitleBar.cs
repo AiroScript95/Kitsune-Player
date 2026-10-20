@@ -107,15 +107,15 @@ public static class CustomTitleBar
     private static void AjustarMargem(Window window)
     {
         if (window.Content is FrameworkElement root)
-            root.Margin = window.WindowState == WindowState.Maximized
-            ? SystemParameters.WindowResizeBorderThickness
-            : new Thickness(0);
+        {
+            root.Margin = window.WindowState == WindowState.Maximized ? SystemParameters.WindowResizeBorderThickness : new Thickness(0);
+        }
     }
 
     private static void Pintar(FrameworkElement? botao, bool ativo)
     {
         if (botao is not Control c) return;
         if (ativo) c.SetResourceReference(Control.BackgroundProperty, "SurfaceAltBrush");
-        else c.ClearValue(Control.BackgroundProperty); // volta ao Transparent do estilo
+        else c.ClearValue(Control.BackgroundProperty);
     }
 }

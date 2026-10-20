@@ -20,7 +20,7 @@
                 <ResourceDictionary Source="/Resources/Utils/Styles.xaml" />
 
                 <!-- Idioma -->
-                <ResourceDictionary Source="/Resources/Languages/Strings.pt.xaml" />
+                <ResourceDictionary Source="/Resources/Languages/Strings.en.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <!-- Fontes e Recursos Globais DEPOIS dos MergedDictionaries -->
@@ -32,16 +32,15 @@
             <converters:BytesParaImagemConverter x:Key="BytesParaImagemConverter" />
             <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
             <converters:IndiceParaNumeroConverter x:Key="IndiceParaNumeroConverter" />
-            <converters:ZeroToCollapsedConverter x:Key="ZeroToCollapsedConverter" />
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <converters:StringVazioParaVisibilidadeConverter x:Key="StringVazioParaVisibilidade" />
             <converters:LinhaAtualConverter x:Key="LinhaAtualConverter" />
             <converters:ProgressoParaLarguraConverter x:Key="ProgressoParaLarguraConverter" />
             <converters:MusicaEPlaylistConverter x:Key="MusicaEPlaylistConverter" />
-            <converters:NomeNaoFavoritosConverter x:Key="NomeNaoFavoritosConverter" />
             <converters:StringParaImagemConverter x:Key="StringParaImagemConverter" />
             <converters:StringToUriConverter x:Key="StringToUriConverter" />
             <converters:GanhoParaAlturaConverter x:Key="GanhoParaAlturaConverter" />
+            <converters:BytesParaGradienteConverter x:Key="BytesParaGradienteConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

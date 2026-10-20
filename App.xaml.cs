@@ -57,12 +57,10 @@ namespace Project_Kitsune
 
         public void AplicarTema(string nomeTema)
         {
-            string caminho = $"/Resources/Themes/Colors.{nomeTema}.xaml";
-            ResourceDictionary novoTema = new ResourceDictionary() { Source = new Uri(caminho, UriKind.Relative) };
-            var temaAntigo = Resources.MergedDictionaries.
-                FirstOrDefault(d => d.Source?.OriginalString.Contains("/Resources/Themes/Colors.") == true);
-            if (temaAntigo != null) Resources.MergedDictionaries.Remove(temaAntigo);
-            Resources.MergedDictionaries.Add(novoTema);
+            var md = Resources.MergedDictionaries;
+            var temaAntigo = md.FirstOrDefault(d => d.Source?.OriginalString.Contains("/Resources/Themes/Colors.") == true);
+            if (temaAntigo != null) md.Remove(temaAntigo);
+            md.Add(new ResourceDictionary { Source = new Uri($"/Resources/Themes/Colors.{nomeTema}.xaml", UriKind.Relative) });
 
             TemaAlterado?.Invoke();
         }

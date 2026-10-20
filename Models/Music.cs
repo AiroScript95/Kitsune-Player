@@ -15,7 +15,8 @@ namespace Project_Kitsune.Models
         Nenhuma,
         Embutida,
         ArquivoLrc,
-        Lrclib
+        Lrclib,
+        Kugou
     }
 
     public class Letra
@@ -36,35 +37,30 @@ namespace Project_Kitsune.Models
 
         private string _titulo = string.Empty;
 
-        public string Titulo
-        {
+        public string Titulo {
             get => _titulo;
             set { _titulo = value; OnPropertyChanged(); }
         }
 
         private string _artista = string.Empty;
 
-        public string Artista
-        {
+        public string Artista {
             get => _artista;
             set { _artista = value; OnPropertyChanged(); }
         }
 
         private string _album = string.Empty;
 
-        public string Album
-        {
+        public string Album {
             get => _album;
             set { _album = value; OnPropertyChanged(); }
         }
 
         private bool _temLetraDisponivel;
 
-        public bool TemLetraDisponivel
-        {
+        public bool TemLetraDisponivel {
             get => _temLetraDisponivel;
-            set
-            {
+            set {
                 _temLetraDisponivel = value;
                 OnPropertyChanged();
             }
@@ -72,8 +68,7 @@ namespace Project_Kitsune.Models
 
         private bool _gosto;
 
-        public bool Gosto
-        {
+        public bool Gosto {
             get => _gosto;
             set { if (_gosto != value) { _gosto = value; OnPropertyChanged(); } }
         }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Project_Kitsune.Models;
 using Project_Kitsune.ViewModels;
+using Project_Kitsune.ViewModels.ShellPages;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -18,6 +19,8 @@ namespace Project_Kitsune.Views
         private readonly PlayerViewModel player;
         private DispatcherTimer? _timerScroll;
         private readonly Dictionary<LinhaLetra, FrameworkElement> _mapaLinhas = new();
+        private DateTime _ultimoScrollManual = DateTime.MinValue;
+        private Point _pontoInicial;
 
         public ShellView()
         {
@@ -48,12 +51,10 @@ namespace Project_Kitsune.Views
 
         private void Player_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(PlayerViewModel.LinhaAtual))
-            {
+            if (e.PropertyName == nameof(PlayerViewModel.LinhaAtual)) {
                 AtualizarScrollLetra(player);
             }
-            else if (e.PropertyName == nameof(PlayerViewModel.PosicaoAtualMs))
-            {
+            else if (e.PropertyName == nameof(PlayerViewModel.PosicaoAtualMs)) {
                 if (player.LetraAtual?.Sincronizada == false)
                     AtualizarScrollLetra(player);
             }
@@ -67,11 +68,9 @@ namespace Project_Kitsune.Views
                 return;
 
             _mapaLinhas.Clear();
-            foreach (var item in ItemsLetras.Items)
-            {
+            foreach (var item in ItemsLetras.Items) {
                 if (item is LinhaLetra linha &&
-                    ItemsLetras.ItemContainerGenerator.ContainerFromItem(item) is FrameworkElement fe)
-                {
+                    ItemsLetras.ItemContainerGenerator.ContainerFromItem(item) is FrameworkElement fe) {
                     _mapaLinhas[linha] = fe;
                 }
             }
@@ -81,45 +80,39 @@ namespace Project_Kitsune.Views
         {
             if (player.LetraAtual == null || ScrollLetras == null) return;
 
-            if (player.LetraAtual.Sincronizada)
-            {
+            if (player.LetraAtual.Sincronizada) {
                 if (player.LinhaAtual == null) return;
                 _mapaLinhas.TryGetValue(player.LinhaAtual, out var elementoLinha);
 
-                if (elementoLinha != null)
-                {
+                if (elementoLinha != null) {
                     Point posicaoRelativa = elementoLinha.TransformToVisual(ScrollLetras).Transform(new Point(0, 0));
-                    double offsetAlvo = ScrollLetras.VerticalOffset + posicaoRelativa.Y - (ScrollLetras.ViewportHeight / 2.5) + (elementoLinha.RenderSize.Height / 2);
+                    double offsetAlvo = ScrollLetras.VerticalOffset + posicaoRelativa.Y - ( ScrollLetras.ViewportHeight / 2.5 ) + ( elementoLinha.RenderSize.Height / 2 );
                     AnimarScrollSuave(ScrollLetras, Math.Max(0, offsetAlvo));
                 }
-                else
-                {
+                else {
                     int indice = player.LetraAtual.Linhas.IndexOf(player.LinhaAtual);
-                    if (indice >= 0)
-                    {
-                        double offsetAlvo = Math.Max(0, (indice * 25) - (ScrollLetras.ViewportHeight / 2));
+                    if (indice >= 0) {
+                        double offsetAlvo = Math.Max(0, ( indice * 25 ) - ( ScrollLetras.ViewportHeight / 2 ));
                         AnimarScrollSuave(ScrollLetras, offsetAlvo);
                     }
                 }
             }
-            else
-            {
+            else {
                 if (player.DuracaoTotalMs <= 0) return;
 
-                if (player.ScrollAutomaticoAtivo)
-                {
+                if (player.ScrollAutomaticoAtivo) {
                     double progresso = (double)player.PosicaoAtualMs / player.DuracaoTotalMs;
-                    double offsetMaximo = ScrollLetras.ExtentHeight - ScrollLetras.ViewportHeight;
+                    double offsetMaximo = ScrollLetras.ExtentHeight - ScrollLetras.ViewportHeight - ItemsLetras.Margin.Bottom;
 
                     if (offsetMaximo <= 0) return;
 
                     double offsetAlvo = progresso * offsetMaximo;
-                    ScrollLetras.ScrollToVerticalOffset(offsetAlvo);
+                    AnimarScrollSuave(ScrollLetras, offsetAlvo, 200, linear: true);
                 }
             }
         }
 
-        private void AnimarScrollSuave(ScrollViewer scrollViewer, double offsetAlvo)
+        private void AnimarScrollSuave(ScrollViewer scrollViewer, double offsetAlvo, int duracaoMs = 130, bool linear = false)
         {
             if (scrollViewer == null) return;
 
@@ -127,60 +120,55 @@ namespace Project_Kitsune.Views
 
             double offsetInicial = scrollViewer.VerticalOffset;
             double diferenca = offsetAlvo - offsetInicial;
-
             if (Math.Abs(diferenca) < 1) return;
 
-            const int passos = 8;
-            int passoAtual = 0;
+            var relogio = System.Diagnostics.Stopwatch.StartNew();
+            var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(16) };
+            _timerScroll = timer;
 
-            _timerScroll = new DispatcherTimer
+            timer.Tick += (s, e) =>
             {
-                Interval = TimeSpan.FromMilliseconds(16)
+                double progresso = Math.Min(1, relogio.ElapsedMilliseconds / (double)duracaoMs);
+                double suavizado = linear ? progresso : 1 - Math.Pow(1 - progresso, 3);
+
+                scrollViewer.ScrollToVerticalOffset(offsetInicial + diferenca * suavizado);
+
+                if (progresso >= 1) timer.Stop();
             };
 
-            _timerScroll.Tick += (s, e) =>
-            {
-                passoAtual++;
-                double progresso = (double)passoAtual / passos;
-                double progressoSuavizado = 1 - Math.Pow(1 - progresso, 3);
-
-                scrollViewer.ScrollToVerticalOffset(offsetInicial + (diferenca * progressoSuavizado));
-
-                if (passoAtual >= passos)
-                {
-                    _timerScroll.Stop();
-                }
-            };
-
-            _timerScroll.Start();
+            timer.Start();
         }
 
-        private async void EditarLetra_Click(object sender, RoutedEventArgs e)
+        private void LinhaLetra_Click(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is FrameworkElement elemento && elemento.DataContext is LinhaLetra linha) {
+                player.SaltarParaLinhaCommand.Execute(linha);
+            }
+        }
+
+        private void EditarLetra_Click(object sender, RoutedEventArgs e)
         {
             Music? musicaAtual = player.MusicaAtual;
             if (musicaAtual == null) return;
 
             string? caminhoLrc = player.LetraAtual?.CaminhoOrigem;
 
-            if (string.IsNullOrEmpty(caminhoLrc) || player.LetraAtual?.Fonte == FonteLetra.Embutida)
-            {
+            if (string.IsNullOrEmpty(caminhoLrc) || player.LetraAtual?.Fonte == FonteLetra.Embutida) {
                 string pasta = IOPath.GetDirectoryName(musicaAtual.Caminho)!;
                 string nomeBase = IOPath.GetFileNameWithoutExtension(musicaAtual.Caminho);
-                caminhoLrc = IOPath.Combine(pasta, nomeBase + ".kc.lrc");
+                caminhoLrc = IOPath.Combine(pasta, nomeBase + ".lrc");
             }
 
-            try
-            {
+            try {
                 string fullPath = IOPath.GetFullPath(caminhoLrc);
 
                 string? dir = IOPath.GetDirectoryName(fullPath);
                 if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
                     Directory.CreateDirectory(dir);
 
-                if (!File.Exists(fullPath))
-                {
-                    await File.WriteAllTextAsync(fullPath, string.Empty, System.Text.Encoding.UTF8);
-                }
+                //if (!File.Exists(fullPath)) {
+                //    await File.WriteAllTextAsync(fullPath, string.Empty, System.Text.Encoding.UTF8);
+                //}
 
                 Process.Start(new ProcessStartInfo
                 {
@@ -189,25 +177,14 @@ namespace Project_Kitsune.Views
                     UseShellExecute = true
                 });
             }
-            catch (UnauthorizedAccessException ex)
-            {
+            catch (UnauthorizedAccessException ex) {
                 Debug.WriteLine($"Permissão negada ao criar/abrir o ficheiro: {ex.Message}");
             }
-            catch (IOException ex)
-            {
+            catch (IOException ex) {
                 Debug.WriteLine($"Erro de I/O ao criar/abrir o ficheiro: {ex.Message}");
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Debug.WriteLine($"Erro inesperado ao editar letra: {ex.Message}");
-            }
-        }
-
-        private void LinhaLetra_Click(object sender, MouseButtonEventArgs e)
-        {
-            if (sender is FrameworkElement elemento && elemento.DataContext is LinhaLetra linha)
-            {
-                player.SaltarParaLinhaCommand.Execute(linha);
             }
         }
 
@@ -217,8 +194,7 @@ namespace Project_Kitsune.Views
         {
             if (e.ClickCount > 1) return;
 
-            if (sender is Slider slider)
-            {
+            if (sender is Slider slider) {
                 player.EstaArrastando = true;
                 slider.CaptureMouse();
 
@@ -241,10 +217,8 @@ namespace Project_Kitsune.Views
 
         private void Slider_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Slider slider)
-            {
-                if (slider.IsMouseCaptured)
-                {
+            if (sender is Slider slider) {
+                if (slider.IsMouseCaptured) {
                     slider.ReleaseMouseCapture();
                 }
 
@@ -260,7 +234,7 @@ namespace Project_Kitsune.Views
             if (slider.ActualWidth <= 0) return;
 
             double proporcao = Math.Clamp(posicao.X / slider.ActualWidth, 0, 1);
-            double novoValor = slider.Minimum + proporcao * (slider.Maximum - slider.Minimum);
+            double novoValor = slider.Minimum + proporcao * ( slider.Maximum - slider.Minimum );
             slider.Value = novoValor;
         }
 
@@ -278,6 +252,56 @@ namespace Project_Kitsune.Views
             var miniPlayer = new MiniPlayerWindow(mainWindow);
             miniPlayer.Show();
             mainWindow.Hide();
+        }
+
+        private void Lista_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            _pontoInicial = e.GetPosition(null);
+        }
+
+        private void Lista_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton != MouseButtonState.Pressed) return;
+
+            Point pos = e.GetPosition(null);
+            if (Math.Abs(pos.X - _pontoInicial.X) < SystemParameters.MinimumHorizontalDragDistance &&
+                Math.Abs(pos.Y - _pontoInicial.Y) < SystemParameters.MinimumVerticalDragDistance)
+                return;
+
+            ListBoxItem? item = AcharItem(e.OriginalSource as DependencyObject);
+            if (item == null) return;
+
+            int indice = Lista.ItemContainerGenerator.IndexFromContainer(item);
+            if (indice < 0) return;
+            DragDrop.DoDragDrop(Lista, indice, DragDropEffects.Move);
+        }
+
+        private void Lista_Drop(object sender, DragEventArgs e)
+        {
+            if (!e.Data.GetDataPresent(typeof(int))) return;
+            int de = (int)e.Data.GetData(typeof(int))!;
+
+            ListBoxItem? item = AcharItem(e.OriginalSource as DependencyObject);
+            if (item == null) return;
+
+            int para = Lista.ItemContainerGenerator.IndexFromContainer(item);
+            player.MoverNaFila(de, para);
+        }
+
+        private static ListBoxItem? AcharItem(DependencyObject? atual)
+        {
+            while (atual != null && atual is not ListBoxItem)
+                atual = VisualTreeHelper.GetParent(atual);
+            return atual as ListBoxItem;
+        }
+
+        private void Music_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is FrameworkElement elemento && elemento.DataContext is Music musica) {
+                if (DataContext is ShellViewModel viewModel) {
+                    viewModel.Player.TocarMusica(musica);
+                }
+            }
         }
     }
 }

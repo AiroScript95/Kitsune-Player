@@ -21,11 +21,9 @@ namespace Project_Kitsune.ViewModels.ShellPages
 
         private bool _mostrarModalCriarPlaylist;
 
-        public bool MostrarModalCriarPlaylist
-        {
+        public bool MostrarModalCriarPlaylist {
             get => _mostrarModalCriarPlaylist;
-            set
-            {
+            set {
                 _mostrarModalCriarPlaylist = value;
                 OnPropertyChanged();
             }
@@ -33,11 +31,9 @@ namespace Project_Kitsune.ViewModels.ShellPages
 
         private string _novaPlaylist = string.Empty;
 
-        public string NovaPlaylist
-        {
+        public string NovaPlaylist {
             get => _novaPlaylist;
-            set
-            {
+            set {
                 _novaPlaylist = value;
                 OnPropertyChanged();
             }
@@ -45,11 +41,9 @@ namespace Project_Kitsune.ViewModels.ShellPages
 
         private bool mostrarConfirmacaoExclusao;
 
-        public bool MostrarConfirmacaoExclusao
-        {
+        public bool MostrarConfirmacaoExclusao {
             get => mostrarConfirmacaoExclusao;
-            set
-            {
+            set {
                 mostrarConfirmacaoExclusao = value;
                 OnPropertyChanged();
             }
@@ -65,13 +59,12 @@ namespace Project_Kitsune.ViewModels.ShellPages
             List<Playlist> existentes = _database.ListarPlaylists();
 
             Playlists.Add(PlaylistLetras());
-            foreach (Playlist p in existentes)
-            {
+            foreach (Playlist p in existentes) {
                 Playlists.Add(CarregarComCapa(p));
             }
         }
 
-        private PlaylistComCapa CarregarComCapa(Playlist playlist)
+        public PlaylistComCapa CarregarComCapa(Playlist playlist)
         {
             List<string> todosCaminhos = playlist.Name == "Favoritos"
                 ? _database.ListarMusicasFavoritas()
@@ -81,19 +74,16 @@ namespace Project_Kitsune.ViewModels.ShellPages
             byte[]? capa = null;
             bool menuOpen = true;
 
-            if (caminho != null)
-            {
+            if (caminho != null) {
                 Music? musica = _biblioteca.LerMusicaPorCaminho(caminho);
-                if (musica != null)
-                {
+                if (musica != null) {
                     capa = musica.Image;
                 }
             }
             List<string> listaMusicas = todosCaminhos.Take(3).Select(caminho => _biblioteca.LerMusicaPorCaminho(caminho)?.Titulo ??
             Path.GetFileNameWithoutExtension(caminho)).ToList();
 
-            if (playlist.Name == "Favoritos")
-            {
+            if (playlist.Name == "Favoritos") {
                 playlist.NumMusicas = todosCaminhos.Count;
                 menuOpen = false;
             }
@@ -139,8 +129,7 @@ namespace Project_Kitsune.ViewModels.ShellPages
             Playlists.Clear();
 
             Playlists.Add(PlaylistLetras());
-            foreach (Playlist p in atualizadas)
-            {
+            foreach (Playlist p in atualizadas) {
                 Playlists.Add(CarregarComCapa(p));
             }
 
